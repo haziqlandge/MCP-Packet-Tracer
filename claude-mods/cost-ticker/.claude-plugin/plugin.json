@@ -1,0 +1,9 @@
+{
+  "name": "cost-ticker",
+  "version": "0.4.0",
+  "description": "Session and this-month cost, token totals and prompt-cache hit rate",
+  "author": {
+    "name": "Haziq"
+  },
+  "types": "./types/index.d.ts"
+}

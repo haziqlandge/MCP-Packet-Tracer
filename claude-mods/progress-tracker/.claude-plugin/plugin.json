@@ -1,0 +1,6 @@
+{
+  "name": "progress-tracker",
+  "version": "0.4.0",
+  "description": "Plan and task progress above the prompt: two bars at 70% of the band with a checkpoint per task and step; names cut to five words, full text on hover",
+  "author": { "name": "Haziq" }
+}

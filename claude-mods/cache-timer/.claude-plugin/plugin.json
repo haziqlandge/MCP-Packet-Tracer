@@ -1,0 +1,7 @@
+{
+  "name": "cache-timer",
+  "version": "0.2.0",
+  "description": "Shows prompt-cache warmness and a countdown until the cache goes cold",
+  "author": { "name": "Haziq" },
+  "types": "./types/index.d.ts"
+}
