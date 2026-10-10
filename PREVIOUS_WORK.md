@@ -51,6 +51,13 @@ and continued. PHASE-05: AX walk shared with the probe, locator fallback, HID cl
 keyboard section switch, three live bugs found and fixed, `tests/live/ui.json` 8/8. Details
 in 2.8 and 2.9.
 
+**2026-10-10 — First commit and push of the branch's work.** With the user's OK, everything
+since `0bc0976` was committed as `f86cfe9` (author Haziq, no AI attribution; the user's home
+path redacted to `~` in two plan docs first) and pushed to `haziqlandge/MCP-Packet-Tracer`
+`cross-platform`. CI run 38059124205: all 6 jobs green; the install logs show comtypes only
+on Windows and pyobjc only on macOS, so the environment markers work. That closed the CI
+boxes of PHASE-01, 03, 04 and 05; PHASE-05 complete.
+
 ---
 
 # Part 2 — Findings that must not be re-derived

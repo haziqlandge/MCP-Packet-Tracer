@@ -91,7 +91,8 @@ python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/headless.json | g
 Baselines (each OS has its own line; a drop below it is a regression):
 
 - Windows: **825 passed** as of 2026-10-10, Windows 10 Pro, Python 3.14.8, at `bcb2ef3`.
-- macOS: **825 passed** as of 2026-10-10, macOS 26.5.1 (arm64, Mac17,9), Python 3.12.15 (Homebrew, `.venv`), at `0bc0976`.
+- macOS: **1181 passed** as of 2026-10-10, macOS 26.5.1 (arm64, Mac17,9), Python 3.12.15 (Homebrew, `.venv`), at `f86cfe9`.
+- CI (GitHub Actions, run 38059124205 at `f86cfe9`): ubuntu 1180 passed + 1 skipped, windows 1178 + 3 skipped, macos 1181, on 3.11 and 3.13.
 
 These lines are the only place the baseline is recorded. Run the commands and
 read the output. "Should pass" is not evidence. If the planning skill is not

@@ -12,20 +12,17 @@ contents are done. Do not append a second one.**
 
 ### The situation
 
-PHASE-00 to PHASE-03 are complete. PHASE-04 and PHASE-05 are built and pass
-live on the Mac; each keeps open only what this Mac cannot close: CI on three
-OSes (needs a push), and PHASE-04's real-revocation check (the user declined to
-revoke a grant; a simulated check passed). macOS UI mode works end to end:
-`tests/live/ui.json` 8/8. **Nothing is committed** (the user asked for no
-commits); PHASE-03's two `git mv` renames are staged, the rest is in the working
-tree. A second Claude session wrote PHASE-04's code in parallel; the user gave
-PHASE-04 on to this session, so only one session should touch this checkout.
+PHASE-00 to PHASE-03 and PHASE-05 are complete. PHASE-04 has one open box: the
+real-revocation check (the user declined to revoke a grant; a simulated check
+passed). macOS UI mode works end to end (`tests/live/ui.json` 8/8). The work is
+committed as `f86cfe9` and pushed to `haziqlandge/MCP-Packet-Tracer`
+`cross-platform`; CI is green on Windows, Ubuntu and macOS. Only one session
+should touch this checkout (a parallel session wrote PHASE-04's code earlier).
 
 ### Progress
 
-Phases complete: 00, 01, 02, 03. PHASE-04: 2 of 5 (open: CI push, dependency
-markers on CI, a real revocation). PHASE-05: 8 of 9 (open: CI push). Overall
-66.7 % on the tracker.
+Phases complete: 00, 01, 02, 03, 05. PHASE-04: 4 of 5 (open: a real
+revocation). Overall 71.9 % on the tracker.
 
 ### What the last session did
 
@@ -46,27 +43,26 @@ markers on CI, a real revocation). PHASE-05: 8 of 9 (open: CI push). Overall
 
 ### Verification state
 
-macOS: `.venv/bin/python -m pytest -q` **1181 passed**, 2026-10-10 (baseline
-825). `check_plan.py`: skipped (planning skill not installed on the Mac). Live
-(HTTP channel, Control Center now open): `tests/live/ui.json` 8/8 with PNGs
-checked by eye; `headless.json` not re-run this session. Windows: nothing run.
+macOS: `.venv/bin/python -m pytest -q` **1181 passed**, 2026-10-10. CI run
+38059124205 at `f86cfe9`: 6/6 jobs green. `check_plan.py`: skipped (planning
+skill not installed on the Mac). Live (HTTP channel, Control Center open):
+`tests/live/ui.json` 8/8 with PNGs checked by eye; `headless.json` not re-run
+this session. Windows live: nothing run (§2).
 
 ### NEXT, in order
 
 1. PHASE-06 (out of the box: `pt-mcp doctor`, onboarding, the `platform` block
    in `pt_bridge_status`). Include `pt_ui_mode("status")` showing the capture
    remedy when only Screen Recording is missing (PHASE-04 box note).
-2. When the user allows a push: CI on three OSes closes PHASE-04/05's test
-   boxes and PHASE-04's dependency box.
-3. Re-run `tests/live/headless.json` once (last full run was PHASE-02).
-4. Watch X11 and X13 in live runs; X12 needs PT's scroll offset (unverified API).
+2. Re-run `tests/live/headless.json` once (last full run was PHASE-02).
+3. Watch X11 and X13 in live runs; X12 needs PT's scroll offset (unverified API).
 
 ### Waiting on the user
 
-- Whether to commit and push (CI is the only thing left on several boxes).
-- Whether a real Screen Recording revocation should ever be measured (PHASE-04).
+- Whether a real Screen Recording revocation should ever be measured (the last
+  PHASE-04 box).
 - Later: a session on the Windows machine for §2; whether the fixed `.pts`
-  ships (ISSUES X3).
+  ships (ISSUES X3); an upstream PR only with the user's OK (§3).
 
 ---
 
@@ -121,8 +117,8 @@ and open one PR to Mats2208/MCP-Packet-Tracer.
 | 01 | complete (6/6) |
 | 02 | complete (6/6) |
 | 03 | complete (9/9); Windows live check pending (§2) |
-| 04 | built; 2 of 5 (open: CI push; dependency markers on CI; real revocation) |
-| 05 | built, live 8/8; 8 of 9 (open: CI push) |
+| 04 | 4 of 5 (open: a real revocation) |
+| 05 | complete (9/9) |
 | 06 | next |
 | 07 | waiting on 01–06 |
 | 08 | gated (entry criteria in its file) |
