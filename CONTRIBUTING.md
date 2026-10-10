@@ -26,7 +26,7 @@ path.
 domain/         models (pydantic), rules (validation), services (planning)
 application/    use cases — orchestrate rules + generators, no I/O of their own
 infrastructure/ generators (JS + IOS CLI), execution (bridge, executors), catalog
-adapters/mcp/   the ~50 MCP tools; a thin layer over the use cases
+adapters/mcp/   the MCP tools; a thin layer over the use cases
 ```
 
 Two conventions that matter:
@@ -53,6 +53,46 @@ if you can't make it fail first, it isn't testing what you think.
 The suite was entirely happy-path until v0.6.0. If you touch anything that builds
 JS or IOS config, add a case with a quote, a newline and a `..` in it. See
 `tests/test_injection_regressions.py`.
+
+## Live smoke lists and macOS fixtures
+
+`tests/live/` contains JSON call lists for a running Packet Tracer; pytest does not
+collect them. See [the live-test README](tests/live/README.md). Run from the repo
+root, with one PT and one bridge at a time:
+
+```bash
+python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/headless.json
+python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/ui.json
+```
+
+These use the code in this checkout. A client's already-running MCP server keeps
+its old code until reconnected. `setup.json` creates the fixture topology: save
+your existing topology first, and run it only on an empty canvas. Read every tool
+result; a reply without a traceback can still report a failure. UI smoke requires
+the platform backend and, on macOS, grants for the app that launches the harness.
+
+Record macOS Accessibility fixtures from real PT windows, rather than editing
+`tests/fixtures/macos/*.json` by hand:
+
+```bash
+python -m src.packet_tracer_mcp.devtools.macos_probe windows --pid <PT_PID>
+python -m src.packet_tracer_mcp.devtools.macos_probe ax --pid <PT_PID> --title PC1 --out /tmp/pc1-ax.json
+```
+
+Inspect the recording and its metadata before adding it as a fixture. AX frames
+and click coordinates use points; captures use pixels. `macos_probe perms` is
+preflight only; `--request` explicitly asks for permissions. Live checks establish
+behavior only on the OS where they run; an offline test is not a live acceptance.
+
+## Documentation checks
+
+```bash
+pip install -r docs/requirements.txt
+mkdocs build --strict
+```
+
+Keep platform paths in [Live Deploy Setup](docs/live-deploy.md#per-os-paths) and
+link to that table from other pages.
 
 ## Security
 

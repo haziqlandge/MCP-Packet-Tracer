@@ -44,7 +44,7 @@ a running Packet Tracer require the [live bridge](live-deploy.md) to be connecte
 
 The bridge has **two channels** and picks one per command automatically: **HTTP**
 while the MCP Control Center window is open, and a **file-bridge** (the Script
-Engine reads a mailbox under `%LOCALAPPDATA%`) when the window is closed but PT is
+Engine reads a per-user mailbox) when the window is closed but PT is
 still open. Every tool below works over either. See [Live deploy](live-deploy.md).
 
 | Tool | What it does |
@@ -103,15 +103,22 @@ up in the device's real CLI tab, so the user can watch or take over at any time.
 | `pt_ui_close` | Close one device window, or all of them. |
 
 Each panel tool also takes `show=True/False` for a single call (it wins over the
-mode) and `capture=True` to save a PNG once it is done. `output_dir` is a folder
-relative to the project root, as with `pt_screenshot`. Claude Code exposes the
+mode) and `capture=True` to save a PNG once it is done. `output_dir` is a sanitized
+single folder name under the resolved output root, as with `pt_screenshot`.
+Use `PT_MCP_OUTPUT_DIR` to select an absolute root; see the
+[per-OS path table](live-deploy.md#per-os-paths). Claude Code exposes the
 prompts `/mcp__packet-tracer__ui_on`, `ui_off` and `ui_status`.
 
-!!! note "UI mode needs Windows and the `[ui]` extra"
-    Windows are opened through Windows UI Automation and a click *posted* to the
-    canvas (the real cursor does not move), and captured with `PrintWindow`.
-    Install with `pip install "packet-tracer-mcp[ui]"` (adds `comtypes`). Headless
-    mode works everywhere.
+| OS | UI mode |
+|---|---|
+| Windows | UI Automation and posted canvas clicks; the real cursor does not move. Captures use `PrintWindow`. |
+| macOS | Accessibility navigates panels; PT comes to the front, and canvas clicks briefly move and restore the cursor. Capture requires Screen Recording permission. |
+| Linux | UI mode not yet available; every panel tool works headless. |
+
+UI dependencies install automatically. On macOS, `pt_ui_mode("ui")` requests the
+two grants and names the responsible app; follow the
+[privacy setup](installation.md#macos-privacy-grants-for-ui-mode). `pt-mcp doctor
+--ui` diagnoses the process from which it is run without prompting.
 
 !!! warning "What PT 9.0.1 does not let an extension do"
     PC Wireless profiles (the API throws `invalid vector subscript` on every

@@ -116,10 +116,16 @@ installed" from "extension broken". Report both possibilities. Do not guess one.
 
 ## Acceptance criteria
 
+- [x] Full offline suite passes on the Mac — 1233 passed in 34.72 s, 2026-10-10
+- [x] Live platform block and UI preflight report both grants without prompts — macOS 26.5.1; ChatGPT Accessibility false, Screen Recording true; 2026-10-10
+
+- [x] Doctor checks, config rendering and CLI dispatch pass targeted tests — doctor/entrypoint coverage in 96-test targeted run, 2026-10-10
+- [x] Status diagnostics and degraded UI onboarding pass targeted tests without permission prompts — 96 passed including C3 and device-panel tests, 2026-10-10
+
 - [ ] All tests pass on the Mac and CI; the suite stays ≥ the macOS baseline
-- [ ] Live, Mac: `pt-mcp doctor --ui` is all green with PT + extension + grants; each failure injected by hand (PT closed, `.pts` removed, a grant revoked, port held by `nc -l 54321`) gives the matching fix text
-- [ ] Live, Mac: `pt-mcp doctor --print-config claude-code` output, pasted as is, gives a working server in Claude Code
-- [ ] Live, Mac: from revoked grants, `pt_ui_mode("ui")` brings up the prompts once, and after the grant (plus a restart if PHASE-04 says so) `pt_ui_capture` works with no further steps
+- [ ] Live, Mac: `pt-mcp doctor --ui` is all green with PT + extension + grants; each failure injected by hand (PT closed, `.pts` removed, a grant revoked, port held by `nc -l 54321`) gives the matching fix text — **BLOCKED: Missing ChatGPT Accessibility; live failure injection needs the pending reset approval**
+- [ ] Live, Mac: `pt-mcp doctor --print-config claude-code` output, pasted as is, gives a working server in Claude Code — **BLOCKED: Claude Code CLI absent; fresh-client setup approval pending**
+- [ ] Live, Mac: from revoked grants, `pt_ui_mode("ui")` brings up the prompts once, and after the grant (plus a restart if PHASE-04 says so) `pt_ui_capture` works with no further steps — **BLOCKED: Prior real revocation declined; new reset approval pending**
 - [ ] `pt_bridge_status` shows the `platform` block on the Mac; on Windows CI the block's test passes
 
 ## Known failure conditions

@@ -24,7 +24,8 @@ from ....infrastructure.execution.deploy_executor import DeployExecutor
 from ....infrastructure.execution.bridge_token import token_was_rotated, token_is_ephemeral
 from ..bridge_context import BridgeContext, DEPLOY_BATCH
 from ....shared.enums import RoutingProtocol, TopologyTemplate
-from ....shared.utils import js_escape, safe_name_component, classify_ping as _classify_ping
+from ....shared.utils import js_escape, safe_name_component, classify_ping as _classify_ping, reply_json
+from ....infrastructure.platform.doctor import platform_status
 
 
 def mailbox_line(status: dict) -> str:
@@ -514,6 +515,10 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         file (when it is closed but PT is still open with the extension). With
         either one, deployment works.
         """
+        return reply_json({"status": bridge_status_text(),
+                           "platform": platform_status(file_bridge=ctx.file_bridge)})
+
+    def bridge_status_text() -> str:
         identity = _bridge_identity()
         if identity == "foreign":
             return (

@@ -15,7 +15,9 @@ None open.
 
 ## 2. Open acceptance gates (Q#)
 
-None open.
+| # | Issue | Evidence |
+|---|---|---|
+| Q1 | PHASE-06/07 real-client and fresh-grant acceptance is pending | Offline suite 1232 passed; live headless doctor passes. This executor lacks ChatGPT Accessibility; Claude Code CLI is absent from PATH. A backup/reset/revocation approval is pending, and prior revocation was declined. No fresh action count or UI capture claim yet |
 
 ## 3. Data and integrity (D#)
 
@@ -46,7 +48,6 @@ None open.
 
 | # | Issue | Evidence |
 |---|---|---|
-| F1 | Docs present Windows paths and Windows-only UI mode as universal | `README.md:99,191,260`; `docs/architecture.md:55,60`; `docs/live-deploy.md:11,19`; `docs/tools.md:47,110`; `skill/reference/tools.md:79`; `skill/reference/rough-edges.md:129`; `device_panel_tools.py:188`; `pt_deploy`'s description says "copies the script to the Windows clipboard" (`tools/planning.py`; changing it regenerates `tool_api.json`, C9). Fix: PHASE-07 |
 
 ## 7. What must not be claimed
 

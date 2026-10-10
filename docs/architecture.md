@@ -19,6 +19,8 @@ infrastructure/   adapters to the outside world
   generator/     ptbuilder_generator, cli_config_generator, acl/nat generators
   execution/     live_bridge, file_bridge, bridge_token, deploy_executor, manual_executor
   persistence/   project_repository (save/load projects)
+  platform/      OS facts, state/output paths, process/clipboard probes, doctor
+  ui/            presenter + locator table; windows, macos and null backends
 ```
 
 ## Request flow
@@ -52,12 +54,14 @@ Two channels reach the extension; `_pick_channel()` chooses one per command.
 - `GET /ping` — unauthenticated identity check (fingerprint of the token only).
 
 **File-bridge** — `FileBridge` (`file_bridge.py`), used when the window is closed.
-The Script Engine polls a mailbox under `%LOCALAPPDATA%\packet-tracer-mcp\bridge\`
-(`req_*.js` → execute → `res_*.txt`, plus an `alive.txt` heartbeat). It needs no
-token: a browser page can't write a user-ACL'd local file.
+The Script Engine polls a per-user mailbox (`req_*.js` → execute → `res_*.txt`,
+plus an `alive.txt` heartbeat). The server discovers the freshest active mailbox,
+including the released V5.2 compatibility candidate. It needs no token: a browser
+page can't write a user-owned local file. Locations are in the
+[per-OS path table](live-deploy.md#per-os-paths).
 
-**Auth** — the HTTP bridge requires a per-machine token (`bridge_token.py`,
-auto-generated under `%LOCALAPPDATA%`). The extension reads it from disk through
+**Auth** — the HTTP bridge requires a per-machine token (`bridge_token.py`),
+auto-generated in the state directory. The extension reads it from disk through
 the Script Engine — no pairing, no pasting. See [SECURITY.md](https://github.com/Mats2208/MCP-Packet-Tracer/blob/main/SECURITY.md).
 
 !!! info "Inspired by PTBuilder"

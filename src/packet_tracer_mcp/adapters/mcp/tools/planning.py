@@ -383,7 +383,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         output_dir: str = "projects",
     ) -> str:
         """
-        Deploys a plan to Packet Tracer: copies the script to the Windows
+        Deploys a plan to Packet Tracer: copies the script to the system
         clipboard, exports the configuration files, and generates
         step-by-step instructions.
 

@@ -4,6 +4,16 @@
 
 ### Added
 
+- **`pt-mcp doctor` setup diagnostics.** Checks installation, state/output paths,
+  Packet Tracer, extension activity, bridge ownership, clipboard and UI availability;
+  failed checks include fixes. `--ui` requires UI readiness, `--json` prints
+  structured checks, and `--request-permissions` explicitly requests macOS grants.
+  `--print-config claude-code|claude-desktop` generates client configuration using
+  the absolute interpreter path.
+- **Mailbox discovery compatible with released V5.2.** The file bridge chooses the
+  freshest heartbeat across canonical and legacy candidates and reports the active
+  directory, age and compatibility status.
+
 - **Device-panel control: every tab of a device window, without touching the screen.**
   17 new tools (62 → 79 with upstream's `pt_configure_dhcp_server`) drive what a student does inside a device through Packet
   Tracer's own API: `pt_cli` (IOS CLI tab — one command at a time, waits for the
@@ -22,11 +32,10 @@
   app or Services page so the user can watch. `show=` overrides it per call and
   `capture=True` saves a PNG of the window. `pt_ui_open`, `pt_ui_capture` and
   `pt_ui_close` show or capture a window directly. The mode persists across restarts
-  (`PT_MCP_UI_MODE` overrides it). Windows only; install with
-  `pip install "packet-tracer-mcp[ui]"` (adds `comtypes`). Windows are driven by UI
-  Automation and a click *posted* to the canvas — the real cursor never moves — and
-  only while PT's Select tool is active, since a click with Delete active would
-  delete the device.
+  (`PT_MCP_UI_MODE` overrides it). Available on macOS and Windows with automatically
+  installed dependencies; Linux panel tools work headless. Native accessibility
+  controls navigate the windows, and canvas clicks require PT's Select tool,
+  since a click with Delete active would delete the device.
 - **MCP prompts** `ui_on`, `ui_off`, `ui_status` (in Claude Code:
   `/mcp__packet-tracer__ui_on`).
 - **`pt_configure_dhcp_server`: DHCP pools on a Server-PT** (upstream #23, thanks
@@ -80,19 +89,23 @@
   front, and a canvas click moves the cursor for a moment and puts it back. The click is only
   sent when PT is frontmost and its canvas is under the point.
 - **`XDG_STATE_HOME` is no longer honoured for the bridge token and mailbox.** On Linux and
-  macOS the state directory is always `~/.local/state/packet-tracer-mcp`. The extension inside
-  Packet Tracer cannot read environment variables, so a set `XDG_STATE_HOME` moved the token
-  where PT never looked and pairing silently failed. Windows keeps `%LOCALAPPDATA%` exactly as
-  before. All OS facts now live in `infrastructure/platform/`.
+  macOS the state directory uses the fixed location in the per-OS path table. The extension
+  inside Packet Tracer cannot read environment variables, so a set `XDG_STATE_HOME` moved
+  the token where PT never looked and pairing silently failed. Windows keeps its previous
+  directory selection. The platform layer centralizes OS facts, paths, process detection and
+  clipboard behavior in `infrastructure/platform/`; platform locations are documented
+  in the [per-OS path table](docs/live-deploy.md#per-os-paths).
 - **Tool outputs no longer depend on a writable working directory.** Relative output folders
   (`projects`, `screenshots`) resolve under `output_root()`: the working directory when it is
-  writable and not a filesystem root, else `~/Documents/Packet Tracer MCP` (Windows, macOS) or
-  `~/packet-tracer-mcp` (Linux). `PT_MCP_OUTPUT_DIR` overrides it. Absolute paths are unchanged.
+  writable and not a filesystem root, else the per-user fallback from the
+  [per-OS path table](docs/live-deploy.md#per-os-paths). `PT_MCP_OUTPUT_DIR` overrides it.
+  Project export executors preserve absolute output directories; screenshot tools
+  use a sanitized folder name under the resolved root.
 - **UI mode sits behind one backend per OS.** The presenter no longer calls Win32 or UI
   Automation itself: it talks to a `WindowBackend` and finds widgets through a locator table,
-  and the Windows code moved unchanged under `infrastructure/ui/backends/windows/`. On other
-  OSes `pt_ui_mode` and `show=True` now say why the GUI is unavailable there (every tool
-  still works headless). `PT_MCP_UI_BACKEND=null|windows|macos|linux` overrides the choice.
+  and the Windows code moved unchanged under `infrastructure/ui/backends/windows/`.
+  On Linux `pt_ui_mode` and `show=True` explain that UI mode is not yet available;
+  every panel tool still works headless. `PT_MCP_UI_BACKEND=null|windows|macos|linux` overrides the choice.
 
 ### Fixed
 

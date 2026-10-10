@@ -73,9 +73,15 @@ def register_device_panel_tools(
         if (mode or "").strip().lower() in ("", "status", "get"):
             cur = store.get()
             ok, why = presenter.available()
-            gui = "available" if ok else f"NOT available ({why})"
+            gui = "available" if ok else "NOT available"
+            if why:
+                gui += f" ({why})"
+            diagnostics = ""
+            if isinstance(presenter, Presenter):
+                from ...infrastructure.platform.doctor import ui_status
+                diagnostics = "\nUI diagnostics: " + reply_json(ui_status())
             return (
-                f"Current mode: {cur}. PT GUI: {gui}.\n"
+                f"Current mode: {cur}. PT GUI: {gui}.{diagnostics}\n"
                 "Change it: pt_ui_mode('ui') to show the device windows, "
                 "pt_ui_mode('headless') to work through the API only. Per call: show=True/False."
             )
@@ -86,7 +92,9 @@ def register_device_panel_tools(
         if new == UI:
             # The one place that may bring up OS permission prompts (C3).
             ok, why = presenter.available(request=True)
-            extra = "" if ok else f"\nNote: the GUI is not available ({why}); the tools will stay headless."
+            extra = f"\nNote: {why}" if why else ""
+            if not ok:
+                extra += " The tools will stay headless until the grant is available."
             return ("UI mode on: the panel tools will open the device's window on the matching "
                     "tab/app. Use capture=True or pt_ui_capture to save PNGs." + extra)
         return "Headless mode on: everything through the API, no windows opened."
@@ -186,7 +194,9 @@ def register_device_panel_tools(
           "TFTP", "EMAIL", "FTP"...
 
         Works in headless mode too: it is an explicit request to show.
-        Requires Windows and the [ui] extra (comtypes).
+        UI mode is available on Windows and macOS; OS dependencies install automatically.
+        macOS requires Accessibility; capture also requires Screen Recording.
+        Linux tools work headless; UI mode is not available there yet.
         """
         err = check_bridge()
         if err:

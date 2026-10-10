@@ -7,7 +7,13 @@ on streamable-http (:39000) or stdio depending on the --stdio flag.
 
 from __future__ import annotations
 
+import argparse
 import sys
+
+# Doctor must work without initializing the MCP transport or bridge.
+if sys.argv[1:2] == ["doctor"]:
+    from .infrastructure.platform.doctor import main as doctor_main
+    raise SystemExit(doctor_main(sys.argv[2:]))
 
 from mcp.server.fastmcp import FastMCP
 
@@ -49,16 +55,21 @@ register_resources(mcp)
 register_prompts(mcp)
 
 
-def main():
-    """Starts the MCP server.
-
-    By default uses streamable-http on :39000.
-    With --stdio uses the stdio transport (for debugging or legacy clients).
-    """
-    if "--stdio" in sys.argv:
-        mcp.run(transport="stdio")
-    else:
-        mcp.run(transport="streamable-http")
+def main(argv: list[str] | None = None):
+    """Run diagnostics or start the MCP transport."""
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["doctor"]:
+        from .infrastructure.platform.doctor import main as doctor_main
+        raise SystemExit(doctor_main(argv[1:]))
+    parser = argparse.ArgumentParser(description="Packet Tracer MCP server")
+    parser.add_argument("--stdio", action="store_true", help="Use MCP standard input/output")
+    parser.add_argument("--port", type=int, default=TRANSPORT_PORT,
+                        help="MCP HTTP port (default: 39000; bridge stays on 54321)")
+    args = parser.parse_args(argv)
+    if not 1 <= args.port <= 65535:
+        parser.error("--port must be between 1 and 65535")
+    mcp.settings.port = args.port
+    mcp.run(transport="stdio" if args.stdio else "streamable-http")
 
 
 if __name__ == "__main__":

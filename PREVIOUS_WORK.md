@@ -363,6 +363,56 @@ Built by the parallel session (files dated 18:58–19:04); reviewed and re-verif
   `AXUIElementCopyElementAtPosition` and the `AXParent` climb are exercised there (C6).
 - `devtools/live_smoke.py` prints `----- <seconds> s` after each call.
 
+## 2.10 PHASE-06 diagnostics implementation (2026-10-10)
+
+- Added read-only, injectable doctor probes: Python/install, state and token
+  fingerprint, output/fallback root, PT, fresh mailbox/authenticated HTTP poll,
+  bridge-port ownership, clipboard and UI readiness. Permission requests occur
+  only with `--request-permissions` or explicit UI-mode onboarding.
+- `pt-mcp doctor` dispatches before MCP initialization and renders absolute
+  interpreter/client configurations. `--port` selects an alternative MCP HTTP
+  port when PT owns 39000; stdio is recommended on the Mac.
+- `pt_bridge_status` preserves the channel explanation inside `status` and adds
+  the ordered `platform` block. UI status reports both grants and the responsible
+  app even when window navigation itself is available.
+- Targeted integration: 96 passed. Full suite after snapshot regeneration:
+  `.venv/bin/python -B -m pytest -q -p no:cacheprovider`: **1232 passed** in
+  32.67 s. Headless permission guards passed; no grants reset.
+- Headless regression: 17 non-capture calls completed against the saved fixture;
+  first R1 CLI output was empty (X11), then a repeat returned the interface table
+  twice. The optional screenshot was omitted.
+- Live: doctor correctly reported PT stopped after the user submitted the
+  assessment, then all required headless checks passed after PT reopened.
+  Bridge status reported both channels and a fresh legacy mailbox. UI preflight
+  named ChatGPT with Accessibility false and Screen Recording true. This is
+  evidence for missing-grant diagnostics, not an all-green UI acceptance run.
+
+## 2.11 PHASE-07 documentation and API verification (2026-10-10)
+
+- Updated README/install/live-deploy/architecture/tools/testing, skill
+  references, CONTRIBUTING and CHANGELOG. Per-OS path facts live in
+  `docs/live-deploy.md`; docs distinguish unreleased branch features from PyPI
+  0.9.0. Mac verification is PT 9.0.1; Linux UI is unavailable.
+- `UPDATE_TOOL_API=1` regeneration changed only descriptions for `pt_deploy`
+  and `pt_ui_open`. Parsed JSON comparison confirmed identical names and
+  parameter schemas. Registry/CODEMAP guards: 8 passed.
+- CODEMAP now indexes doctor and names the real Windows/macOS/Linux backends.
+  Installed skill `~/.claude/skills/packet-tracer`: `diff -qr` empty.
+- `rg -n LOCALAPPDATA README.md docs skill src/packet_tracer_mcp/adapters`
+  found only `docs/live-deploy.md:42`, its Windows row in the per-OS table.
+- `/private/tmp/pt-mcp-docs-venv/bin/mkdocs build --strict --site-dir
+  /private/tmp/pt-mcp-site`: exit 0. Planning checker skipped because its skill
+  is absent. CI and fresh-client/reset acceptance are pending at this record.
+- The user's practice assessment was configured separately using MCP Terminal
+  console calls, static IPv4 and documented raw HostPort IPv6 methods. The user
+  submitted it after all four hosts demonstrated IPv4/IPv6 reachability. No
+  screenshot or source edit was required for that assessment.
+
+Final implementation checks: **1233 passed** in 34.72 s; targeted diagnostics,
+registry and CODEMAP checks: **60 passed**. New Windows-path regression failed
+before the `.as_posix()` fix and passed afterward. Pyflakes on all new modules
+and tests is clean; `git diff --check` is clean.
+
 ## Where the detailed evidence lives
 
 | Artifact | Contents |

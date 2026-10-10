@@ -96,23 +96,45 @@ A **Model Context Protocol (MCP) server** that gives any LLM (Claude, GitHub Cop
 pip install packet-tracer-mcp
 ```
 
-For **UI mode** on Windows (opening and capturing the device windows), add the `ui` extra:
+Or install it in an isolated environment with uv:
 
 ```bash
-pip install "packet-tracer-mcp[ui]"
+uv tool install packet-tracer-mcp
 ```
 
-Or from source, if you want to modify it:
+UI dependencies install automatically for your OS; the `[ui]` extra remains a
+compatible alias. UI mode opens and captures device windows on macOS and Windows.
+Linux supports headless tools; UI mode is not available yet.
+
+The cross-platform UI and `pt-mcp doctor` changes on this branch are unreleased.
+Until a release includes them, install this checkout from source (the PyPI commands
+above install the published version):
 
 ```bash
-git clone https://github.com/Mats2208/MCP-Packet-Tracer
+git clone --branch feat/cross-platform https://github.com/Mats2208/MCP-Packet-Tracer
 cd MCP-Packet-Tracer
-pip install -e .
+python -m venv .venv
+# macOS / Linux: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# Windows cmd.exe: .venv\Scripts\activate.bat
+python -m pip install -e .
 ```
 
 **2. Connect your MCP client** (Claude Code shown)
 
-_Linux · macOS · Git Bash · Windows `cmd.exe`:_
+Generate a command using the absolute Python interpreter from your installation:
+
+```bash
+pt-mcp doctor --print-config claude-code
+```
+
+Paste the printed command into your shell. For Claude Desktop, use
+`pt-mcp doctor --print-config claude-desktop` and merge the printed JSON into its
+MCP configuration. Configuration output does not run diagnostics. For other
+clients, use that JSON's `command` and `args` in their stdio server settings.
+
+_Linux · macOS · Git Bash · Windows `cmd.exe`_ — the equivalent command when
+`python` is the interpreter where you installed the package:
 
 ```bash
 claude mcp add --scope user --transport stdio packet-tracer -- python -m packet_tracer_mcp --stdio
@@ -156,6 +178,36 @@ Then run `/reload-skills` in Claude Code (or restart it) and confirm with `/skil
 > Requires **Python 3.11+** (deps `mcp[cli]>=1.13`, `pydantic>=2.11` install automatically).
 > Full setup for every client → **[Installation docs](https://mats2208.github.io/MCP-Packet-Tracer/installation/)**.
 
+## macOS setup
+
+1. Install Python 3.11+ and the server using the source instructions above for
+   this unreleased branch. Activate that environment, then generate your client configuration with
+   `pt-mcp doctor --print-config claude-code` (or `claude-desktop`), paste it into
+   the client, and reconnect the server.
+2. Install Cisco Packet Tracer (**9.0.1 verified on macOS**; older macOS builds
+   are unverified) and manually register **V5.2.pts** from
+   [Releases](https://github.com/Mats2208/MCP-Packet-Tracer/releases/latest) through
+   **Extensions → Scripting → Configure PT Script Modules → Add…**. Open
+   **Extensions → MCP BUILDER**. Package installation cannot register a `.pts`.
+3. For UI mode, ask the connected client to call `pt_ui_mode("ui")`. Its reply
+   names the app or executable macOS holds responsible for that server. In
+   **System Settings → Privacy & Security**, enable both **Accessibility** and
+   **Screen & System Audio Recording** (called **Screen Recording** on older
+   macOS versions) for that named app. If it is absent, add it using **+** and
+   **Cmd+Shift+G** to paste the path from the reply. A server launched by Terminal
+   and a server launched by your MCP client can require different grants. Use
+   the client's remedy, rather than granting Python or Packet Tracer by guess.
+4. Ask for `pt_bridge_status`, then open or capture a device with `pt_ui_open` or
+   `pt_ui_capture`. Run `pt-mcp doctor --ui` for diagnostics in the terminal's
+   environment; `--json` gives structured output. Only an explicit
+   `--request-permissions` asks macOS for grants. Terminal diagnostics cannot
+   prove the client's permission state; its tool reply is the check for that
+   process.
+
+The `.pts` installation and both privacy grants need your interaction. Headless
+planning and live tools do not need those grants. State, compatibility mailboxes
+and output locations are listed in the [per-OS path table](docs/live-deploy.md#per-os-paths).
+
 ## Quick start
 
 Just talk to your AI:
@@ -188,8 +240,15 @@ Tracer's own API. What it types appears in the real CLI tab, so you can watch or
 
 It is **headless by default**: nothing opens on screen. Say *"show it in Packet Tracer"* (or
 call `pt_ui_mode("ui")`) and every panel tool also opens the device's window on the matching
-tab or app; `capture=True` saves a PNG of it. The windows are driven with Windows UI
-Automation and a click posted to the canvas — your real mouse and keyboard are never used.
+tab or app; `capture=True` saves a PNG of it. The backend depends on the OS:
+
+| OS | UI behavior |
+|---|---|
+| Windows | UI Automation navigates the panels; canvas clicks are posted without moving the real cursor, and `PrintWindow` captures the windows. |
+| macOS | Accessibility navigates the panels; PT comes to the front, and a canvas click can briefly move the cursor before restoring it. Captures require Screen Recording permission. |
+| Linux | UI mode is not available yet; device-panel tools work headless through PT's API. |
+
+Dependencies install with the server. On macOS, follow the [two-grant setup](#macos-setup).
 Claude Code users also get the prompts `/mcp__packet-tracer__ui_on` and `ui_off`.
 
 📖 Tool list → **[Device panel](https://mats2208.github.io/MCP-Packet-Tracer/tools/#device-panel-cli-desktop-and-services)**.
@@ -257,7 +316,7 @@ What actually closes it is a secret the attacking page cannot guess:
 | **Foreign-bridge detection** | Before sending any payload, the server checks that `/ping` identity matches its own token fingerprint. If a stranger holds the port, it refuses to hand code to it instead of blindly trusting a `200`. |
 | **DNS-rebinding defense** | The `Host` header is validated against `127.0.0.1` / `localhost` / `[::1]` + the real port. A rebound request arrives as `Host: evil.com:<port>` and is rejected. |
 | **Loopback bind** | `ThreadingHTTPServer(("127.0.0.1", port))` — never `0.0.0.0`, so the bridge is not reachable from the LAN. |
-| **Token at rest** | `secrets.token_urlsafe(32)`, created with `O_EXCL` (race-safe when two servers start at once) at mode `0o600`, under `%LOCALAPPDATA%` on Windows — deliberately *not* roaming `%APPDATA%`, so a loopback secret never syncs to a file server. |
+| **Token at rest** | `secrets.token_urlsafe(32)`, created with `O_EXCL` (race-safe when two servers start at once) at mode `0o600` in the per-user state directory. Platform locations and compatibility fallbacks are in the [per-OS path table](docs/live-deploy.md#per-os-paths). |
 | **Body size cap** | Oversized bodies are rejected with `413` and are **not** read into memory. |
 | **Silent failures** | Error responses carry no CORS headers, so a hostile page cannot even distinguish *why* it failed. |
 | **Tamper visibility** | Unauthorized attempts are counted and surfaced by `pt_bridge_status`, so a stale or rogue client is diagnosable instead of silent. |

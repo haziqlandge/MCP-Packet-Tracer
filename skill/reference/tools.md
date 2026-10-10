@@ -76,7 +76,17 @@ commands)` types on the router at the other end of the PC's console cable. `pt_h
 API; `ui` also opens the device window on the matching tab/app so the user can watch. Per call,
 `show=True/False` overrides it and `capture=True` saves a PNG (path returned). `pt_ui_open(device,
 tab, app, section)`, `pt_ui_capture(device)`, `pt_ui_close(device)`. When the user says "show me",
-"screenshots", "use the tabs" → `pt_ui_mode("ui")`. Needs Windows + `pip install packet-tracer-mcp[ui]`.
+"screenshots", "use the tabs" → `pt_ui_mode("ui")`.
+
+| OS | UI mode |
+|---|---|
+| Windows | UI Automation and posted clicks; cursor stays still. |
+| macOS | Accessibility navigation and window capture; PT comes to the front. Canvas clicks briefly move and restore the cursor. Grant Accessibility and Screen Recording to the app/path named by the tool reply. |
+| Linux | UI mode not yet available; panel tools work headless. |
+
+UI dependencies install automatically; `[ui]` is a compatibility alias. `pt-mcp doctor --ui`
+checks the launcher's environment; the connected client's `pt_bridge_status` checks its own.
+Paths are documented in the [per-OS path table](https://mats2208.github.io/MCP-Packet-Tracer/live-deploy/#per-os-paths).
 **Resources:** `pt://catalog/devices`, `/cables`, `/aliases`, `/templates`, `pt://capabilities`.
 
 ## Advanced builds (verified live 2026-06-27)

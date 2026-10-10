@@ -7,7 +7,7 @@
 | Python | 3.11+ | |
 | `mcp[cli]` | ≥ 1.13, < 2 | Installed automatically |
 | `pydantic` | ≥ 2.11, < 3 | Installed automatically |
-| Cisco Packet Tracer | 8.2+ (tested on 9.0) | Only for **live deploy** |
+| Cisco Packet Tracer | 8.2+ generally; macOS verified on 9.0.1 | Only for **live deploy**; older macOS builds are unverified |
 | MCP Control Center extension | latest | This project's **own** PT extension (`.pts` in [Releases](https://github.com/Mats2208/MCP-Packet-Tracer/releases/latest)), only for live deploy — see [Live Deploy Setup](live-deploy.md) |
 
 !!! warning "pydantic ≥ 2.11 is required"
@@ -21,12 +21,33 @@
 pip install packet-tracer-mcp
 ```
 
-Or from source, if you want to modify it:
+Or use an isolated uv tool environment:
 
 ```bash
-git clone https://github.com/Mats2208/MCP-Packet-Tracer
+uv tool install packet-tracer-mcp
+```
+
+| OS | Installed UI dependencies | Support |
+|---|---|---|
+| Windows | `comtypes` | Headless and UI mode |
+| macOS | pyobjc frameworks | Headless and UI mode; two privacy grants required |
+| Linux | No UI dependencies | Headless tools; UI mode not yet available |
+
+The `[ui]` extra is a compatible alias; no separate UI installation is needed.
+See the [per-OS path table](live-deploy.md#per-os-paths) for state and output locations.
+
+The cross-platform UI and `pt-mcp doctor` changes on this branch are unreleased.
+Until a release includes them, install this checkout from source (the PyPI commands
+above install the published version):
+
+```bash
+git clone --branch feat/cross-platform https://github.com/Mats2208/MCP-Packet-Tracer
 cd MCP-Packet-Tracer
-pip install -e .
+python -m venv .venv
+# macOS / Linux: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+# Windows cmd.exe: .venv\Scripts\activate.bat
+python -m pip install -e .
 ```
 
 Either way the `packet_tracer_mcp` module becomes importable from any directory,
@@ -42,6 +63,19 @@ into the repo or keep a server running.
     validation and config generation work without it.
 
 ## Connect your MCP client
+
+Generate configuration from the environment where you installed the server:
+
+```bash
+pt-mcp doctor --print-config claude-code
+pt-mcp doctor --print-config claude-desktop
+```
+
+The first command prints a shell command to paste; the second prints JSON to
+merge into Claude Desktop's configuration. Both use the absolute interpreter
+path so a GUI client does not depend on your shell's `PATH`. Configuration output
+does not run diagnostic checks. The examples below also work when `python`
+resolves to the interpreter containing the package.
 
 === "Claude Code"
 
@@ -117,6 +151,35 @@ To stream topologies into a **running** Packet Tracer, also install this project
 
 Full walkthrough → **[Live Deploy Setup](live-deploy.md)**.
 
+## macOS privacy grants for UI mode
+
+From your connected MCP client, call `pt_ui_mode("ui")`. Its reply names the
+responsible app or executable and the path to add. In **System Settings → Privacy
+& Security**, enable **Accessibility** and **Screen & System Audio Recording**
+(**Screen Recording** on older macOS). If the app is absent, use **+**, then
+**Cmd+Shift+G** to paste the reported path. macOS attributes a server to its
+launcher, so a Terminal grant does not establish a grant for your MCP client.
+
+`pt-mcp doctor --ui` checks the terminal process's environment; it does not prompt.
+Use `pt-mcp doctor --ui --request-permissions` only when you want to request
+permissions from that process. `pt_bridge_status` and UI tool replies show the
+connected server's permission state. All headless tools work without the grants.
+
+## Diagnostics
+
+```bash
+pt-mcp doctor
+pt-mcp doctor --ui
+pt-mcp doctor --json
+```
+
+The doctor checks installation, writable state and output paths, Packet Tracer,
+extension activity, the bridge port, clipboard and UI availability. Each failed
+check includes a fix. UI checks become required with `--ui`; clipboard availability
+is optional. It exits with status 1 when a required check fails. If the MCP server
+is stopped, extension detection can only use a file heartbeat; start the client
+and open **Extensions → MCP BUILDER** if the extension is not seen.
+
 ## Claude Code Skill (recommended)
 
 The repo ships a companion **Agent Skill** (`skill/SKILL.md`) that teaches the model the exact tool
@@ -148,8 +211,9 @@ what it covers and a project-local alternative → **[Claude Code Skill](skill.m
 - **streamable-http** (`http://127.0.0.1:39000/mcp`): start the server yourself with
   `python -m packet_tracer_mcp` and let multiple clients share one instance.
 
-!!! note "On Windows, `python` must be on PATH"
-    If your client can't spawn the server, use the full interpreter path in the
-    `command` field (e.g. `C:\\Users\\you\\AppData\\Local\\Programs\\Python\\Python312\\python.exe`).
+!!! note "GUI clients may not inherit your shell PATH"
+    Use `pt-mcp doctor --print-config claude-desktop` for an absolute interpreter
+    path, or put that interpreter in your client's `command` field. This applies
+    on every OS.
 
 Next: run the **[Quick Start](quickstart.md)** example.

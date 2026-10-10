@@ -3,12 +3,18 @@
 Live deploy streams commands directly into a **running** Packet Tracer instance,
 so devices, cables and configs appear in real time as your AI builds them.
 
+Most desktop clients use **stdio**: the client starts the MCP server, which
+starts its internal bridge. The diagram shows the optional streamable-HTTP MCP
+transport; if port 39000 is already in use, choose a different MCP port with
+`python -m packet_tracer_mcp --port 39001` and point the client to that port.
+This does not change the extension's bridge port 54321.
+
 There are **two channels**, and the server picks one per command automatically:
 
 ```text
                                    ┌─ HTTP bridge (:54321) ──▶ extension webview ─┐
 LLM ──▶ MCP Server (:39000) ──────►┤   (window OPEN)                             ├─▶ PT Script Engine
-                                   └─ file mailbox (%LOCALAPPDATA%) ──▶ Script ──┘
+                                   └─ per-user file mailbox ──▶ Script ──┘
                                        (window CLOSED)               Engine loop
 ```
 
@@ -16,9 +22,9 @@ LLM ──▶ MCP Server (:39000) ──────►┤   (window OPEN)      
   polls `:54321` and runs each command.
 - The **file-bridge** takes over when the **window is closed** but Packet Tracer
   is still open: the Script Engine (which has no `XMLHttpRequest` but *can* read
-  files) polls a mailbox under `%LOCALAPPDATA%\packet-tracer-mcp\bridge\`
-  (`req_*.js` → execute → `res_*.txt`). So PT keeps executing with the window
-  minimized or closed.
+  files) polls a per-user mailbox
+  (`req_*.js` → execute → `res_*.txt`; see the [path table](#per-os-paths)).
+  So PT keeps executing with the window minimized or closed.
 
 `_pick_channel()` chooses exactly one per command, so nothing runs twice.
 
@@ -26,6 +32,34 @@ LLM ──▶ MCP Server (:39000) ──────►┤   (window OPEN)      
 |------|---------|---------|
 | **39000** | MCP server (streamable-http) | Receives tool calls from the LLM/editor |
 | **54321** | HTTP bridge | Queues JS commands while the extension window is open |
+
+## Per-OS paths
+
+This is the reference for platform paths. `~` means the current user's home.
+
+| OS | Canonical state directory | Mailbox candidates, in preference order | Default output fallback |
+|---|---|---|---|
+| Windows | `%LOCALAPPDATA%\packet-tracer-mcp`; if unset, `%APPDATA%\packet-tracer-mcp`, then `~\.packet-tracer-mcp` | `<state>\bridge` | `~\Documents\Packet Tracer MCP` |
+| macOS | `~/.local/state/packet-tracer-mcp` | `<state>/bridge`, then `~/AppData/Local/packet-tracer-mcp/bridge` (released V5.2 compatibility) | `~/Documents/Packet Tracer MCP` |
+| Linux | `~/.local/state/packet-tracer-mcp` | `<state>/bridge`, then `~/AppData/Local/packet-tracer-mcp/bridge` (released V5.2 compatibility) | `~/packet-tracer-mcp` |
+
+The HTTP token is `<state>/bridge_token`; UI mode is saved in that state directory.
+Windows prefers machine-local state; its roaming fallback is retained for
+compatibility. `XDG_STATE_HOME` is ignored on macOS and Linux because the extension
+cannot read environment variables and must find the same state as the server.
+
+The file bridge selects the freshest `alive.txt` within its freshness window
+across these candidates. Without a fresh heartbeat it uses the canonical mailbox.
+The released extension creates its compatibility mailbox and heartbeat; the
+server discovers that activity without requiring you to edit or relocate V5.2. `pt_bridge_status` reports the selected mailbox and
+whether it is a legacy path.
+
+Relative exports and screenshots use the writable working directory unless it
+is a filesystem root; otherwise they use the fallback in the table.
+`PT_MCP_OUTPUT_DIR` selects the output root, including an absolute destination.
+Screenshot tools accept a sanitized single folder name under that root, rather
+than an arbitrary absolute path. Project export executors preserve absolute
+output directories.
 
 ## Install the extension (one-time)
 
@@ -45,7 +79,8 @@ That's it — the module is now registered.
 
 ## Use it (each session)
 
-1. Open **Cisco Packet Tracer 8.2+**
+1. Open **Cisco Packet Tracer 8.2+** (macOS verified on **9.0.1**; older macOS
+   builds are unverified)
 2. Open **Extensions → MCP BUILDER** — the **MCP Control Center** window appears.
 3. It **auto-connects** to the bridge and starts polling. No snippet to paste.
 
@@ -68,6 +103,11 @@ That's it — the module is now registered.
     it (don't just push it behind PT). See the troubleshooting note below.
 
 ## Verify and deploy
+
+Run `pt-mcp doctor` for setup checks and fixes; use `--ui` to require the UI backend
+and macOS grants, or `--json` for structured output. It never prompts unless you
+pass `--request-permissions`. A terminal run checks its own launcher's grants;
+the client's `pt_bridge_status` reports the connected server's state.
 
 ```text
 pt_bridge_status          # → "Bridge ACTIVE and CONNECTED"

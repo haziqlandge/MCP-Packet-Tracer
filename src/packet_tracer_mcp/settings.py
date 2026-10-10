@@ -461,5 +461,23 @@ pt_read_vlans, pt_health_check.
 Device windows (CLI, Command Prompt, Desktop apps, Services): pt_cli, pt_host_command, pt_server_* and \
 friends work headless; pt_ui_mode("ui") or show=True opens PT's window, capture=True saves a PNG.
 
+Setup diagnostics and client config: run pt-mcp doctor.
 Tool output is in English; answer the user in their own language.
+"""
+
+
+GUIDE += """
+## Per-OS setup
+Install Python 3.11+ and packet-tracer-mcp; UI dependencies install automatically
+on Windows and macOS. Install the MCP Control Center .pts in Packet Tracer,
+then run `pt-mcp doctor` and `pt-mcp doctor --print-config claude-code` (or
+`claude-desktop`) in the server environment. Generated configs use the absolute
+interpreter path and stdio, avoiding GUI PATH differences and PT's HTTP port.
+On macOS, `pt_ui_mode("ui")` requests Accessibility and Screen Recording once;
+the remedy names the responsible client app and its full path in System Settings.
+Navigation can bring PT forward and briefly move then restore the cursor.
+Status diagnostics never request grants. Missing grants leave API work usable;
+`pt-mcp doctor --ui` checks capture too. Linux supports headless tools; UI mode
+is not available yet. Canonical and released-extension mailbox paths are listed
+in docs/live-deploy.md; XDG_STATE_HOME is not honoured.
 """

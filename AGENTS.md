@@ -36,7 +36,7 @@ comments in English (see Language above).
 | `src/packet_tracer_mcp/application/` | Use cases: rules + generators, dependencies injected |
 | `src/packet_tracer_mcp/infrastructure/` | Generators, executors, the HTTP + file bridges, device catalog |
 | `src/packet_tracer_mcp/adapters/mcp/` | `tools/<topic>.py` — 62 tools, one `register(mcp, ctx)` each, run by `tool_registry.py`; `bridge_context.py` — the shared `BridgeContext`; `device_panel_tools.py` + `desktop_service_tools.py` — the 17 device-panel tools; `prompt_registry.py` / `resource_registry.py` — prompts and resources (`pt://guide`) |
-| `src/packet_tracer_mcp/infrastructure/ui/` | UI mode: Win32 + UI Automation presenter that opens/captures device windows (Windows only, `[ui]` extra) |
+| `src/packet_tracer_mcp/infrastructure/ui/` | UI mode: OS-neutral presenter with Windows UI Automation and macOS AX/capture backends; Linux headless |
 | `EXTENSION/script-engine/` | Script-engine side of the extension. `main.js` is ours (tracked); the rest are PTBuilder reference copies (gitignored) |
 | `EXTENSION/webview/` | The MCP Control Center webview (`index.html` + `interface.js`) |
 
@@ -62,7 +62,7 @@ snapshots the tool API — regenerate with `UPDATE_TOOL_API=1` only on purpose.
 3. **Never add an unauthenticated bridge endpoint.** Everything except `/ping`
    requires the token; see `bridge_token.py` for why loopback alone is not a
    control. (The file-bridge channel needs no token — the mailbox lives under a
-   user-ACL'd `%LOCALAPPDATA%` dir a browser page can't reach.)
+   user-owned state directory a browser page cannot reach; see `docs/live-deploy.md`.)
 4. **Don't validate in the models.** Validation belongs in `domain/rules/` and
    returns `ValidationResult`, so the use case decides whether to proceed.
 5. **A bug fix needs a test that fails without it.** Write the failing test

@@ -1069,7 +1069,7 @@
   }
  },
  "pt_deploy": {
-  "description": "Deploys a plan to Packet Tracer: copies the script to the Windows\nclipboard, exports the configuration files, and generates\nstep-by-step instructions.\n\nUsage: after pt_full_build or pt_plan_topology, pass the plan JSON\nhere to prepare everything for Packet Tracer.\n\nParameters:\n- plan_json: plan JSON (output of pt_plan_topology or pt_full_build)\n- project_name: project name\n- output_dir: output directory",
+  "description": "Deploys a plan to Packet Tracer: copies the script to the system\nclipboard, exports the configuration files, and generates\nstep-by-step instructions.\n\nUsage: after pt_full_build or pt_plan_topology, pass the plan JSON\nhere to prepare everything for Packet Tracer.\n\nParameters:\n- plan_json: plan JSON (output of pt_plan_topology or pt_full_build)\n- project_name: project name\n- output_dir: output directory",
   "inputSchema": {
    "properties": {
     "output_dir": {
@@ -2914,7 +2914,7 @@
   }
  },
  "pt_ui_open": {
-  "description": "Opens a device's window in PT on a tab/app/section, without moving the\nmouse or typing (UI Automation + PT's API).\n\n- tab: Physical | Config | CLI | Desktop | Services | Programming | Attributes\n- app (Desktop): ip_configuration, command_prompt, terminal, web_browser,\n  pc_wireless, email, text_editor, firewall, ipv6_firewall, vpn,\n  traffic_generator, mib_browser, pppoe_dialer, dial_up, ip_communicator,\n  tftp, ssh_client, bluetooth, iot_monitor... (implies tab=Desktop)\n- section: an entry in the tab's left-hand list: in Config \"Settings\"\n  or an interface (\"FastEthernet0\"); in Services \"DHCP\", \"DNS\", \"HTTP\",\n  \"TFTP\", \"EMAIL\", \"FTP\"...\n\nWorks in headless mode too: it is an explicit request to show.\nRequires Windows and the [ui] extra (comtypes).",
+  "description": "Opens a device's window in PT on a tab/app/section, without moving the\nmouse or typing (UI Automation + PT's API).\n\n- tab: Physical | Config | CLI | Desktop | Services | Programming | Attributes\n- app (Desktop): ip_configuration, command_prompt, terminal, web_browser,\n  pc_wireless, email, text_editor, firewall, ipv6_firewall, vpn,\n  traffic_generator, mib_browser, pppoe_dialer, dial_up, ip_communicator,\n  tftp, ssh_client, bluetooth, iot_monitor... (implies tab=Desktop)\n- section: an entry in the tab's left-hand list: in Config \"Settings\"\n  or an interface (\"FastEthernet0\"); in Services \"DHCP\", \"DNS\", \"HTTP\",\n  \"TFTP\", \"EMAIL\", \"FTP\"...\n\nWorks in headless mode too: it is an explicit request to show.\nUI mode is available on Windows and macOS; OS dependencies install automatically.\nmacOS requires Accessibility; capture also requires Screen Recording.\nLinux tools work headless; UI mode is not available there yet.",
   "inputSchema": {
    "properties": {
     "app": {

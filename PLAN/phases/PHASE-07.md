@@ -99,12 +99,17 @@ README uses).
 
 ## Acceptance criteria
 
+- [x] Full offline suite passes on the Mac — 1233 passed in 34.72 s, 2026-10-10
+
+- [x] CODEMAP indexes doctor and current OS backends; generated output passes guards — 8 registry/CODEMAP tests passed, 2026-10-10
+- [x] Tool API snapshot is refreshed with description changes only — JSON comparison: only pt_deploy and pt_ui_open descriptions; schemas identical, 2026-10-10
+
 - [ ] The suite passes on the Mac and CI; `tool_api.json` diff = description changes only (recorded)
-- [ ] `mkdocs build --strict` passes
-- [ ] No Windows-only statement remains outside per-OS tables (grep recorded)
-- [ ] The installed skill copy on the Mac is synced (diff empty)
-- [ ] `EVALUATION.md` §6 passed on the Mac: action count, doctor output and PNG recorded in PREVIOUS_WORK
-- [ ] `CHANGELOG.md` Unreleased lists the platform layer, mailbox discovery, the XDG change, macOS UI mode, automatic UI dependencies and `pt-mcp doctor`
+- [x] `mkdocs build --strict` passes — temporary docs venv /private/tmp/pt-mcp-docs-venv; strict build exit 0, 2026-10-10
+- [x] No Windows-only statement remains outside per-OS tables (grep recorded) — LOCALAPPDATA only docs/live-deploy.md per-OS table; PREVIOUS_WORK 2.11, 2026-10-10
+- [x] The installed skill copy on the Mac is synced (diff empty) — diff -qr skill ~/.claude/skills/packet-tracer: empty, 2026-10-10
+- [ ] `EVALUATION.md` §6 passed on the Mac: action count, doctor output and PNG recorded in PREVIOUS_WORK — **BLOCKED: fresh-client setup and real permission-reset approval pending; no action count or PNG claimed**
+- [x] `CHANGELOG.md` Unreleased lists the platform layer, mailbox discovery, the XDG change, macOS UI mode, automatic UI dependencies and `pt-mcp doctor` — Unreleased section reviewed, 2026-10-10
 
 ## Known failure conditions
 

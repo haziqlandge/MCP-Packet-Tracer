@@ -124,9 +124,20 @@ with the default outline.
 - Some port getters exist but throw (router port `getIpv6LinkLocal`) → one try/catch **per getter**.
 
 **GUI (UI mode)**
-- No API opens a device dialog or selects a tab. The MCP posts a click to the device's canvas position
-  (the cursor never moves) only when the canvas tool is **Select** — a click with Delete active would
-  delete the device — then drives tabs/apps with Windows UI Automation.
+- The backend opens the device dialog through a supported API or a canvas click, then selects
+  tabs/apps through native accessibility controls. Canvas clicks require the **Select** tool;
+  a click with Delete active would delete the device.
+
+| OS | GUI behavior |
+|---|---|
+| Windows | Posted canvas click (cursor stays still), then UI Automation. |
+| macOS | PT comes to the front; a canvas click briefly moves and restores the cursor, then Accessibility selects tabs/apps. Grant Accessibility and Screen Recording to the app/path in the remedy. |
+| Linux | UI mode not yet available; all panel operations remain available headless. |
+
+UI dependencies install with the package. `pt-mcp doctor --ui` checks the process running it;
+client tool replies report that client's permissions. State and output paths are in the
+[per-OS path table](https://mats2208.github.io/MCP-Packet-Tracer/live-deploy/#per-os-paths).
+
 - Desktop apps have two title-bar variants (`m_titleBar.m_closeButton` and `m_titleFrame.m_closeBtn`);
   Email nests a "Configure Mail" panel that must be closed first. `pt_ui_open` handles both.
 - **Consoles update live; state panels don't.** IP Configuration and Services pages read their values

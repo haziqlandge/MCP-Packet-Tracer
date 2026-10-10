@@ -1,12 +1,15 @@
 # Testing
 
-The project ships a **187-test** suite covering the domain and application logic.
+The offline suite covers domain/application logic, the MCP tool contract,
+platform paths and probes, bridge security, and UI backends.
 
 ```bash
-pip install -e . pytest
+pip install -e ".[test]"
 python -m pytest -q
-# 64 passed
 ```
+
+Run it on each supported OS; offline checks do not establish live Packet Tracer
+behavior.
 
 ## What's covered
 
@@ -28,6 +31,23 @@ A full QA pass of the first 46 tools was performed on **PT 9.0.0**. The four
 inspection tools added later — `pt_audit_security`, `pt_inspect_ports`,
 `pt_read_vlans` and `pt_device_power` — were each verified individually against
 **PT 9.0.0.0810** when they landed, against a live 2911 and 2960-24TT.
+
+The reproducible call lists are in `tests/live/`: `setup.json` builds the fixture,
+`headless.json` exercises API tools, and `ui.json` opens and captures panels. Run
+one PT and one bridge at a time, and save the existing topology before using setup
+on an empty canvas:
+
+```bash
+python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/headless.json
+python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/ui.json
+```
+
+The harness uses the current checkout; reconnect a client's server after source
+changes. Read results as well as exceptions. macOS UI checks require grants for
+the harness launcher. The fixture recorder is
+`python -m src.packet_tracer_mcp.devtools.macos_probe ax --pid <PT_PID> --title PC1
+--out /tmp/pc1-ax.json`; record real windows and keep AX frames in points and
+captures in pixels.
 
 !!! note "Unit tests don't start the MCP server"
     They exercise domain/application code directly. To verify the server actually

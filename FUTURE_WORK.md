@@ -5,64 +5,65 @@ in `PREVIOUS_WORK.md`.
 
 ---
 
-## 0. Start here (written 2026-10-10, on the Mac, after PHASE-05's live run)
+## 0. Start here (written 2026-10-10, after PHASE-06/07 implementation)
 
-Read `CLAUDE.md` first, then this section. **Replace this section when its
-contents are done. Do not append a second one.**
+Read `CLAUDE.md` first, then this section. Replace this section rather than
+appending another one.
 
 ### The situation
 
-PHASE-00 to PHASE-03 and PHASE-05 are complete. PHASE-04 has one open box: the
-real-revocation check (the user declined to revoke a grant; a simulated check
-passed). macOS UI mode works end to end (`tests/live/ui.json` 8/8). The work is
-committed as `f86cfe9` and pushed to `haziqlandge/MCP-Packet-Tracer`
-`cross-platform`; CI is green on Windows, Ubuntu and macOS. Only one session
-should touch this checkout (a parallel session wrote PHASE-04's code earlier).
-
-### Progress
-
-Phases complete: 00, 01, 02, 03, 05. PHASE-04: 4 of 5 (open: a real
-revocation). Overall 71.9 % on the tracker.
-
-### What the last session did
-
-- Reloaded the mods into this session's hot-reload folder (the user enabled it).
-- PHASE-03 complete (PREVIOUS_WORK 2.7).
-- PHASE-04: reviewed the parallel session's `backends/macos/`, re-verified its
-  capture box live, recorded it (2.8); simulated the revoked-grant check.
-- PHASE-05 (2.9): `ax.py` (walk shared with the probe), locator second pass
-  (macOS canvas name), `events.py` (HID click with PT frontmost and the canvas
-  under the point, cursor restored; sections by focus + Space), `MacBackend`
-  navigation; three live bugs fixed test-first (hit test raced the window
-  raise; section check lags Space by ~0.15 s; off-view device clicked at a stale
-  point). Calibration verified at all four canvas corners; timings measured;
-  the Delete-tool guard checked live. Probe `hit` command; `live_smoke` timings.
-- ISSUES: X4 rewritten; X11 updated (second empty-output case); new X12 (no
-  canvas scroll bars on macOS), X13 (`AXWindows` empty off-Space), X14 (file
-  channel latency).
+PHASE-00 to PHASE-03 and PHASE-05 are complete. PHASE-04 still has its real
+permission-revocation gate open (previously declined). PHASE-06 diagnostics,
+onboarding and platform status are implemented. PHASE-07 docs, installed skill,
+API snapshot and CODEMAP are updated. Neither phase is complete until its real
+client/UI acceptance gates pass; do not replace those checks with offline tests.
 
 ### Verification state
 
-macOS: `.venv/bin/python -m pytest -q` **1181 passed**, 2026-10-10. CI run
-38059124205 at `f86cfe9`: 6/6 jobs green. `check_plan.py`: skipped (planning
-skill not installed on the Mac). Live (HTTP channel, Control Center open):
-`tests/live/ui.json` 8/8 with PNGs checked by eye; `headless.json` not re-run
-this session. Windows live: nothing run (§2).
+Mac: **1233 passed** in 34.72 s using `.venv/bin/python -B -m pytest -q -p
+no:cacheprovider`. Registry/CODEMAP: 8 passed. Tool snapshot changes only two
+descriptions (`pt_deploy`, `pt_ui_open`); schemas and names unchanged. Strict
+MkDocs build passes; installed skill diff empty. Planning checker skipped:
+its skill is not installed. The current implementation's CI matrix is pending.
+
+Live: headless doctor passes with PT and extension; platform status reports
+both channels and the legacy V5.2 mailbox. ChatGPT is the responsible app for
+this executor: Accessibility false, Screen Recording true. The missing-grant
+remedy is correct and no preflight check prompts. Headless smoke: all 17
+non-capture calls completed; the first R1 CLI response was empty (X11), and
+both commands on a repeat produced the expected interface table. The optional
+screenshot call was omitted at the user's request.
+
+### What this session did
+
+Implemented doctor/client config/--port, status diagnostics and degraded UI
+onboarding. Updated per-OS documentation, CHANGELOG, CONTRIBUTING and CODEMAP;
+regenerated the API snapshot deliberately; synced the installed skill. Evidence
+is in PREVIOUS_WORK 2.10 and 2.11.
+
+Separately completed the user's two live assessments via MCP. The first was
+submitted by the user. The second used the on-screen diagram: Central-SW Fa0/5
+uplink and Fa0/6 User-A, with Central-RT/User-B on G0/0/0. Both hosts and rack
+network devices were powered on; addressing, saved IOS security configuration,
+24 unused-port shutdowns, host connectivity and authenticated SSH were checked.
+No assessment screenshots were saved. The MCP disconnected after verification.
 
 ### NEXT, in order
 
-1. PHASE-06 (out of the box: `pt-mcp doctor`, onboarding, the `platform` block
-   in `pt_bridge_status`). Include `pt_ui_mode("status")` showing the capture
-   remedy when only Screen Recording is missing (PHASE-04 box note).
-2. Re-run `tests/live/headless.json` once (last full run was PHASE-02).
-3. Watch X11 and X13 in live runs; X12 needs PT's scroll offset (unverified API).
+1. Commit and push the implementation to this fork's cross-platform branch,
+   then record its six-job CI result.
+2. Finish PHASE-06/07 fresh-client and real-grant acceptance only after the
+   pending user approval. Back up setup before reset; count real user actions.
+3. Keep Windows live regression and PHASE-04 revocation gaps honest.
 
 ### Waiting on the user
 
-- Whether a real Screen Recording revocation should ever be measured (the last
-  PHASE-04 box).
-- Later: a session on the Windows machine for §2; whether the fixed `.pts`
-  ships (ISSUES X3); an upstream PR only with the user's OK (§3).
+A permission question is pending for the fresh acceptance run: back up/reset
+MCP setup, configure a fresh Claude client, reset its grants, then have the
+user grant Accessibility and Screen Recording. No elapsed time is approval.
+The Claude desktop app exists, but Claude Code CLI is not available in PATH.
+An upstream PR still requires separate user approval. See §2 for Windows live
+regression and §3 for the upstream-PR cleanup rules.
 
 ---
 
