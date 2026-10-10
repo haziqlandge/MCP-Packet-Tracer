@@ -1,0 +1,453 @@
+{
+ "recorded": "2026-10-10",
+ "macos": "26.5.1",
+ "pt": "9.0.1",
+ "qt": "6.8.7",
+ "scale": 2.0,
+ "window": {
+  "title": "PC1",
+  "cg_id": 4863,
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ]
+ },
+ "tree": {
+  "role": "AXWindow",
+  "subrole": "AXStandardWindow",
+  "title": "PC1",
+  "description": "",
+  "identifier": "",
+  "value": "",
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ],
+  "actions": [
+   "AXRaise"
+  ],
+  "children": [
+   {
+    "role": "AXGroup",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget",
+    "value": "",
+    "frame": [
+     418.0,
+     158.0,
+     676.0,
+     603.0
+    ],
+    "actions": [],
+    "children": [
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Web Browser",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_titleBar.m_titleLabel",
+      "value": "Web Browser",
+      "frame": [
+       428.0,
+       177.0,
+       66.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "close",
+      "description": "close",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_titleBar.m_closeButton",
+      "value": "",
+      "frame": [
+       1054.0,
+       168.0,
+       30.0,
+       33.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Back",
+      "description": "Back",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_backButton",
+      "value": "",
+      "frame": [
+       428.0,
+       201.0,
+       35.0,
+       33.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Forward",
+      "description": "Forward",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_fwdButton",
+      "value": "",
+      "frame": [
+       469.0,
+       201.0,
+       35.0,
+       33.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "URL",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_urlLabel",
+      "value": "URL",
+      "frame": [
+       510.0,
+       205.0,
+       22.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "URL",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_urlEdit",
+      "value": "",
+      "frame": [
+       538.0,
+       205.0,
+       436.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Go",
+      "description": "Go",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_goButton",
+      "value": "",
+      "frame": [
+       980.0,
+       201.0,
+       45.0,
+       33.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Stop",
+      "description": "Stop",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_stopButton",
+      "value": "",
+      "frame": [
+       1031.0,
+       201.0,
+       53.0,
+       33.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CWorkstationWebBrowserBase.m_CWorkstationWebView.QObject",
+      "value": "",
+      "frame": [
+       428.0,
+       234.0,
+       0.0,
+       0.0
+      ],
+      "actions": [],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXTabGroup",
+    "subrole": "",
+    "title": "Desktop",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+    "value": "",
+    "frame": [
+     581.0,
+     137.0,
+     347.0,
+     21.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": [
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Physical",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       581.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Config",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       646.0,
+       137.0,
+       56.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Desktop",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       702.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Programming",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       767.0,
+       137.0,
+       90.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Attributes",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       857.0,
+       137.0,
+       71.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Top",
+    "description": "Top",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.topCB",
+    "value": "0",
+    "frame": [
+     418.0,
+     772.0,
+     41.0,
+     18.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXCloseButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     414.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXFullScreenButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     454.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXZoomWindow",
+     "AXShowMenu"
+    ],
+    "children": [
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "",
+      "value": "",
+      "frame": [
+       453.0,
+       109.0,
+       14.0,
+       16.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXGroup",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "",
+        "value": "",
+        "frame": [
+         453.0,
+         109.0,
+         14.0,
+         16.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXMinimizeButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     434.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "PC1",
+    "frame": [
+     741.0,
+     108.0,
+     29.0,
+     16.0
+    ],
+    "actions": [],
+    "children": []
+   }
+  ]
+ }
+}

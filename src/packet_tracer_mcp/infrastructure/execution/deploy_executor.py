@@ -1,35 +1,24 @@
 """
-Deploy executor: copies scripts to the Windows clipboard
+Deploy executor: copies scripts to the system clipboard
 and generates step-by-step instructions for Packet Tracer.
 """
 
 from __future__ import annotations
 
-import subprocess
-import sys
 from pathlib import Path
 
 from ...domain.models.plans import TopologyPlan
 from ..generator.ptbuilder_generator import generate_ptbuilder_script, generate_full_script
 from ..generator.cli_config_generator import generate_all_configs
 from ...shared.utils import safe_name_component, resolve_within
+from .. import platform as pt_platform
+from ..platform.output import output_root
 from .executor_base import ExecutorBase
 
 
 def _copy_to_clipboard(text: str) -> bool:
-    """Copies text to the Windows clipboard using clip.exe."""
-    if sys.platform != "win32":
-        return False
-    try:
-        subprocess.run(
-            "clip",
-            input=text.encode("utf-16-le"),
-            check=True,
-            timeout=5,
-        )
-        return True
-    except (subprocess.SubprocessError, FileNotFoundError, OSError):
-        return False
+    """Copies text to the system clipboard (clip.exe, pbcopy, wl-copy, xclip, xsel)."""
+    return pt_platform.current().clipboard.copy(text)
 
 
 class DeployExecutor(ExecutorBase):
@@ -44,7 +33,8 @@ class DeployExecutor(ExecutorBase):
     """
 
     def __init__(self, output_dir: str | Path = "projects"):
-        self.output_dir = Path(output_dir)
+        # Relative = under output_root() (C11); an absolute path is kept as given.
+        self.output_dir = output_root() / Path(output_dir)
 
     def execute(self, plan: TopologyPlan, project_name: str | None = None) -> dict:
         """Deploys the plan: clipboard + files + instructions."""
@@ -99,8 +89,8 @@ class DeployExecutor(ExecutorBase):
         }
 
     def is_available(self) -> bool:
-        """Available when running on Windows (for the clipboard)."""
-        return sys.platform == "win32"
+        """Available when the system has a clipboard tool."""
+        return pt_platform.current().clipboard.name != "none"
 
     @staticmethod
     def _build_instructions(

@@ -81,6 +81,16 @@ feed them PHASE-00 recordings.
 - **`WindowHandle` is the CGWindowID (an int)**, so `presenter.open()` can still
   return it as `"hwnd"` in JSON.
 
+**Amendment 2026-10-10 (PHASE-00, PREVIOUS_WORK 2.4 #7, #8).** Bounds alone are
+ambiguous: PT opens **every device dialog at the same frame** (R1, PC1 and SRV1 all
+at 406,103 700×708) and keeps hidden twins of some windows ("Logs - MCP BUILDER" as
+an on-screen and an off-screen CG window). Among equal-bounds CG windows, prefer the
+one whose `kCGWindowName` equals the AX title (readable once Screen Recording is
+granted, which capture needs anyway), then the on-screen one. Without Screen
+Recording and with colliding frames, the join cannot be exact: return the frontmost
+candidate and say so in the step text. `devtools/macos_probe.py` `join_window` is the
+measured reference.
+
 ### Capture
 
 `capture.py` tries the routes in `macos-ui-automation.md` §3 order, starting
@@ -94,6 +104,18 @@ with the one PHASE-00 proved. Rules:
   `NSBitmapImageRep` so `png.looks_blank` and the shared encoder still apply.
 - Retina: SCK's configuration size is frame × `backingScaleFactor` of the
   window's screen. `Capture` reports pixels (C10).
+- **Amendment 2026-10-10 (PHASE-00, PREVIOUS_WORK 2.4 #8).** All three routes
+  captured a covered dialog correctly on macOS 26.5.1 (identical pixels), so the
+  order stays SCK → CGImage → screencapture. SCK traps, each measured: call
+  `NSApplication.sharedApplication()` before SCK or the process **aborts**
+  (`CGS_REQUIRE_INIT`); the screenshot handler receives the CGImage as a raw pointer,
+  wrap it with `objc.objc_object(c_void_p=ptr.pointerAsInteger)` **inside** the
+  handler; never let an exception escape a completion handler (it terminates the
+  process). CGImage rows were padded (5632 bytes for 1400 px) with bitmap info 8194
+  (BGRA); `screencapture`'s PNG read back through ImageIO is RGBA (info 3).
+  `macos_probe.cgimage_to_bgra` is the measured reference for the normaliser.
+- The question below is answered: a grant took effect in the running Claude Code CLI
+  without a restart (PREVIOUS_WORK 2.4 #9).
 
 ### The open question this phase must answer
 
@@ -133,11 +155,11 @@ fields the diagnostics will show).
 
 ## Acceptance criteria
 
-- [ ] All tests pass on the Mac and on CI's three OSes; the suite stays ≥ the macOS baseline
-- [ ] Live, Mac: `pt_ui_capture` of PT's main window and of a covered PC1 dialog gives non-blank PNGs at pixel size (`EVALUATION.md` §5), ≤ 2 s
-- [ ] Live, Mac, with permissions revoked: `pt_ui_capture` returns the remedy naming the real client app; a headless tool raises no prompt (C3)
-- [ ] Live, Mac: the restart-or-not answer for Screen Recording is recorded in PREVIOUS_WORK Part 2
-- [ ] `pip install -e .` on the Mac installs the pyobjc packages without `[ui]`; Windows CI installs `comtypes`; Ubuntu installs neither
+- [ ] All tests pass on the Mac and on CI's three OSes; the suite stays ≥ the macOS baseline — Mac: `.venv/bin/python -m pytest -q` 1119 passed (baseline 825), including `test_macos_permissions`, `test_macos_window_join`, `test_macos_capture_normalise`, `test_permission_prompts_confined`, `test_dependency_markers`, `test_presenter_backend_errors`; `test_imports_every_os` covers C2 for the new `backends/macos/`. **BLOCKED: CI's three OSes need a push (the user asked for no commits)**; 2026-10-10
+- [x] Live, Mac: `pt_ui_capture` of PT's main window and of a covered PC1 dialog gives non-blank PNGs at pixel size (`EVALUATION.md` §5), ≤ 2 s — through this checkout's tools (`MacBackend`): main window 3024×1754 px (1512×877 pt) in 0.62 s; PC1 under R1's dialog 1400×1416 px in 1.65 s (the presenter raises it first), both SCK, not blank, PC1's own content. Backend-level, unraised: R1 under PC1 → R1's dialog, 0.17 s (`screenshots/phase04-*.png`); 2026-10-10. Re-verified by the session that took PHASE-04 over: `pt_ui_capture` main window 3024×1752 px and PC1 1400×1416 px, both not blank, each image the right window (`screenshots/phase04-verify-*.png`); 2026-10-10
+- [ ] Live, Mac, with permissions revoked: `pt_ui_capture` returns the remedy naming the real client app; a headless tool raises no prompt (C3) — **BLOCKED: a real revocation (the user declined to revoke the grant); simulated instead**: with `permissions.state` reporting Screen Recording missing and `_request_one` rigged to raise, the real registry, bridge and process chain gave `pt_ui_capture` → "UI mode needs Screen & System Audio Recording for claude (~/Library/Application Support/Claude/claude-code/2.1.293/8433d0d9cd0d/claude.app). Open System Settings → … turn on claude … no restart needed"; `pt_bridge_status`, `pt_query_topology`, headless `pt_cli` → 0 prompt requests. Not shown: what macOS itself returns after a real revocation (and whether revoking needs a restart). Gap: `pt_ui_mode("status")` says "available" without mentioning the capture remedy (PHASE-06); 2026-10-10
+- [x] Live, Mac: the restart-or-not answer for Screen Recording is recorded in PREVIOUS_WORK Part 2 — PREVIOUS_WORK 2.4 #9: the user's grants (Accessibility, Screen Recording) took effect in the running Claude Code CLI with no restart (same pid passed all preflights, AX and captures then worked); the remedy text says "no restart needed"; 2026-10-10
+- [ ] `pip install -e .` on the Mac installs the pyobjc packages without `[ui]`; Windows CI installs `comtypes`; Ubuntu installs neither — Mac: `pip install -e .` makes `packet-tracer-mcp` require the five pyobjc packages, and a dry-run into a fresh venv pulls them (no comtypes); markers checked offline for win32/linux (`test_dependency_markers.py`). **Windows/Ubuntu CI: pending push (the user asked for no commits)**
 
 ## Known failure conditions
 

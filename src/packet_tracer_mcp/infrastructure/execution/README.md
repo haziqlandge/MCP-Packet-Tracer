@@ -136,7 +136,9 @@ reads the token from disk.
 ### `file_bridge.py` — File mailbox (offline channel)
 
 Alternative channel to HTTP for when the extension window is closed. Instead of an HTTP
-server, it uses a file mailbox under `%LOCALAPPDATA%\packet-tracer-mcp\bridge\`: the server
+server, it uses a file mailbox, `bridge/` under the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`). On macOS and Linux it follows the
+extension's heartbeat, because the released V5.2 polls `~/AppData/Local/packet-tracer-mcp/bridge`
+there (`FileBridge.active_dir()`). The server
 writes a `req_*.js`, PT's Script Engine reads it, runs it and leaves the response in a
 `res_*.txt`.
 
@@ -153,6 +155,6 @@ never both.
 
 ### `bridge_token.py` — Local token for the HTTP bridge
 
-Generates and persists a local token (under `%LOCALAPPDATA%`) that authenticates requests to
+Generates and persists a local token (in the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`)) that authenticates requests to
 the HTTP bridge. It is auto-generated; no bootstrap paste or manual pairing is needed. Both
 the server and the extension read it from disk.

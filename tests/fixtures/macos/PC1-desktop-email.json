@@ -1,0 +1,899 @@
+{
+ "recorded": "2026-10-10",
+ "macos": "26.5.1",
+ "pt": "9.0.1",
+ "qt": "6.8.7",
+ "scale": 2.0,
+ "window": {
+  "title": "PC1",
+  "cg_id": 4863,
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ]
+ },
+ "tree": {
+  "role": "AXWindow",
+  "subrole": "AXStandardWindow",
+  "title": "PC1",
+  "description": "",
+  "identifier": "",
+  "value": "",
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ],
+  "actions": [
+   "AXRaise"
+  ],
+  "children": [
+   {
+    "role": "AXGroup",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget",
+    "value": "",
+    "frame": [
+     418.0,
+     158.0,
+     676.0,
+     603.0
+    ],
+    "actions": [],
+    "children": [
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "MAIL BROWSER",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_titleFrame.m_titleLable",
+      "value": "MAIL BROWSER",
+      "frame": [
+       432.0,
+       176.0,
+       618.0,
+       13.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "close",
+      "description": "close",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_titleFrame.m_closeBtn",
+      "value": "",
+      "frame": [
+       1050.0,
+       172.0,
+       30.0,
+       25.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "Mails",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox",
+      "value": "",
+      "frame": [
+       431.0,
+       193.0,
+       650.0,
+       281.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXButton",
+        "subrole": "",
+        "title": "Compose",
+        "description": "Compose",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_composeBtn",
+        "value": "",
+        "frame": [
+         481.0,
+         224.0,
+         78.0,
+         32.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXButton",
+        "subrole": "",
+        "title": "Reply",
+        "description": "Reply",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_replyBtn",
+        "value": "",
+        "frame": [
+         604.0,
+         224.0,
+         59.0,
+         32.0
+        ],
+        "actions": [
+         "AXPress",
+         "AXRaise"
+        ],
+        "children": []
+       },
+       {
+        "role": "AXButton",
+        "subrole": "",
+        "title": "Receive",
+        "description": "Receive",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_ReceiveBtn",
+        "value": "",
+        "frame": [
+         708.0,
+         224.0,
+         70.0,
+         32.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXButton",
+        "subrole": "",
+        "title": "Delete",
+        "description": "Delete",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_DeleteBtn",
+        "value": "",
+        "frame": [
+         823.0,
+         224.0,
+         62.0,
+         32.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXButton",
+        "subrole": "",
+        "title": "Configure Mail",
+        "description": "Configure Mail",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_configureMailBtn",
+        "value": "",
+        "frame": [
+         930.0,
+         224.0,
+         101.0,
+         32.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTable",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_mailTable",
+        "value": "",
+        "frame": [
+         446.0,
+         266.0,
+         620.0,
+         192.0
+        ],
+        "actions": [],
+        "children": [
+         {
+          "role": "AXColumn",
+          "subrole": "",
+          "title": "",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_mailTable",
+          "value": "",
+          "frame": [
+           0.0,
+           0.0,
+           0.0,
+           0.0
+          ],
+          "actions": [],
+          "children": []
+         },
+         {
+          "role": "AXColumn",
+          "subrole": "",
+          "title": "",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_mailTable",
+          "value": "",
+          "frame": [
+           0.0,
+           0.0,
+           0.0,
+           0.0
+          ],
+          "actions": [],
+          "children": []
+         },
+         {
+          "role": "AXColumn",
+          "subrole": "",
+          "title": "",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_mibGroupBox.m_mailTable",
+          "value": "",
+          "frame": [
+           0.0,
+           0.0,
+           0.0,
+           0.0
+          ],
+          "actions": [],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "role": "AXTextArea",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_previewText",
+      "value": "",
+      "frame": [
+       431.0,
+       483.0,
+       650.0,
+       192.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_statusLabel",
+      "value": "",
+      "frame": [
+       431.0,
+       704.0,
+       321.0,
+       45.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Cancel Send/Receive",
+      "description": "Cancel Send/Receive",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.m_cancelSendReceive",
+      "value": "",
+      "frame": [
+       760.0,
+       700.0,
+       321.0,
+       57.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Configure Mail",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.m_titleFrame.m_titleLable",
+      "value": "Configure Mail",
+      "frame": [
+       432.0,
+       176.0,
+       617.0,
+       13.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "close",
+      "description": "close",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.m_titleFrame.m_closeBtn",
+      "value": "",
+      "frame": [
+       1049.0,
+       172.0,
+       31.0,
+       25.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "Server Information",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_2",
+      "value": "",
+      "frame": [
+       431.0,
+       298.0,
+       650.0,
+       99.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXStaticText",
+        "subrole": "",
+        "title": "",
+        "description": "Incoming Mail Server",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_2.m_IncomMailLbl",
+        "value": "Incoming Mail Server",
+        "frame": [
+         446.0,
+         329.0,
+         104.0,
+         21.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "Incoming Mail Server",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_2.m_incomMailLineEdit",
+        "value": "",
+        "frame": [
+         558.0,
+         329.0,
+         508.0,
+         21.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       },
+       {
+        "role": "AXStaticText",
+        "subrole": "",
+        "title": "",
+        "description": "Outgoing Mail Server",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_2.m_OutMailLbl",
+        "value": "Outgoing Mail Server",
+        "frame": [
+         446.0,
+         360.0,
+         104.0,
+         21.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "Outgoing Mail Server",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_2.m_outgoingLineEdit",
+        "value": "",
+        "frame": [
+         558.0,
+         360.0,
+         508.0,
+         21.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "Logon Information",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_3",
+      "value": "",
+      "frame": [
+       431.0,
+       397.0,
+       650.0,
+       99.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXStaticText",
+        "subrole": "",
+        "title": "",
+        "description": "User Name:",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_3.m_userNameLbl",
+        "value": "User Name:",
+        "frame": [
+         446.0,
+         428.0,
+         99.0,
+         21.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "User Name:",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_3.m_userNameLineEdit",
+        "value": "",
+        "frame": [
+         553.0,
+         428.0,
+         513.0,
+         21.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       },
+       {
+        "role": "AXStaticText",
+        "subrole": "",
+        "title": "",
+        "description": "Password:",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_3.m_passwdLbl",
+        "value": "Password:",
+        "frame": [
+         446.0,
+         459.0,
+         99.0,
+         21.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "Password:",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox_3.m_passwordLineEdit",
+        "value": "",
+        "frame": [
+         553.0,
+         459.0,
+         513.0,
+         21.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Save",
+      "description": "Save",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.m_saveBtn",
+      "value": "",
+      "frame": [
+       431.0,
+       511.0,
+       56.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Remove",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.m_removeBtn",
+      "value": "",
+      "frame": [
+       501.0,
+       511.0,
+       71.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Clear",
+      "description": "Clear",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.m_clearBtn",
+      "value": "",
+      "frame": [
+       955.0,
+       511.0,
+       57.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Reset",
+      "description": "Reset",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.m_cancelBtn",
+      "value": "",
+      "frame": [
+       1022.0,
+       511.0,
+       59.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "User Information",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox",
+      "value": "",
+      "frame": [
+       431.0,
+       199.0,
+       650.0,
+       99.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXStaticText",
+        "subrole": "",
+        "title": "",
+        "description": "Your Name:",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox.m_NameLbl",
+        "value": "Your Name:",
+        "frame": [
+         446.0,
+         230.0,
+         99.0,
+         21.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "Your Name:",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox.m_nameLineEdit",
+        "value": "",
+        "frame": [
+         553.0,
+         230.0,
+         513.0,
+         21.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       },
+       {
+        "role": "AXStaticText",
+        "subrole": "",
+        "title": "",
+        "description": "Email Address",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox.m_emailLbl",
+        "value": "Email Address",
+        "frame": [
+         446.0,
+         261.0,
+         99.0,
+         21.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "Email Address",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_DeskTopTab.scrollArea.qt_scrollarea_viewport.desktopScrollAreaWidgetContents.CDesktopApplet.CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration.groupBox.m_emailLineEdit",
+        "value": "",
+        "frame": [
+         553.0,
+         261.0,
+         513.0,
+         21.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXTabGroup",
+    "subrole": "",
+    "title": "Desktop",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+    "value": "",
+    "frame": [
+     581.0,
+     137.0,
+     347.0,
+     21.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": [
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Physical",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       581.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Config",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       646.0,
+       137.0,
+       56.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Desktop",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       702.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Programming",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       767.0,
+       137.0,
+       90.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Attributes",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       857.0,
+       137.0,
+       71.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Top",
+    "description": "Top",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.topCB",
+    "value": "0",
+    "frame": [
+     418.0,
+     772.0,
+     41.0,
+     18.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXCloseButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     414.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXFullScreenButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     454.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXZoomWindow",
+     "AXShowMenu"
+    ],
+    "children": [
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "",
+      "value": "",
+      "frame": [
+       453.0,
+       109.0,
+       14.0,
+       16.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXGroup",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "",
+        "value": "",
+        "frame": [
+         453.0,
+         109.0,
+         14.0,
+         16.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXMinimizeButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     434.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "PC1",
+    "frame": [
+     741.0,
+     108.0,
+     29.0,
+     16.0
+    ],
+    "actions": [],
+    "children": []
+   }
+  ]
+ }
+}

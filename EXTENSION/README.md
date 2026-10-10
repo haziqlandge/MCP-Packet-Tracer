@@ -20,7 +20,7 @@ EXTENSION/
   on `:54321` and runs commands. This is the panel with Editor / Terminal /
   Status / Quick Build.
 - **Script engine (file-bridge)** — `main.js` runs whenever PT is open, even with
-  the window closed. It reads a file mailbox under `%LOCALAPPDATA%` and executes
+  the window closed. It reads a file mailbox next to the token, in the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`), and executes
   from there. It's also where the shared helpers (`lwAddDevice`, etc.) live.
 
 The MCP server picks one channel per command automatically.

@@ -273,6 +273,9 @@ class FakePresenter:
         self.filled: list = []
         self.buttons: list = []
 
+    def available(self, *, request=False):
+        return True, ""
+
     def device_info(self, device):
         return {"host": True}
 

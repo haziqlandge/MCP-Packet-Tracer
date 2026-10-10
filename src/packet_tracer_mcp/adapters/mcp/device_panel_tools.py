@@ -24,7 +24,7 @@ from ...domain.rules.panel_rules import normalize_mask, validate_host_ip_config
 from ...infrastructure.generator.host_js import (
     host_ip_config_js, port_state_js, read_device_panel_js, remove_module_js,
 )
-from ...infrastructure.ui.presenter import Presenter, PresenterError, is_available
+from ...infrastructure.ui.presenter import Presenter, PresenterError
 from ...shared.ui_mode import UI, UiModeStore
 from .desktop_service_tools import register_desktop_service_tools
 from .panel_support import (
@@ -72,7 +72,7 @@ def register_device_panel_tools(
         """
         if (mode or "").strip().lower() in ("", "status", "get"):
             cur = store.get()
-            ok, why = is_available()
+            ok, why = presenter.available()
             gui = "available" if ok else f"NOT available ({why})"
             return (
                 f"Current mode: {cur}. PT GUI: {gui}.\n"
@@ -84,7 +84,8 @@ def register_device_panel_tools(
         except ValueError as exc:
             return str(exc)
         if new == UI:
-            ok, why = is_available()
+            # The one place that may bring up OS permission prompts (C3).
+            ok, why = presenter.available(request=True)
             extra = "" if ok else f"\nNote: the GUI is not available ({why}); the tools will stay headless."
             return ("UI mode on: the panel tools will open the device's window on the matching "
                     "tab/app. Use capture=True or pt_ui_capture to save PNGs." + extra)

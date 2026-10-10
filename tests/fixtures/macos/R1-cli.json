@@ -1,0 +1,344 @@
+{
+ "recorded": "2026-10-10",
+ "macos": "26.5.1",
+ "pt": "9.0.1",
+ "qt": "6.8.7",
+ "scale": 2.0,
+ "window": {
+  "title": "R1",
+  "cg_id": 4859,
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ]
+ },
+ "tree": {
+  "role": "AXWindow",
+  "subrole": "AXStandardWindow",
+  "title": "R1",
+  "description": "",
+  "identifier": "",
+  "value": "",
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ],
+  "actions": [
+   "AXRaise"
+  ],
+  "children": [
+   {
+    "role": "AXGroup",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget",
+    "value": "",
+    "frame": [
+     418.0,
+     158.0,
+     676.0,
+     603.0
+    ],
+    "actions": [],
+    "children": [
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "IOS Command Line Interface",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_cliTab.m_consoleDescription",
+      "value": "IOS Command Line Interface",
+      "frame": [
+       429.0,
+       169.0,
+       654.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Copy",
+      "description": "Copy",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_cliTab.CLICopyBtn",
+      "value": "",
+      "frame": [
+       962.0,
+       702.0,
+       56.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Paste",
+      "description": "Paste",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_cliTab.CLIPasteBtn",
+      "value": "",
+      "frame": [
+       1024.0,
+       702.0,
+       59.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextArea",
+      "subrole": "",
+      "title": "Command+F6 to exit CLI focus.",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_cliTab.CCommandLine",
+      "value": "System Bootstrap, Version 15.1(4)M4, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 2010 by cisco Systems, Inc.\nTotal memory size = 512 MB - On-board = 512 MB",
+      "frame": [
+       429.0,
+       186.0,
+       654.0,
+       510.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXTabGroup",
+    "subrole": "",
+    "title": "CLI",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+    "value": "",
+    "frame": [
+     638.0,
+     137.0,
+     234.0,
+     21.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": [
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Physical",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       638.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Config",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       703.0,
+       137.0,
+       56.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "CLI",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       759.0,
+       137.0,
+       42.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Attributes",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       801.0,
+       137.0,
+       71.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Top",
+    "description": "Top",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.topCB",
+    "value": "0",
+    "frame": [
+     418.0,
+     772.0,
+     41.0,
+     18.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXCloseButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     414.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXFullScreenButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     454.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXZoomWindow",
+     "AXShowMenu"
+    ],
+    "children": [
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "",
+      "value": "",
+      "frame": [
+       453.0,
+       109.0,
+       14.0,
+       16.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXGroup",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "",
+        "value": "",
+        "frame": [
+         453.0,
+         109.0,
+         14.0,
+         16.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXMinimizeButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     434.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "R1",
+    "frame": [
+     746.0,
+     108.0,
+     20.0,
+     16.0
+    ],
+    "actions": [],
+    "children": []
+   }
+  ]
+ }
+}

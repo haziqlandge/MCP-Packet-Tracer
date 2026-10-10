@@ -91,7 +91,7 @@ python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/headless.json | g
 Baselines (each OS has its own line; a drop below it is a regression):
 
 - Windows: **825 passed** as of 2026-10-10, Windows 10 Pro, Python 3.14.8, at `bcb2ef3`.
-- macOS: not yet recorded. PHASE-00 records it on this line.
+- macOS: **825 passed** as of 2026-10-10, macOS 26.5.1 (arm64, Mac17,9), Python 3.12.15 (Homebrew, `.venv`), at `0bc0976`.
 
 These lines are the only place the baseline is recorded. Run the commands and
 read the output. "Should pass" is not evidence. If the planning skill is not
@@ -132,9 +132,11 @@ must show where the work really stands, all the time.
   `- [ ] Probe dumps the PT main window's AX tree`), then tick it when the step is
   done. Large criteria may be split into a few smaller boxes, so the bar moves in
   reasonable steps.
-- **Mark blocked and partial work too.** Leave the box open and append
-  `— **BLOCKED: <on what>**`, or use `- [~]` with what is and is not shown. A
-  blocked box is never ticked.
+- **Mark blocked and partial work too.** Leave the box open (`- [ ]`) and append
+  `— **BLOCKED: <on what>**`, with what is and is not shown. A blocked box is
+  never ticked. Do not use `- [~]`: the tracker drops those boxes from both
+  counts, so a phase with only `[~]` left shows as DONE (it happened on
+  2026-10-10).
 - **The bar follows the open phase file edited most recently.** Touch other
   phase files only when you work on them, or the bar's focus jumps to them.
 - A phase is complete when all its boxes are ticked. Record it in

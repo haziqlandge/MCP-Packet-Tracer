@@ -1,0 +1,13 @@
+[
+  {"tool": "pt_add_device", "name": "R1", "model": "2911", "x": 300, "y": 150},
+  {"tool": "pt_add_device", "name": "SW1", "model": "2960-24TT", "x": 300, "y": 300},
+  {"tool": "pt_add_device", "name": "PC1", "model": "PC-PT", "x": 200, "y": 450},
+  {"tool": "pt_add_device", "name": "SRV1", "model": "Server-PT", "x": 400, "y": 450},
+  {"tool": "pt_add_link", "device1": "R1", "port1": "GigabitEthernet0/0", "device2": "SW1", "port2": "GigabitEthernet0/1", "cable_type": "straight"},
+  {"tool": "pt_add_link", "device1": "SW1", "port1": "FastEthernet0/1", "device2": "PC1", "port2": "FastEthernet0", "cable_type": "straight"},
+  {"tool": "pt_add_link", "device1": "SW1", "port1": "FastEthernet0/2", "device2": "SRV1", "port2": "FastEthernet0", "cable_type": "straight"},
+  {"tool": "pt_cli", "device": "R1", "commands": ["enable", "configure terminal", "interface GigabitEthernet0/0", "ip address 192.168.10.1 255.255.255.0", "no shutdown", "end"]},
+  {"tool": "pt_host_ip_config", "device": "PC1", "mode": "static", "ip": "192.168.10.11", "mask": "255.255.255.0", "gateway": "192.168.10.1"},
+  {"tool": "pt_host_ip_config", "device": "SRV1", "mode": "static", "ip": "192.168.10.10", "mask": "255.255.255.0", "gateway": "192.168.10.1"},
+  {"tool": "pt_query_topology"}
+]

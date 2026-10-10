@@ -123,3 +123,69 @@ Out of the box: one run of the fresh-install path. The details are in
 10. The cwd and PATH the user's client gives the MCP server.
 11. Does binding `127.0.0.1:54321` raise a firewall prompt?
 12. How to build or patch a `.pts` on the Mac, if at all.
+
+## Local empirical update — 2026-10-10 (PHASE-00, the executor Mac)
+
+Measured on macOS 26.5.1 arm64 (Mac17,9) with PT 9.0.1 and the released V5.2
+`.pts`. Evidence for each line is in `PREVIOUS_WORK.md` 2.4.
+
+- **PT is a universal binary** (x86_64 + arm64) and bundles **Qt 6.8.7**. The
+  Rosetta assumption in `topics/pt-on-macos.md` §2 does not hold for 9.0.1
+  (amended in `PLAN/CONSTRAINTS.md`). Qt 6.8 is newer than the 5.15/6.2 branches
+  that lack `accessibilityIdentifier`; whether PT's `AXIdentifier` carries the
+  objectName path is still unmeasured (it needs the Accessibility grant).
+- **§3 "Mailbox pairing" is confirmed.** HTTP pairs with V5.2 unchanged. V5.2's
+  file channel polls `~/AppData/Local/packet-tracer-mcp/bridge` and creates that
+  whole chain itself (mode 0755) when it is missing, so following the extension's
+  heartbeat (candidate 2 in `PLAN/INTERFACES.md` §5) is the right design and the
+  server need not pre-create the legacy directory.
+- **§6 "A permission granted to the wrong app" is real, in a new shape.** Under
+  Claude desktop's Code tab, TCC attributes the server to the bundled Claude Code
+  CLI (a versioned `claude.app` under `~/Library/Application Support/Claude/`), not
+  to `Claude.app`. Onboarding must name that full path; whether a grant survives a
+  Claude Code update is open.
+- **§6 "cwd `/`" did not happen here**: the Code tab starts the MCP server in the
+  session folder. Other GUI clients remain unmeasured, so C11 stays.
+- **New failure mode:** PT listens on `*:39000`, the MCP server's default HTTP
+  transport port. stdio is unaffected.
+- Without Screen Recording all three capture routes fail cleanly (None, rc=1,
+  SCK -3801), and `CGWindowListCreateImage` is still callable on 26.5.1.
+
+No locked decision in `PLAN/INDEX.md` is contradicted. Still open: questions 2
+(identifier), 6, 7, 8 (with the grant) and 12.
+
+## Local empirical update — 2026-10-10, second (PHASE-00 with the grants)
+
+Accessibility and Screen Recording granted to the Claude Code CLI; the grants
+worked in the running process without a restart. Evidence: `PREVIOUS_WORK.md` 2.4
+(#2, #6, #7, #8, #12) and the 8 fixtures in `tests/fixtures/macos/`.
+
+- **§5 "Identifier versus text" resolves in favour of identifiers.** Qt 6.8.7 fills
+  `AXIdentifier` with the Windows objectName paths. The AX tree is flat (depth 3–4),
+  and four locator targets have no element at all on macOS (logical canvas widget,
+  its scroll bars, console scroll bars): those need `by_shape`.
+- **§3 "Canvas click: `CGEventPostToPid`" is overturned.** Pid-targeted mouse events
+  never reached PT's canvas (5 variants, background and foreground). Only the
+  visible route works: activate PT, HID click, restore the cursor (~0.5 s). Amended in
+  `PLAN/phases/PHASE-05.md` and `PLAN/INTERFACES.md` §2.
+- **§2's premise "act through accessibility actions, avoid the real mouse and
+  keyboard" holds only partly on macOS.** `AXPress` works for tabs, plain buttons and
+  applet close buttons, but on PT's checkable section buttons it only toggles the
+  check (Qt maps it to `toggle()`). Focus plus a Space key posted to the pid works,
+  and only while PT is frontmost. UI mode on macOS therefore brings PT forward and,
+  for open-by-click, moves the cursor briefly. Parity of result holds; parity of
+  "nothing taken over on screen" does not (ISSUES X9).
+- **§3 "Window handle: join by bounds" needs titles.** Every device dialog opens at
+  the same frame; the join must prefer the CG window named like the AX title
+  (Screen Recording) and then the on-screen one. Amended in `PHASE-04.md`.
+- **§3 "Capture" is confirmed.** All three routes capture a covered window with
+  identical pixels on 26.5.1; SCK needs a window-server connection and careful
+  completion-handler code (three measured traps, `PHASE-04.md` amendment).
+- **Question 12:** the `.pts` and `PT.conf` are opaque binary (no header, `file`:
+  data), so there is no offline build or patch. PT's module editor is the only
+  candidate route; untested here (it changes the user's installed extension, and an
+  earlier audit saw PT crash under accessibility automation of that editor).
+  Deferred to PHASE-02 with the user's go-ahead (ISSUES X3).
+
+No locked decision in `PLAN/INDEX.md` changes: full UI-mode parity on macOS is still
+the target; the cost is the visible focus and cursor moments recorded above.

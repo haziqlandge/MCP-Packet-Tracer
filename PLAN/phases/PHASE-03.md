@@ -139,12 +139,15 @@ live Windows run would catch (C4, C8). Keep the diff mechanical. Record
 
 ## Acceptance criteria
 
-- [ ] All tests pass on the Mac; the suite stays ≥ the macOS baseline (`CLAUDE.md` §5)
-- [ ] `git diff -M main -- '**/win32.py' '**/uia.py'` shows only import-line changes (output recorded in PREVIOUS_WORK)
-- [ ] `presenter.py` contains no `win32`, `uia`, `UIA_` or `automation_id` (grep recorded)
-- [ ] `tests/test_os_checks_confined.py` passes with an empty allow-list
-- [ ] Live on the Mac: `pt_ui_mode("status")` reports the null backend's reason; `pt_cli(show=True)` completes headless with that note (C7)
-- [ ] CI windows-latest green (or recorded as pending push); the live Windows check is queued in `FUTURE_WORK.md` §2
+- [x] `backend.py`, `locators.py` and `backends/` (null, windows) written; `test_locators.py` and `test_backend_selection.py` pass (watched failing first) — before: collection errors (`No module named ...ui.backend`); after: locators 23 passed, selection 27 passed, plus `test_windows_backend.py` 13 passed (role map, UIA filter names, raw unwrapped, one `Uia()` per call, Windows wording); 2026-10-10
+- [x] Presenter speaks only `WindowBackend`; `test_presenter_on_backend.py` pins the Windows flows on `FakeBackend` (dialog open, Select on / toggled, Delete refusal, missing tab, Email close loop, `fill_and_go`, `scroll_consoles`, capture) — 35 passed (also: hidden dialog re-shown, scroll-bar offset, centring, zoomed canvas, second click, `BackendUnavailable` → `PresenterError` verbatim); the Delete refusal and missing-Select cases assert no click at all; existing `test_device_panel.py` `TestOpenApp` ported to the backend API with its assertions unchanged; 2026-10-10
+- [x] `test_imports_every_os.py` (C2) passes with `sys.platform` faked to win32, darwin and linux — 3 passed (fresh interpreter each, comtypes/pyobjc blocked, every module of the package walked); mutation check: an `import objc` added to `backends/null.py` failed all three with "objc is blocked", reverted; 2026-10-10
+- [x] All tests pass on the Mac; the suite stays ≥ the macOS baseline (`CLAUDE.md` §5) — `.venv/bin/python -m pytest -q`: 1028 passed (927 before this phase; baseline 825); pyflakes on the new and touched tests clean; 2026-10-10
+- [x] `git diff -M main -- '**/win32.py' '**/uia.py'` shows only import-line changes (output recorded in PREVIOUS_WORK) — run against `bcb2ef3` (no local `main`): both renames at **similarity index 100%**, 0 insertions, 0 deletions; not even an import line changed (neither file has a relative import); PREVIOUS_WORK 2.7; 2026-10-10
+- [x] `presenter.py` contains no `win32`, `uia`, `UIA_` or `automation_id` (grep recorded) — `grep -n "win32\|uia\|UIA_\|automation_id" .../ui/presenter.py` → no output, exit 1; 2026-10-10
+- [x] `tests/test_os_checks_confined.py` passes with an empty allow-list — `ALLOW_LIST: set[str] = set()`; 2 passed (in the 1028); 2026-10-10
+- [x] Live on the Mac: `pt_ui_mode("status")` reports the null backend's reason; `pt_cli(show=True)` completes headless with that note (C7) — `live_smoke` from this checkout, file channel, released-fix `.pts`: status "PT GUI: NOT available (UI mode is not available on macOS yet: its backend is still being built; every tool works headless.)"; `pt_cli` R1 `show ip interface brief` show=True → "1 ok", the interface table, then "GUI: could not show it (<same reason>). The work was still done through the API." (3 runs; the first returned `[ok]` with empty output once, not reproduced: ISSUES X11); 2026-10-10
+- [x] CI windows-latest green (or recorded as pending push); the live Windows check is queued in `FUTURE_WORK.md` §2 — **pending push** (the user asked for no commits; `tests.yml` matrix lists windows-latest on 3.11 and 3.13); `FUTURE_WORK.md` §2 updated with what changed on Windows and what to watch; ISSUES X5 stays open until it runs; 2026-10-10
 
 ## Known failure conditions
 

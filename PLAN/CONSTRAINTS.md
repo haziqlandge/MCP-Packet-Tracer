@@ -35,7 +35,7 @@ first, no guessed PT API) apply unchanged and are not repeated here.
 | Constraint | Detail |
 |---|---|
 | Python | ≥ 3.11 (`pyproject.toml`). The macOS system `python3` (3.9) is not supported. Docs point to uv or python.org |
-| PT | 9.0.x for macOS, x86-64 (Rosetta on Apple Silicon); verified version recorded in PHASE-00 |
+| PT | 9.0.x for macOS. Amended 2026-10-10: PT 9.0.1 for macOS is a **universal binary** (x86_64 + arm64), so Rosetta is not required (PREVIOUS_WORK 2.4 #1). It bundles Qt 6.8.7 |
 | macOS | UI capture: SCK on 14+. 12.3–13 fall back to CGWindowListCreateImage, best effort |
 | JS pasted into PT | Single line, no `//` comments (AGENTS Gotchas). Compiled `.pts` files are exempt |
 

@@ -1,0 +1,1460 @@
+{
+ "recorded": "2026-10-10",
+ "macos": "26.5.1",
+ "pt": "9.0.1",
+ "qt": "6.8.7",
+ "scale": 2.0,
+ "window": {
+  "title": "SRV1",
+  "cg_id": 4894,
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ]
+ },
+ "tree": {
+  "role": "AXWindow",
+  "subrole": "AXStandardWindow",
+  "title": "SRV1",
+  "description": "",
+  "identifier": "",
+  "value": "",
+  "frame": [
+   406.0,
+   103.0,
+   700.0,
+   708.0
+  ],
+  "actions": [
+   "AXRaise"
+  ],
+  "children": [
+   {
+    "role": "AXGroup",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget",
+    "value": "",
+    "frame": [
+     418.0,
+     158.0,
+     676.0,
+     603.0
+    ],
+    "actions": [],
+    "children": [
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "SERVICES",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.SERVICES",
+      "value": "",
+      "frame": [
+       431.0,
+       171.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "HTTP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.HTTP",
+      "value": "0",
+      "frame": [
+       431.0,
+       195.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "DHCP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.DHCP",
+      "value": "1",
+      "frame": [
+       431.0,
+       219.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "DHCPv6",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.DHCPv6",
+      "value": "0",
+      "frame": [
+       431.0,
+       243.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "TFTP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.TFTP",
+      "value": "0",
+      "frame": [
+       431.0,
+       267.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "DNS",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.DNS",
+      "value": "0",
+      "frame": [
+       431.0,
+       291.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "SYSLOG",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.SYSLOG",
+      "value": "0",
+      "frame": [
+       431.0,
+       315.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "AAA",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.AAA",
+      "value": "0",
+      "frame": [
+       431.0,
+       339.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "NTP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.NTP",
+      "value": "0",
+      "frame": [
+       431.0,
+       363.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "EMAIL",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.EMAIL",
+      "value": "0",
+      "frame": [
+       431.0,
+       387.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "FTP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.FTP",
+      "value": "0",
+      "frame": [
+       431.0,
+       411.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "IoT",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.IoT",
+      "value": "0",
+      "frame": [
+       431.0,
+       435.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "VM Management",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.VM Management",
+      "value": "0",
+      "frame": [
+       431.0,
+       459.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Radius EAP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.Radius EAP",
+      "value": "0",
+      "frame": [
+       431.0,
+       483.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "PRP",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.servicesScrollView.qt_scrollarea_viewport.QWidget.QFrame.PRP",
+      "value": "0",
+      "frame": [
+       431.0,
+       507.0,
+       110.0,
+       24.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "DHCP",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.textLabel5",
+      "value": "DHCP",
+      "frame": [
+       576.0,
+       180.0,
+       496.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Interface",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.label",
+      "value": "Interface",
+      "frame": [
+       576.0,
+       213.0,
+       118.0,
+       11.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXMenuButton",
+      "subrole": "",
+      "title": "FastEthernet0",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_interfaceComboBox",
+      "value": "",
+      "frame": [
+       697.0,
+       204.0,
+       124.0,
+       32.0
+      ],
+      "actions": [
+       "AXShowMenu",
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Service",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.textLabel6",
+      "value": "Service",
+      "frame": [
+       827.0,
+       213.0,
+       37.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "On",
+      "description": "On",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpOn",
+      "value": "1",
+      "frame": [
+       868.0,
+       211.0,
+       39.0,
+       18.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Off",
+      "description": "Off",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpOff",
+      "value": "0",
+      "frame": [
+       972.0,
+       211.0,
+       39.0,
+       18.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Pool Name",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_PoolName",
+      "value": "Pool Name",
+      "frame": [
+       576.0,
+       247.0,
+       245.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_poolNameEdit",
+      "value": "serverPool",
+      "frame": [
+       827.0,
+       242.0,
+       245.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Default Gateway",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.textLabel7",
+      "value": "Default Gateway",
+      "frame": [
+       576.0,
+       274.0,
+       245.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_gatewayEdit",
+      "value": "192.168.10.1",
+      "frame": [
+       827.0,
+       269.0,
+       245.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "DNS Server",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DnsServer",
+      "value": "DNS Server",
+      "frame": [
+       576.0,
+       301.0,
+       245.0,
+       11.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DNSEdit",
+      "value": "0.0.0.0",
+      "frame": [
+       827.0,
+       296.0,
+       245.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Start IP Address :",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.lblStartIP",
+      "value": "Start IP Address :",
+      "frame": [
+       576.0,
+       328.0,
+       86.0,
+       11.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editStartIPOne",
+      "value": "192",
+      "frame": [
+       668.0,
+       323.0,
+       96.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editStartIPTwo",
+      "value": "168",
+      "frame": [
+       770.0,
+       323.0,
+       97.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editStartIPThree",
+      "value": "10",
+      "frame": [
+       873.0,
+       323.0,
+       96.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editStartIPFour",
+      "value": "100",
+      "frame": [
+       975.0,
+       323.0,
+       97.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Subnet Mask:",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.lblSubnetmask",
+      "value": "Subnet Mask:",
+      "frame": [
+       576.0,
+       355.0,
+       68.0,
+       11.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editSubnetIPOne",
+      "value": "255",
+      "frame": [
+       650.0,
+       350.0,
+       101.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editSubnetIPTwo",
+      "value": "255",
+      "frame": [
+       757.0,
+       350.0,
+       101.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editSubnetIPThree",
+      "value": "255",
+      "frame": [
+       864.0,
+       350.0,
+       101.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editSubnetIPFour",
+      "value": "0",
+      "frame": [
+       971.0,
+       350.0,
+       101.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "Maximum Number of Users :",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.lblMaxUsers",
+      "value": "Maximum Number of Users :",
+      "frame": [
+       576.0,
+       382.0,
+       245.0,
+       11.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editMaxUsers",
+      "value": "50",
+      "frame": [
+       827.0,
+       377.0,
+       245.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "TFTP Server:",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.textLabel1",
+      "value": "TFTP Server:",
+      "frame": [
+       576.0,
+       409.0,
+       245.0,
+       11.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_TFTPEdit",
+      "value": "0.0.0.0",
+      "frame": [
+       827.0,
+       404.0,
+       245.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.label_2",
+      "value": "WLC Address:",
+      "frame": [
+       576.0,
+       436.0,
+       245.0,
+       11.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_wlcEdit",
+      "value": "0.0.0.0",
+      "frame": [
+       827.0,
+       431.0,
+       245.0,
+       21.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Add",
+      "description": "Add",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_addNewButton",
+      "value": "",
+      "frame": [
+       576.0,
+       458.0,
+       161.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Save",
+      "description": "Save",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_editButton",
+      "value": "",
+      "frame": [
+       743.0,
+       458.0,
+       162.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Remove",
+      "description": "Remove",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_removeButton",
+      "value": "",
+      "frame": [
+       911.0,
+       458.0,
+       161.0,
+       32.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTable",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+      "value": "",
+      "frame": [
+       576.0,
+       496.0,
+       496.0,
+       243.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXRow",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         577.0,
+         538.0,
+         496.0,
+         30.0
+        ],
+        "actions": [],
+        "children": [
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "serverPool",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           577.0,
+           538.0,
+           93.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "192.168.10.1",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           670.0,
+           538.0,
+           62.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "0.0.0.0",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           732.0,
+           538.0,
+           62.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "192.168.10.100",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           794.0,
+           538.0,
+           62.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "255.255.255.0",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           856.0,
+           538.0,
+           62.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "50",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           918.0,
+           538.0,
+           31.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "0.0.0.0",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           949.0,
+           538.0,
+           62.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         },
+         {
+          "role": "AXCell",
+          "subrole": "",
+          "title": "0.0.0.0",
+          "description": "",
+          "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+          "value": "",
+          "frame": [
+           1011.0,
+           538.0,
+           62.0,
+           30.0
+          ],
+          "actions": [
+           "AXPress"
+          ],
+          "children": []
+         }
+        ]
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         577.0,
+         538.0,
+         93.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         670.0,
+         538.0,
+         62.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         732.0,
+         538.0,
+         62.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         794.0,
+         538.0,
+         62.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         856.0,
+         538.0,
+         62.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         918.0,
+         538.0,
+         31.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         949.0,
+         538.0,
+         62.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_stackedwidget.m_servicesTab.CServerServiceDhcpClass.m_DhcpListView",
+        "value": "",
+        "frame": [
+         1011.0,
+         538.0,
+         62.0,
+         30.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXTabGroup",
+    "subrole": "",
+    "title": "Services",
+    "description": "",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+    "value": "",
+    "frame": [
+     548.0,
+     137.0,
+     414.0,
+     21.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": [
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Physical",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       548.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Config",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       613.0,
+       137.0,
+       56.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Services",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       669.0,
+       137.0,
+       67.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Desktop",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       736.0,
+       137.0,
+       65.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Programming",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       801.0,
+       137.0,
+       90.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXRadioButton",
+      "subrole": "",
+      "title": "Attributes",
+      "description": "",
+      "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.c_physicalTab.qt_tabwidget_tabbar",
+      "value": "",
+      "frame": [
+       891.0,
+       137.0,
+       71.0,
+       21.0
+      ],
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Top",
+    "description": "Top",
+    "identifier": "PtApp.CBaseDeviceWidgetClass.mainScrollArea.qt_scrollarea_viewport.scrollAreaWidgetContents_5.topCB",
+    "value": "0",
+    "frame": [
+     418.0,
+     772.0,
+     41.0,
+     18.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXCloseButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     414.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXFullScreenButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     454.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXZoomWindow",
+     "AXShowMenu"
+    ],
+    "children": [
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "",
+      "value": "",
+      "frame": [
+       453.0,
+       109.0,
+       14.0,
+       16.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXGroup",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "",
+        "value": "",
+        "frame": [
+         453.0,
+         109.0,
+         14.0,
+         16.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXMinimizeButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     434.0,
+     110.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "SRV1",
+    "frame": [
+     737.0,
+     108.0,
+     38.0,
+     16.0
+    ],
+    "actions": [],
+    "children": []
+   }
+  ]
+ }
+}

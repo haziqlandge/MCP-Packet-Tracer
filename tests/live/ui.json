@@ -1,0 +1,10 @@
+[
+  {"tool": "pt_ui_mode", "mode": "status"},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show version | include IOS"], "show": true, "capture": true},
+  {"tool": "pt_host_command", "device": "PC1", "command": "ipconfig", "show": true, "capture": true},
+  {"tool": "pt_ui_open", "device": "PC1", "app": "ip_configuration"},
+  {"tool": "pt_ui_capture", "device": "PC1", "filename": "ui-pc1-ipconfig"},
+  {"tool": "pt_server_dhcp", "device": "SRV1", "show": true, "capture": true},
+  {"tool": "pt_web_browser", "device": "PC1", "url": "http://192.168.10.10", "show": true, "capture": true},
+  {"tool": "pt_ui_close"}
+]

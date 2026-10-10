@@ -64,8 +64,40 @@
   says `CONNECTIVITY OK` / `PARTIAL CONNECTIVITY (packet loss)` / `NO CONNECTIVITY`, estimator
   complexity is `simple / moderate / complex / very complex`, template tags are English.
   `AGENTS.md` asks agents to write the repo in English and answer users in their own language.
+- **UI-mode dependencies install by themselves.** `pip install packet-tracer-mcp` now brings
+  `comtypes` on Windows and the pyobjc frameworks (Quartz, ApplicationServices, Cocoa,
+  ScreenCaptureKit) on macOS, through environment markers; nothing extra on Linux. The `[ui]`
+  extra is kept as an empty alias, so `pip install packet-tracer-mcp[ui]` still works.
+- **macOS UI backend, first half.** On a Mac, `pt_ui_capture` and `capture=True` capture PT's
+  windows (even covered) through ScreenCaptureKit, `CGWindowListCreateImage` or `screencapture`;
+  missing Accessibility or Screen Recording grants come back as a remedy naming the exact app
+  to grant (under Claude desktop, the bundled Claude Code CLI). Only `pt_ui_mode("ui")` may show
+  the system permission prompts.
+- **macOS UI mode, second half: opening and navigating device windows.** `show=True`,
+  `pt_ui_mode("ui")` and `pt_ui_open` now work on a Mac: the dialog is shown through PT's API
+  or opened by a click on the canvas, then the tab, Config/Services section or Desktop app is
+  chosen through the Accessibility tree. Unlike Windows it is not invisible: PT comes to the
+  front, and a canvas click moves the cursor for a moment and puts it back. The click is only
+  sent when PT is frontmost and its canvas is under the point.
+- **`XDG_STATE_HOME` is no longer honoured for the bridge token and mailbox.** On Linux and
+  macOS the state directory is always `~/.local/state/packet-tracer-mcp`. The extension inside
+  Packet Tracer cannot read environment variables, so a set `XDG_STATE_HOME` moved the token
+  where PT never looked and pairing silently failed. Windows keeps `%LOCALAPPDATA%` exactly as
+  before. All OS facts now live in `infrastructure/platform/`.
+- **Tool outputs no longer depend on a writable working directory.** Relative output folders
+  (`projects`, `screenshots`) resolve under `output_root()`: the working directory when it is
+  writable and not a filesystem root, else `~/Documents/Packet Tracer MCP` (Windows, macOS) or
+  `~/packet-tracer-mcp` (Linux). `PT_MCP_OUTPUT_DIR` overrides it. Absolute paths are unchanged.
+- **UI mode sits behind one backend per OS.** The presenter no longer calls Win32 or UI
+  Automation itself: it talks to a `WindowBackend` and finds widgets through a locator table,
+  and the Windows code moved unchanged under `infrastructure/ui/backends/windows/`. On other
+  OSes `pt_ui_mode` and `show=True` now say why the GUI is unavailable there (every tool
+  still works headless). `PT_MCP_UI_BACKEND=null|windows|macos|linux` overrides the choice.
 
 ### Fixed
+
+- **`pt_deploy` copies to the clipboard on macOS and Linux too** (`pbcopy` with a UTF-8 locale;
+  `wl-copy`, `xclip` or `xsel`). It only knew Windows' `clip.exe` before.
 
 - **`pt_add_module` always reported a timeout, even when the module was installed.**
   Its JS used `return` instead of `reportResult`, so the bridge never got an answer.

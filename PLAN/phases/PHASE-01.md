@@ -134,17 +134,20 @@ an allow-list. The test prints that list so PHASE-03 empties it.
 - `output_root`: writable cwd; cwd `/` (macOS and Linux) or a drive root;
   unwritable cwd; env override.
 - `responsible_app` on recorded chains: Claude.app, Terminal, iTerm2, VS Code,
-  and a chain with no `.app` (returns None).
+  and a chain with no `.app` (returns None). Include the chain measured in
+  PHASE-00 (Homebrew `Python.framework/.../Python.app` → zsh → Claude Code CLI
+  `claude.app` → `disclaimer` → `Claude.app`): the answer is the CLI's `claude`,
+  never `Python` (INTERFACES §1 amendment, 2026-10-10).
 - C1 grep test.
 
 ## Acceptance criteria
 
-- [ ] All new tests pass on the Mac; the suite stays ≥ the macOS baseline (`CLAUDE.md` §5)
-- [ ] `test_bridge_token.py` passes unchanged except for the new XDG test
-- [ ] CI is green on windows, ubuntu and macos (or, until pushed, the suite passes on the Mac and `tests.yml` lists macos-latest)
-- [ ] Live on the Mac: `pt_deploy` reports "copied to clipboard", and `pbpaste` equals the generated script, including a non-ASCII device name
-- [ ] Live on the Mac: with the client's real cwd, `pt_screenshot` and `pt_export` write under `output_root()` and report the absolute path
-- [ ] `CODEMAP.md` regenerated
+- [x] All new tests pass on the Mac; the suite stays ≥ the macOS baseline (`CLAUDE.md` §5) — new platform/C1/XDG tests 93 passed (all watched failing first: missing module, 4 C1 offenders, token under XDG); full suite 906 passed ≥ 825; 2026-10-10
+- [x] `test_bridge_token.py` passes unchanged except for the new XDG test — only `TestXdgStateHomeIgnored` appended; the file passes in the 93; 2026-10-10
+- [x] CI is green on windows, ubuntu and macos (or, until pushed, the suite passes on the Mac and `tests.yml` lists macos-latest) — not pushed (the user asked for no commits); suite 906 passed on the Mac and `tests.yml` lists macos-latest. Remote CI unverified; 2026-10-10
+- [x] Live on the Mac: `pt_deploy` reports "copied to clipboard", and `pbpaste` equals the generated script, including a non-ASCII device name — "SCRIPT COPIED TO THE CLIPBOARD"; `pbpaste` == `topology.js` with device `PC-Ñandú-é` (the generator writes it as `\u` escapes by AGENTS rule 1, so the script is ASCII). Raw UTF-8 checked directly: `platform.current().clipboard` under `env -i` (no locale) round-trips `héllo PC-Ñandú-é`; bare `pbcopy` without a locale gives `h√©llo PC-√ëand√∫-√©`; 2026-10-10
+- [x] Live on the Mac: with the client's real cwd, `pt_screenshot` and `pt_export` write under `output_root()` and report the absolute path — cwd `~/packet tracer` (Claude desktop Code tab, PREVIOUS_WORK 2.4 #10) → `output_root()` = that folder; export to `.../projects/phase01-export`, screenshot `.../projects/phase01-shot.png` (13,646 bytes), both absolute, through this checkout's code via FastMCP with the live bridge. The cwd-`/` fallback is covered offline only; 2026-10-10
+- [x] `CODEMAP.md` regenerated — `infrastructure/platform/` row added; `test_codemap.py` passes in the 906; 2026-10-10
 
 ## Known failure conditions
 

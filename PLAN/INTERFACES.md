@@ -62,6 +62,31 @@ def responsible_app(pid: int, *, ps=...) -> str | None
     # "/<Name>.app/Contents/MacOS/" gives "<Name>"; None elsewhere or when unknown
 ```
 
+**Amendment 2026-10-10 (PHASE-00, PREVIOUS_WORK 2.4 #9).** Two measured facts change
+`responsible_app`. (1) Homebrew and python.org interpreters run from
+`.../Python.framework/.../Python.app/Contents/MacOS/Python`, so the walk must skip any
+`.app` under `/Python.framework/`, or it answers "Python". (2) Under Claude desktop's
+Code tab, TCC attributes the server to the bundled Claude Code CLI
+(`~/Library/Application Support/Claude/claude-code/<version>/<hash>/claude.app`), not to
+`Claude.app`: its `disclaimer` helper hands responsibility down. The first `.app` after
+the skip is that CLI, which is correct, but its path is versioned, so the remedy text
+must name the **full path** (home shown as `~`), not only "claude". The kernel's own
+answer (libSystem SPI `responsibility_get_pid_responsible_for_pid`) agreed with the
+corrected walk; product code keeps the walk, the probe keeps the SPI as a cross-check.
+
+**Amendment 2026-10-10 (PHASE-01, as built).** `host.py` adds
+`responsible_bundle(pid, *, ps, os_name) -> str | None` (the full bundle path the
+remedy text needs) and `responsible_app` is its last path component without `.app`.
+The walk takes the **outermost** `.app` in an executable path, so VS Code's nested
+`Code Helper (Plugin).app` answers "Visual Studio Code". Both, and `pt_processes`,
+take `os_name` (and `pt_processes` a `run`) for tests. `pt_processes` uses
+`pgrep -x PacketTracer` on macOS (measured process name; `-f "Packet Tracer"` would
+also match unrelated command lines), `pgrep -f PacketTracer` on Linux (unmeasured).
+The executors and `ProjectRepository` resolve a relative output folder under
+`output_root()` themselves (`output_root() / Path(output_dir)`), which keeps absolute
+paths and the tool call sites unchanged; `output_dir()` is used where a tool builds a
+single safe folder name (`pt_screenshot`, `screenshot_path`).
+
 **Error contract.** Platform functions never raise for a missing tool or an
 unknown environment. They return `False`, `None` or `[]`. Creating directories
 is the caller's job (`bridge_token`, `file_bridge`, the tools).
@@ -102,6 +127,7 @@ class WindowBackend(Protocol):
     def raise_window(self, handle: WindowHandle) -> None
     def capture(self, handle: WindowHandle) -> Capture
     def click(self, handle: WindowHandle, x: int, y: int) -> str   # "posted" | "cursor-restored"
+        # Amended 2026-10-10: on macOS only "cursor-restored" works (PREVIOUS_WORK 2.4 #7)
     def elements(self, handle: WindowHandle, role: Role | None = None) -> list[UiElement]
     def select(self, el: UiElement) -> None                       # a tab
     def press(self, el: UiElement) -> None                        # button, list item, checkbox, toggle
@@ -136,6 +162,18 @@ API." That stays. The presenter turns `BackendUnavailable` into a
 the permission, the app to grant (from `responsible_app`) and the System
 Settings path.
 
+**Amendment 2026-10-10 (PHASE-03, as built; PREVIOUS_WORK 2.7).** (1) `UiElement` stores
+`bounds: Rect | Callable[[], Rect]` and exposes `rect` as a read-only property: the Windows
+backend passes UIA's rect reader, so a walk does not read every element's rect
+cross-process. A backend that already has the frame (macOS `to_element`) passes the
+tuple; callers still read `el.rect`. (2) `UiElement` compares by identity (`eq=False`).
+(3) `WindowsBackend` lets `uia`'s own exceptions through instead of wrapping them in
+`BackendError`, so Windows notes read as before; new backends raise `BackendError`. (4)
+`Platform.ui_backend()` caches the backend on the frozen `Platform` through a
+`compare=False` field. (5) `Presenter(send, *, sleep, clock, backend)`; `available(request=)`
+is the presenter's, delegating to the backend; `scroll_consoles(hwnd)` takes no `u`. (6)
+Until PHASE-04, `load_backend("macos")` returns `NullBackend(MACOS_REASON)`.
+
 ## 3. Locators (`infrastructure/ui/locators.py`)
 
 ```python
@@ -166,6 +204,34 @@ from the PHASE-00 fixtures.
 
 Tabs, sections and `invoke_button` already match by visible name and role. They
 need no locator.
+
+**Amendment 2026-10-10 (PHASE-00, PREVIOUS_WORK 2.4 #2, #6; fixtures in
+`tests/fixtures/macos/`).** PT 9.0.1 on macOS (Qt 6.8.7) **does** fill `AXIdentifier`
+with the Windows objectName paths, so `by_ident` carries over for `select_tool`,
+`applet_title`, `applet_close` (both title variants), `desktop_app(obj)` and
+`ident_suffix(s)` unchanged. Three keys have **no element** on macOS and need a
+`by_shape` (PHASE-05): `logical_canvas` (the nearest element is the `AXGroup`
+ending `m_pViewArea_Window.m_workspaceWS`), `canvas_hbar`/`canvas_vbar` and
+`console_scrollbar` (no `AXScrollBar` is exposed for the canvas or the consoles).
+Two behaviours differ from UIA: (1) sections (Config "Settings"/"FastEthernet0",
+Services "DHCP"...) are **checkable** buttons, and `AXPress` only toggles their check
+without switching the panel; the backend must focus the element and post Space, which
+works only while PT is frontmost; (2) nested applets must be closed **innermost
+(last) first**, and closed applets leave the tree, so no `offscreen` filter is needed.
+
+**Amendment 2026-10-10 (PHASE-05, as built; PREVIOUS_WORK 2.9).** (1) `locate_all` runs
+`by_shape` a second time, over elements **with** an ident, when the first pass (ident →
+`by_ident`, empty → `by_shape`) found nothing: on macOS the canvas exists under another
+objectName (`...m_pViewArea_Window.m_workspaceWS`), which the first pass can never reach.
+A first-pass hit always wins, so Windows matches what it did. `logical_canvas.by_shape` is
+that name. (2) `canvas_hbar`/`canvas_vbar` and `console_scrollbar` have no macOS `by_shape`:
+no canvas scroll bar exists in AX even when the scene does not fit (live), while console
+scroll bars do appear once a console overflows, under the Windows ident rule (ISSUES X12).
+(3) The presenter clicks the view's centre when the device is still outside the view after
+`centerOnComponentByName` (nothing to read the new scroll offset from); with scroll bars the
+recomputed point is used as before. (4) macOS elements keep `Ref(AXUIElement, handle)` as
+`raw`; a checkable button in a device dialog is pressed by focus + Space and verified
+checked, the main window's tools by `AXPress` (`backends/macos/events.py`).
 
 ## 4. External interfaces
 

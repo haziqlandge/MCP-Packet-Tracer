@@ -35,7 +35,7 @@ the **Extensions → MCP BUILDER** menu). It:
    `configurePcIp`, `configurePcIpv6`, `swapLaptopToWireless`, `addModule`);
 2. shows the webview window (HTTP polling lives there);
 3. starts the file-bridge loop, which runs **with the window closed** — it reads
-   commands from `%LOCALAPPDATA%\packet-tracer-mcp\bridge\` and executes them in
+   commands from `bridge/` next to the token, in the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`), and executes them in
    the script engine.
 
 The script engine can read/write files (`ipc.systemFileManager`) but has no

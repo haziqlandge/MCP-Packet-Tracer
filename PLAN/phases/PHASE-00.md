@@ -177,13 +177,13 @@ PREVIOUS_WORK Part 2, add a dated "Local empirical update" to
 
 ## Acceptance criteria
 
-- [ ] Offline suite passes on the Mac; macOS baseline recorded in `CLAUDE.md` §5
-- [ ] `devtools/live_smoke.py` runs `tests/live/setup.json` and `headless.json`; pass/fail per call recorded in PREVIOUS_WORK (failures are expected before PHASE-02)
-- [ ] All 12 questions of `RESEARCH/SYNTHESIS.md` §9 answered in PREVIOUS_WORK Part 2, each with its evidence (command output, file or screenshot)
-- [ ] ≥ 8 AX fixtures committed; `test_macos_fixtures_load.py` passes
-- [ ] Every pyobjc selector and constant used by the probe is listed in PREVIOUS_WORK Part 2 as verified
-- [ ] A dated "Local empirical update" is appended to `RESEARCH/SYNTHESIS.md`
-- [ ] `CODEMAP.md` regenerated; `tests/test_codemap.py` passes
+- [x] Offline suite passes on the Mac; macOS baseline recorded in `CLAUDE.md` §5 — `.venv/bin/python -m pytest -q`: 825 passed, 0 failed in 30.53 s; 2026-10-10
+- [x] `devtools/live_smoke.py` runs `tests/live/setup.json` and `headless.json`; pass/fail per call recorded in PREVIOUS_WORK (failures are expected before PHASE-02) — setup 11/11 ok, headless 18/18 pass over HTTP with V5.2 (PREVIOUS_WORK 2.4 "Live smoke"); 2026-10-10
+- [x] All 12 questions of `RESEARCH/SYNTHESIS.md` §9 answered in PREVIOUS_WORK Part 2, each with its evidence (command output, file or screenshot) — 1–11 in PREVIOUS_WORK 2.4; 12 in 2.6: no offline build (opaque binary), but PT's module editor builds one (Edit → set `main.js` → Export), done on the Mac with the user's go-ahead; 2026-10-10
+- [x] ≥ 8 AX fixtures committed; `test_macos_fixtures_load.py` passes — 8 recorded by `macos_probe ax` (main window, R1 CLI, PC1 Desktop, Command Prompt, Web Browser, Config › FastEthernet0, Email with nested Configure Mail, SRV1 Services › DHCP); 8 passed, full suite 833 passed; no `/Users/` in any fixture; 2026-10-10 (in the working tree, not committed: the user asked for no commits)
+- [x] Every pyobjc selector and constant used by the probe is listed in PREVIOUS_WORK Part 2 as verified — all `perms`/`windows`/`ax`/`press`/`click`/`capture` names exercised on macOS 26.5.1 with pyobjc 12.2.2, including the SCK traps (PREVIOUS_WORK 2.4); 2026-10-10
+- [x] A dated "Local empirical update" is appended to `RESEARCH/SYNTHESIS.md` — "Local empirical update — 2026-10-10"; amendments in CONSTRAINTS (universal binary), INTERFACES §1 + PHASE-01 (responsible app); a second update follows when questions 2, 6, 7, 8 and 12 are measured
+- [x] `CODEMAP.md` regenerated; `tests/test_codemap.py` passes — `devtools/live_smoke.py` and `devtools/macos_probe.py` added; full suite 825 passed, 1 skipped (the empty fixture parametrize), pyflakes clean; 2026-10-10
 
 ## Known failure conditions
 

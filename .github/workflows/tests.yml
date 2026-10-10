@@ -12,9 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Windows is the primary platform (Packet Tracer, clipboard via
-        # clip.exe). Ubuntu runs the same to catch path assumptions.
-        os: [windows-latest, ubuntu-latest]
+        # Every OS the server supports: Windows (clip.exe, Win32 UI mode),
+        # macOS (pbcopy, the macOS UI backend) and Ubuntu (xclip/wl-copy).
+        # OS facts live in infrastructure/platform/, tested on all three.
+        os: [windows-latest, ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.13"]
 
     steps:

@@ -8,13 +8,15 @@ from pathlib import Path
 from datetime import datetime, timezone
 from ...domain.models.plans import TopologyPlan
 from ...shared.utils import safe_name_component, resolve_within
+from ..platform.output import output_root
 
 
 class ProjectRepository:
     """Manages project persistence."""
 
     def __init__(self, base_dir: str | Path = "projects"):
-        self.base_dir = Path(base_dir)
+        # Relative = under output_root() (C11); an absolute path is kept as given.
+        self.base_dir = output_root() / Path(base_dir)
         self.base_dir.mkdir(parents=True, exist_ok=True)
 
     def save_plan(self, plan: TopologyPlan, project_name: str | None = None) -> Path:

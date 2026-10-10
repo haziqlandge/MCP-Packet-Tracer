@@ -173,3 +173,13 @@ class TestFingerprint:
 
     def test_different_tokens_give_different_fingerprints(self, isolated):
         assert token_fingerprint("a" * 40) != token_fingerprint("b" * 40)
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX state directory")
+class TestXdgStateHomeIgnored:
+    """PLAN/INTERFACES.md §5: the extension cannot read XDG_STATE_HOME, so honouring
+    it put the token where PT never looks and broke pairing on Linux and macOS."""
+
+    def test_token_stays_under_home_local_state(self, isolated, monkeypatch):
+        monkeypatch.setenv("XDG_STATE_HOME", str(isolated / "xdg"))
+        assert token_path() == isolated / ".local" / "state" / "packet-tracer-mcp" / "bridge_token"

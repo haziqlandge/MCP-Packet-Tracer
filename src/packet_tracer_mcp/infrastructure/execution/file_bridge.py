@@ -29,6 +29,8 @@ import os
 import time
 from pathlib import Path
 
+from ..platform.base import detect_os
+from ..platform.paths import mailbox_candidates
 from .bridge_token import token_dir
 
 # Mailbox subdirectory, under the same dir as the token.
@@ -39,6 +41,7 @@ HEARTBEAT_FRESH_S = 6.0
 
 
 def bridge_dir() -> Path:
+    """The canonical mailbox, next to the token."""
     return token_dir() / _BRIDGE_SUBDIR
 
 
@@ -48,33 +51,73 @@ def ensure_bridge_dir() -> Path:
     return d
 
 
+def _heartbeat_age(directory: Path) -> float | None:
+    """Seconds since the Script Engine last touched `directory/alive.txt`."""
+    try:
+        return max(0.0, time.time() - (directory / "alive.txt").stat().st_mtime)
+    except OSError:
+        return None
+
+
 class FileBridge:
     """Python side of the file mailbox.
 
     No state of its own beyond a sequence counter; the real state is the
     files on disk, so it survives process restarts.
+
+    The mailbox is wherever the extension's heartbeat is (PLAN/INTERFACES.md §5):
+    the released V5.2 polls a Windows-shaped directory on macOS and Linux, so the
+    server follows the freshest `alive.txt` among the candidates instead of
+    assuming its own path. An explicit `directory` (tests, config) wins.
     """
 
-    def __init__(self, directory: Path | None = None):
-        self.dir = Path(directory) if directory else bridge_dir()
+    def __init__(self, directory: Path | None = None, candidates: list[Path] | None = None):
+        if directory:
+            self.candidates = [Path(directory)]
+        elif candidates:
+            self.candidates = [Path(c) for c in candidates]
+        else:
+            self.candidates = mailbox_candidates(detect_os(), os.environ, Path.home())
         self._seq = 0
 
-    def _ensure(self) -> None:
-        # ALWAYS creates self.dir, not the module default: if a custom
-        # directory was passed (tests, config), creation and writing must
-        # point to the same place.
-        self.dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    def active_dir(self) -> Path:
+        """The candidate with the freshest live heartbeat; the canonical one when
+        none is live. Evaluated on every call: a cached choice would pile requests
+        up in a mailbox nobody reads once PT restarts or switches."""
+        fresh = []
+        for d in self.candidates:
+            age = _heartbeat_age(d)
+            if age is not None and age < HEARTBEAT_FRESH_S:
+                fresh.append((age, d))
+        return min(fresh, key=lambda t: t[0])[1] if fresh else self.candidates[0]
+
+    @property
+    def dir(self) -> Path:
+        return self.active_dir()
+
+    def _ensure(self, directory: Path | None = None) -> None:
+        # Creates the directory being written to (the active one by default), not
+        # the module default: if a custom directory was passed (tests, config),
+        # creation and writing must point to the same place. A legacy candidate is
+        # only ever active when PT already created it, so the server never creates
+        # the legacy tree.
+        (directory or self.active_dir()).mkdir(parents=True, exist_ok=True, mode=0o700)
 
     # -- Script Engine liveness ----------------------------------------
 
     def pt_alive(self) -> bool:
-        """True if the Script Engine touched its heartbeat recently."""
-        alive = self.dir / "alive.txt"
-        try:
-            age = time.time() - alive.stat().st_mtime
-        except OSError:
-            return False
-        return age < HEARTBEAT_FRESH_S
+        """True if the Script Engine touched a heartbeat recently, in any candidate."""
+        age = _heartbeat_age(self.active_dir())
+        return age is not None and age < HEARTBEAT_FRESH_S
+
+    def mailbox_status(self) -> dict:
+        """Which mailbox is in use, for diagnostics. `legacy` means PT is polling a
+        directory other than the canonical one (the released V5.2 on macOS/Linux)."""
+        d = self.active_dir()
+        age = _heartbeat_age(d)
+        alive = age is not None and age < HEARTBEAT_FRESH_S
+        return {"dir": str(d), "alive": alive, "age_s": round(age, 1) if alive else None,
+                "legacy": d != self.candidates[0]}
 
     # -- sending ----------------------------------------------------------
 
@@ -98,10 +141,11 @@ class FileBridge:
 
     def send(self, js_code: str) -> bool:
         """Queues a fire-and-forget command. Does not wait for a result."""
+        directory = self.active_dir()
         try:
-            self._ensure()
+            self._ensure(directory)
             name = self._next_name()
-            self._write_atomic(self.dir / f"req_{name}.js", js_code)
+            self._write_atomic(directory / f"req_{name}.js", js_code)
             return True
         except OSError:
             return False
@@ -110,16 +154,18 @@ class FileBridge:
         """Queues a command and waits for its res_<name>.txt.
 
         The Script Engine wraps the execution and writes the result; here the
-        appearance of the response file is polled and then consumed.
+        appearance of the response file is polled and then consumed. The answer
+        is read from the same mailbox the request went to.
         """
+        directory = self.active_dir()
         try:
-            self._ensure()
+            self._ensure(directory)
         except OSError:
             return None
         name = self._next_name()
-        res_path = self.dir / f"res_{name}.txt"
+        res_path = directory / f"res_{name}.txt"
         try:
-            self._write_atomic(self.dir / f"req_{name}.js", js_code)
+            self._write_atomic(directory / f"req_{name}.js", js_code)
         except OSError:
             return None
 

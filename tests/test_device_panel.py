@@ -9,7 +9,6 @@ import asyncio
 import json
 import struct
 import zlib
-from types import SimpleNamespace
 
 import pytest
 from mcp.server.fastmcp import FastMCP
@@ -26,6 +25,7 @@ from src.packet_tracer_mcp.infrastructure.generator.host_js import (
     host_ip_config_js, read_device_panel_js, remove_module_js,
 )
 from src.packet_tracer_mcp.infrastructure.ui import names
+from src.packet_tracer_mcp.infrastructure.ui.backend import Role, UiElement
 from src.packet_tracer_mcp.infrastructure.ui.png import bgra_to_png, looks_blank
 from src.packet_tracer_mcp.infrastructure.ui.presenter import (
     PresenterError, center_on_js, device_state_js, show_dialog_js,
@@ -99,7 +99,8 @@ _FRAME = ("m_titleFrame", "m_titleLable", "m_closeBtn")
 
 
 def _el(aid: str, name: str = ""):
-    return SimpleNamespace(automation_id=aid, name=name, offscreen=False, control_type=0)
+    return UiElement(raw=None, name=name, ident=aid, role=Role.OTHER, offscreen=False,
+                     bounds=(0, 0, 0, 0))
 
 
 class FakeDesktopUia:
@@ -111,7 +112,7 @@ class FakeDesktopUia:
         self.panels = list(panels)  # [(ruta bajo CDesktopApplet, título, cabecera)]
         self.invoked: list[str] = []
 
-    def descendants(self, hwnd, control_type=None):
+    def elements(self, hwnd, role=None):
         if not self.panels:
             return [_el(f"{_DESK}.m_desktopFrame.{b}")
                     for b in ("IPConfigBtn", "CommandPromptBtn", "EmailBtn", "FirewallBtn")]
@@ -121,11 +122,11 @@ class FakeDesktopUia:
             out += [_el(base), _el(f"{base}.{label}", title), _el(f"{base}.{close}", "close")]
         return out
 
-    def invoke(self, el):
-        self.invoked.append(el.automation_id.rsplit(".", 1)[-1])
-        if el.automation_id.endswith(("m_closeButton", "m_closeBtn")):
+    def press(self, el):
+        self.invoked.append(el.ident.rsplit(".", 1)[-1])
+        if el.ident.endswith(("m_closeButton", "m_closeBtn")):
             innermost = self.panels[-1][0]
-            if f"CDesktopApplet.{innermost}." in el.automation_id:
+            if f"CDesktopApplet.{innermost}." in el.ident:
                 self.panels.pop()
 
 
@@ -138,7 +139,7 @@ _MAIL_CFG = ("CBaseWorkstationMailBrowser.BaseWorkstationMailConfiguration", "Co
 class TestOpenApp:
     def _open(self, u, app, **kw):
         from src.packet_tracer_mcp.infrastructure.ui.presenter import Presenter
-        return Presenter(lambda js, t: None, sleep=lambda s: None)._open_app(u, 1, app, **kw)
+        return Presenter(lambda js, t: None, sleep=lambda s: None, backend=u)._open_app(1, app, **kw)
 
     def test_clean_desktop(self):
         u = FakeDesktopUia()
@@ -252,6 +253,9 @@ class FakePresenter:
         self.fail = fail
         self.opened: list[dict] = []
         self.captured: list = []
+
+    def available(self, *, request=False):
+        return True, ""
 
     def device_info(self, device):
         return {"host": self.host}

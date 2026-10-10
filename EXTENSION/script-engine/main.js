@@ -40,15 +40,39 @@ function startBridge() {
  * webview requests it with $se("getMcpToken"), which returns a Promise.
  * The user does nothing: they install the extension and it works.
  */
+/*
+ * Home directory from PT's user folder (PLAN/INTERFACES.md §5).
+ * getUserFolder() -> "C:/Users/<user>/Cisco Packet Tracer 9.0.0" on Windows,
+ * "/Users/<user>/Cisco Packet Tracer 9.0.1" on macOS, "/home/<user>/pt" on Linux.
+ * The home is matched, not cut at the last "/": a user folder moved under
+ * ~/Documents must still give the home. Backslashes are normalised first.
+ */
+function mcpHomeFromUserFolder(uf) {
+    uf = String(uf || "").replace(/\\/g, "/").replace(/\/+$/, "");
+    var m = uf.match(/^[A-Za-z]:\/Users\/[^\/]+/) || uf.match(/^\/Users\/[^\/]+/) ||
+            uf.match(/^\/home\/[^\/]+/) || uf.match(/^\/root(?=\/|$)/);
+    if (m) { return m[0]; }
+    var cut = uf.lastIndexOf("/");
+    return cut > 0 ? uf.substring(0, cut) : "";
+}
+
+/*
+ * Where the server may have put the token, in the order this OS makes likely:
+ * a Windows-shaped home puts %LOCALAPPDATA% first, any other home puts
+ * ~/.local/state first. Both sides of the pairing compute the same paths (C5).
+ */
 function mcpTokenCandidates() {
     var paths = [];
     try {
-        // getUserFolder() -> "C:/Users/<user>/Cisco Packet Tracer 9.0.0"
-        var uf = String(ipc.appWindow().getUserFolder());
-        var home = uf.substring(0, uf.lastIndexOf("/"));
+        var home = mcpHomeFromUserFolder(ipc.appWindow().getUserFolder());
         if (home) {
-            paths.push(home + "/AppData/Local/packet-tracer-mcp/bridge_token");
-            paths.push(home + "/.local/state/packet-tracer-mcp/bridge_token");
+            var appData = home + "/AppData/Local/packet-tracer-mcp/bridge_token";
+            var localState = home + "/.local/state/packet-tracer-mcp/bridge_token";
+            if (/^[A-Za-z]:\//.test(home)) {
+                paths.push(appData, localState);
+            } else {
+                paths.push(localState, appData);
+            }
             paths.push(home + "/.packet-tracer-mcp/bridge_token");
         }
     } catch (e) {}
@@ -119,13 +143,20 @@ function fileBridgeStatus() {
 }
 
 function mcpBridgeDir() {
-    // The mailbox lives next to the token: <token dir>/bridge.
+    // The mailbox lives next to the token: <token dir>/bridge. It is the
+    // directory of the first candidate whose token EXISTS; released V5.2 took
+    // the first candidate unchecked, which on a Mac was ~/AppData/Local while
+    // the server wrote to ~/.local/state (ISSUES X1). With no token anywhere,
+    // the OS default (the first candidate).
     var paths = mcpTokenCandidates();
+    var fm = null;
+    try { fm = ipc.systemFileManager(); } catch (e) {}
     for (var i = 0; i < paths.length; i++) {
-        var base = paths[i].replace(/\/bridge_token$/, "");
-        if (base !== paths[i]) return base + "/bridge";
+        try {
+            if (fm && fm.fileExists(paths[i])) { return paths[i].replace(/\/bridge_token$/, "/bridge"); }
+        } catch (e) {}
     }
-    return "";
+    return paths.length ? paths[0].replace(/\/bridge_token$/, "/bridge") : "";
 }
 
 /* Runs the JS of a req, capturing whatever it reports, without touching the
@@ -145,7 +176,13 @@ function fileBridgeTick() {
     var fm;
     try { fm = ipc.systemFileManager(); } catch (e) { return schedule(FILE_BRIDGE_TICK_IDLE_MS); }
 
-    var dir = _fileBridgeDir || (_fileBridgeDir = mcpBridgeDir());
+    // Cached only once a token was found: if PT starts before the server, the
+    // token appears later and the mailbox must follow it.
+    var dir = _fileBridgeDir;
+    if (!dir) {
+        dir = mcpBridgeDir();
+        if (getMcpToken()) { _fileBridgeDir = dir; }
+    }
     if (!dir) return schedule(FILE_BRIDGE_TICK_IDLE_MS);
 
     try {

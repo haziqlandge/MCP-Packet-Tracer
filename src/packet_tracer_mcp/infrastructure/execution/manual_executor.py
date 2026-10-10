@@ -10,6 +10,7 @@ from ...domain.models.plans import TopologyPlan
 from ..generator.ptbuilder_generator import generate_ptbuilder_script, generate_full_script
 from ..generator.cli_config_generator import generate_all_configs
 from ...shared.utils import safe_name_component, resolve_within
+from ..platform.output import output_root
 from .executor_base import ExecutorBase
 
 
@@ -17,7 +18,8 @@ class ManualExecutor(ExecutorBase):
     """Generates output files for manual execution."""
 
     def __init__(self, output_dir: str | Path = "projects"):
-        self.output_dir = Path(output_dir)
+        # Relative = under output_root() (C11); an absolute path is kept as given.
+        self.output_dir = output_root() / Path(output_dir)
 
     def execute(self, plan: TopologyPlan, project_name: str | None = None) -> dict:
         """Generates all the files for the topology."""

@@ -122,12 +122,12 @@ finding. Record it, keep X3 open, and rely on the server-side discovery.
 
 ## Acceptance criteria
 
-- [ ] New tests pass; `test_main_js_paths.py` failed before the `main.js` change (record the failing output in PREVIOUS_WORK)
-- [ ] Live, Mac, V5.2: HTTP pairs and `pt_bridge_status` shows the token fingerprint (`EVALUATION.md` §3)
-- [ ] Live, Mac, V5.2, Control Center closed: `pt_query_topology` answers through the mailbox; `mailbox.legacy` reported correctly
-- [ ] Live, Mac: both start orders pair within 10 s (`EVALUATION.md` §3)
-- [ ] Live, Mac: `tests/live/headless.json` passes every call (`EVALUATION.md` §4)
-- [ ] `.pts` build route recorded (built and tested, or "none found" with ISSUES X3 kept open)
+- [x] New tests pass; `test_main_js_paths.py` failed before the `main.js` change (record the failing output in PREVIOUS_WORK) — before: 5 failed, 1 passed (PREVIOUS_WORK 2.6); after: 6 passed, `node --check` clean; discovery 15 passed; full suite 927 passed; 2026-10-10
+- [x] Live, Mac, V5.2: HTTP pairs and `pt_bridge_status` shows the token fingerprint (`EVALUATION.md` §3) — "CONNECTED over HTTP" with the released V5.2 (headless 18/18 over HTTP, PREVIOUS_WORK 2.4); bridge `/ping` id `9b0f882620d40cb3` == fingerprint of `~/.local/state/packet-tracer-mcp/bridge_token` (the identity check `pt_bridge_status` runs); 2026-10-10
+- [x] Live, Mac, V5.2, Control Center closed: `pt_query_topology` answers through the mailbox; `mailbox.legacy` reported correctly — window closed via its AX close button; `pt_bridge_status`: "CONNECTED over file-bridge … file mailbox: ~/AppData/Local/packet-tracer-mcp/bridge (legacy location polled by the released V5.2 extension)"; `pt_query_topology` 5 devices / 3 links in ~2 s. Caveat: for 10 s after the window closes the HTTP bridge still reports connected and commands are lost (ISSUES X10); 2026-10-10
+- [x] Live, Mac: both start orders pair within 10 s (`EVALUATION.md` §3) — released V5.2. PT before server (old bridge stopped, fresh bridge from this checkout at 15:43:53): file at once, HTTP +1.5 s. Server before PT (PT quit via its menu, relaunched 15:45:19): file +5 s (legacy mailbox), HTTP +8 s; 2026-10-10
+- [x] Live, Mac: `tests/live/headless.json` passes every call (`EVALUATION.md` §4) — 18/18 over the **file channel** with the Control Center closed (released V5.2, legacy mailbox), and 18/18 over HTTP earlier; no Traceback/NameError/PT_ERROR/EXCEPTION/timeout; 2026-10-10
+- [x] `.pts` build route recorded (built and tested, or "none found" with ISSUES X3 kept open) — built in PT's module editor (Export) and, with the user's OK, installed in place of V5.2 (Remove + Add + Launch): the extension reports `fileBridgeStatus().dir` = `~/.local/state/packet-tracer-mcp/bridge`, token search `.local/state` first; `pt_bridge_status` "file mailbox: ~/.local/state/packet-tracer-mcp/bridge" (no legacy note); window closed → `pt_open_project` + `pt_query_topology` (5 devices / 3 links) over the canonical mailbox; HTTP re-pairs on reopen (PREVIOUS_WORK 2.6); 2026-10-10
 
 ## Known failure conditions
 

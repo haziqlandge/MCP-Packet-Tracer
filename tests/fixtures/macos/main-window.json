@@ -1,0 +1,2098 @@
+{
+ "recorded": "2026-10-10",
+ "macos": "26.5.1",
+ "pt": "9.0.1",
+ "qt": "6.8.7",
+ "scale": 2.0,
+ "window": {
+  "title": "Cisco Packet Tracer - ~/packet tracer/backups/pre-phase00-canvas-2026-10-10.pkt",
+  "cg_id": 3510,
+  "frame": [
+   0.0,
+   33.0,
+   1512.0,
+   876.0
+  ]
+ },
+ "tree": {
+  "role": "AXWindow",
+  "subrole": "AXStandardWindow",
+  "title": "Cisco Packet Tracer - ~/packet tracer/backups/pre-phase00-canvas-2026-10-10.pkt",
+  "description": "",
+  "identifier": "",
+  "value": "",
+  "frame": [
+   0.0,
+   33.0,
+   1512.0,
+   876.0
+  ],
+  "actions": [
+   "AXRaise"
+  ],
+  "children": [
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Logical Mode",
+    "description": "Logical Mode (Shift+L)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalSwitch",
+    "value": "1",
+    "frame": [
+     0.0,
+     144.0,
+     88.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Physical Mode",
+    "description": "Physical Mode (Shift+P)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_physicalSwitch",
+    "value": "0",
+    "frame": [
+     90.0,
+     144.0,
+     92.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "X and Y coordinates of mouse",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_xyLabel",
+    "value": "X and Y coordinates of mouse",
+    "frame": [
+     185.0,
+     156.0,
+     139.0,
+     10.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXTextField",
+    "subrole": "",
+    "title": "Current Cluster Name",
+    "description": "Root",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_curClusterNameLbl",
+    "value": "Root",
+    "frame": [
+     922.0,
+     153.0,
+     350.0,
+     16.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Go Back One Level (Alt+Left)",
+    "description": "Go Back One Level (Alt+Left)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_BtnBack",
+    "value": "",
+    "frame": [
+     1273.0,
+     145.0,
+     37.0,
+     33.0
+    ],
+    "actions": [],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Create New Cluster (Shift+U)",
+    "description": "Create New Cluster (Shift+U)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_createClusterBtn",
+    "value": "",
+    "frame": [
+     1311.0,
+     144.0,
+     39.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Move Object(Shift+M)",
+    "description": "Move Object(Shift+M)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_moveBtn",
+    "value": "",
+    "frame": [
+     1351.0,
+     145.0,
+     37.0,
+     33.0
+    ],
+    "actions": [],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Set Background Image (Shift+I)",
+    "description": "Set Background Image (Shift+I)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_setBGImageBtn",
+    "value": "",
+    "frame": [
+     1389.0,
+     144.0,
+     39.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Environment (Shift+E)",
+    "description": "Environment (Shift+E)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_PLFrame.m_logicalToolbar.m_environmentBtn",
+    "value": "",
+    "frame": [
+     1429.0,
+     144.0,
+     82.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXGroup",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_pWorkSpaceWnd.m_pViewArea_Window.m_workspaceWS",
+    "value": "",
+    "frame": [
+     0.0,
+     180.0,
+     1512.0,
+     526.0
+    ],
+    "actions": [],
+    "children": [
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "Workspace Description",
+      "description": "Workspace Description",
+      "identifier": "Workspace Description",
+      "value": "",
+      "frame": [
+       0.0,
+       180.0,
+       1512.0,
+       526.0
+      ],
+      "actions": [],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "Time",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_RSFrame.CRealtimeToolbar.m_timeLbl",
+    "value": "Time: 01:20:09",
+    "frame": [
+     17.0,
+     719.0,
+     73.0,
+     11.0
+    ],
+    "actions": [
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Power Cycle Devices (Alt+S)",
+    "description": "Power Cycle Devices (Alt+S)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_RSFrame.CRealtimeToolbar.ResetNetworkBtn",
+    "value": "",
+    "frame": [
+     91.0,
+     707.0,
+     39.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Fast Forward Time (Alt+D)",
+    "description": "Fast Forward Time (Alt+D)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_RSFrame.CRealtimeToolbar.FastForwardTimeBtn",
+    "value": "",
+    "frame": [
+     131.0,
+     707.0,
+     39.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Realtime Mode",
+    "description": "Realtime Mode (Shift+R)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_RSFrame.m_realtimeSwitch",
+    "value": "1",
+    "frame": [
+     1307.0,
+     707.0,
+     98.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Simulation Mode",
+    "description": "Simulation Mode (Shift+S)",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_RSFrame.m_simulationSwitch",
+    "value": "0",
+    "frame": [
+     1407.0,
+     707.0,
+     105.0,
+     35.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXSplitGroup",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter",
+    "value": "",
+    "frame": [
+     0.0,
+     743.0,
+     1512.0,
+     166.0
+    ],
+    "actions": [],
+    "children": [
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Scenario Information",
+      "description": "Description of what this scenario represents.",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.UserCreatedPDU.m_scenarioInfoBtn",
+      "value": "",
+      "frame": [
+       748.0,
+       766.0,
+       36.0,
+       32.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXComboBox",
+      "subrole": "",
+      "title": "Scenario 0",
+      "description": "",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.UserCreatedPDU.m_scenarioComboBox",
+      "value": "",
+      "frame": [
+       781.0,
+       767.0,
+       120.0,
+       32.0
+      ],
+      "actions": [
+       "AXShowMenu",
+       "AXPress"
+      ],
+      "children": [
+       {
+        "role": "AXTextField",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.UserCreatedPDU.m_scenarioComboBox.QLineEdit",
+        "value": "Scenario 0",
+        "frame": [
+         787.0,
+         774.0,
+         89.0,
+         17.0
+        ],
+        "actions": [
+         "AXRaise"
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "New",
+      "description": "Add another scenario.",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.UserCreatedPDU.NewScenarioBtn",
+      "value": "",
+      "frame": [
+       773.0,
+       822.0,
+       34.0,
+       23.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXButton",
+      "subrole": "",
+      "title": "Delete",
+      "description": "Delete the current scenario including the user PDUs",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.UserCreatedPDU.DeleteScenarioBtn",
+      "value": "",
+      "frame": [
+       832.0,
+       822.0,
+       44.0,
+       23.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Toggle PDU list window",
+      "description": "Expands the PDU list table into a dock window",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.UserCreatedPDU.OpenListWindowBtn",
+      "value": "0",
+      "frame": [
+       758.0,
+       865.0,
+       133.0,
+       23.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXOutline",
+      "subrole": "",
+      "title": "List of user packets",
+      "description": "",
+      "identifier": "List of user packets",
+      "value": "",
+      "frame": [
+       907.0,
+       744.0,
+       604.0,
+       164.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       },
+       {
+        "role": "AXColumn",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "List of user packets",
+        "value": "",
+        "frame": [
+         0.0,
+         0.0,
+         0.0,
+         0.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "User Created PDU toggle",
+      "description": "",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_expandPacketWindowBtn",
+      "value": "1",
+      "frame": [
+       728.0,
+       743.0,
+       15.0,
+       166.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Network Devices",
+      "description": "Network Devices Ctrl+Alt+R",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_Network_Devices",
+      "value": "0",
+      "frame": [
+       3.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "End Devices",
+      "description": "End Devices Ctrl+Alt+V",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_End_Devices",
+      "value": "0",
+      "frame": [
+       51.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Components",
+      "description": "Components Ctrl+Alt+B",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_Components",
+      "value": "0",
+      "frame": [
+       99.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Connections",
+      "description": "Connections Ctrl+Alt+O",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_Connections",
+      "value": "0",
+      "frame": [
+       147.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Miscellaneous",
+      "description": "Miscellaneous Ctrl+Alt+E",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_Miscellaneous",
+      "value": "0",
+      "frame": [
+       195.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Multiuser Connection",
+      "description": "Multiuser Connection Ctrl+Alt+M",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_Multiuser_Connection",
+      "value": "0",
+      "frame": [
+       243.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Legacy",
+      "description": "Legacy Devices",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.group_Legacy",
+      "value": "0",
+      "frame": [
+       291.0,
+       753.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXImage",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.QLabel",
+      "value": "",
+      "frame": [
+       3.0,
+       818.0,
+       13.0,
+       22.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXTextField",
+      "subrole": "",
+      "title": "Search for device",
+      "description": "Search for device",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.CDeviceTypesBox_SearchInput",
+      "value": "",
+      "frame": [
+       18.0,
+       818.0,
+       307.0,
+       22.0
+      ],
+      "actions": [
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Routers",
+      "description": "Routers Ctrl+Alt+R",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.type_Routers",
+      "value": "0",
+      "frame": [
+       3.0,
+       854.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Switches",
+      "description": "Switches Ctrl+Alt+S",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.type_Switches",
+      "value": "0",
+      "frame": [
+       59.0,
+       854.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Hubs",
+      "description": "Hubs Ctrl+Alt+U",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.type_Hubs",
+      "value": "0",
+      "frame": [
+       115.0,
+       854.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Wireless Devices",
+      "description": "Wireless Devices Ctrl+Alt+W",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.type_Wireless_Devices",
+      "value": "0",
+      "frame": [
+       171.0,
+       854.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Security",
+      "description": "Security Ctrl+Alt+C",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.type_Security",
+      "value": "0",
+      "frame": [
+       227.0,
+       854.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "WAN Emulation",
+      "description": "WAN Emulation Ctrl+Alt+N",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceTypesBox.type_WAN_Emulation",
+      "value": "0",
+      "frame": [
+       283.0,
+       854.0,
+       45.0,
+       45.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXStaticText",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.CDeviceLabel",
+      "value": "2901",
+      "frame": [
+       328.0,
+       889.0,
+       396.0,
+       20.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "1841",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_1841",
+      "value": "0",
+      "frame": [
+       1073.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "1941",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_1941",
+      "value": "0",
+      "frame": [
+       543.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "2620XM",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_2620XM",
+      "value": "0",
+      "frame": [
+       1126.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "2621XM",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_2621XM",
+      "value": "0",
+      "frame": [
+       1179.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "2901",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_2901",
+      "value": "0",
+      "frame": [
+       596.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "2911",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_2911",
+      "value": "0",
+      "frame": [
+       649.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "819HG-4G-IOX",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_819HG_4G_IOX",
+      "value": "0",
+      "frame": [
+       702.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "819HGW",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_819HGW",
+      "value": "0",
+      "frame": [
+       755.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "829",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_829",
+      "value": "0",
+      "frame": [
+       808.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "CGR1240",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_CGR1240",
+      "value": "0",
+      "frame": [
+       861.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "IR1101",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_IR1101",
+      "value": "0",
+      "frame": [
+       914.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "IR8340",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_IR8340",
+      "value": "0",
+      "frame": [
+       490.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "ISR4321",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_ISR4321",
+      "value": "0",
+      "frame": [
+       437.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "ISR4331",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_ISR4331",
+      "value": "0",
+      "frame": [
+       384.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "PT8200",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_PT8200",
+      "value": "0",
+      "frame": [
+       331.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Router-PT",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_Router_PT",
+      "value": "0",
+      "frame": [
+       967.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "Router-PT-Empty",
+      "description": "stock",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_Router_PT_Empty",
+      "value": "0",
+      "frame": [
+       1020.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXCheckBox",
+      "subrole": "",
+      "title": "2811 IOS15",
+      "description": "custom",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.m_pNetWorkCompBox.CDeviceSpecificBox.scroll_Routers.qt_scrollarea_viewport.scroll_frame_Routers.device_Routers_2811",
+      "value": "0",
+      "frame": [
+       1232.0,
+       746.0,
+       48.0,
+       48.0
+      ],
+      "actions": [
+       "AXPress",
+       "AXPress",
+       "AXRaise"
+      ],
+      "children": []
+     },
+     {
+      "role": "AXGrowArea",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.qt_splithandle_",
+      "value": "",
+      "frame": [
+       724.0,
+       743.0,
+       4.0,
+       166.0
+      ],
+      "actions": [],
+      "children": []
+     },
+     {
+      "role": "AXGrowArea",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "PtApp.CAppWindowBase.centralwidget.m_pNetWorkCompBoxFrame.m_bottomSplitter.qt_splithandle_",
+      "value": "",
+      "frame": [
+       743.0,
+       743.0,
+       4.0,
+       166.0
+      ],
+      "actions": [],
+      "children": []
+     }
+    ]
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "New",
+    "description": "New",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     1.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Open",
+    "description": "Open",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     43.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Save",
+    "description": "Save",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     85.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Print",
+    "description": "Print",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     127.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Network Information",
+    "description": "Network Information",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     169.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "User Profile",
+    "description": "Set the name, email, and additional information to be used for submission of this file. Profile is unrelated to your login information and status.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     211.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Activity Wizard",
+    "description": "Open the Activity Wizard to create your own PKA activities.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     253.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Copy",
+    "description": "Copy",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     305.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Paste",
+    "description": "Paste",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     347.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Undo",
+    "description": "Undo",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     389.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Redo",
+    "description": "Redo",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     431.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Zoom In",
+    "description": "Zoom In",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     483.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Zoom Reset",
+    "description": "Zoom Reset",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     525.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Zoom Out",
+    "description": "Zoom Out",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     567.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "View the entire workspace.",
+    "description": "View the entire workspace.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.Show Viewport",
+    "value": "",
+    "frame": [
+     609.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "View the workspace as a tabular list of devices and links.",
+    "description": "View the workspace as a tabular list of devices and links.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.Show Workspace List",
+    "value": "",
+    "frame": [
+     651.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "View all commands entered in this file.",
+    "description": "View all commands entered in this file.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.View Command Log",
+    "value": "",
+    "frame": [
+     703.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Custom Devices Dialog",
+    "description": "Customize any existing device model with pre-installed modules and IOS versions.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     745.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Cluster Associations Dialog",
+    "description": "Associate Logical Workspace clusters to Physical Workspace containers.",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     787.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QLabel",
+    "value": "",
+    "frame": [
+     829.0,
+     62.0,
+     640.0,
+     38.0
+    ],
+    "actions": [],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "",
+    "title": "Contents",
+    "description": "Contents",
+    "identifier": "PtApp.CAppWindowBase.m_pToolBar.QToolButton",
+    "value": "",
+    "frame": [
+     1473.0,
+     62.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Select (Esc)",
+    "description": "Select (Esc)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "1",
+    "frame": [
+     1.0,
+     102.0,
+     40.0,
+     40.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Inspect (I)",
+    "description": "Inspect (I)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     45.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Delete (Del)",
+    "description": "Delete (Del)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     87.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Resize (Alt+R)",
+    "description": "Resize (Alt+R)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     129.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Place Note (N)",
+    "description": "Place Note (N)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     181.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Draw Line (L)",
+    "description": "Draw Line (L)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     223.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Draw Rectangle (R)",
+    "description": "Draw Rectangle (R)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     265.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Draw Ellipse (E)",
+    "description": "Draw Ellipse (E)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     307.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Draw Freeform (F)",
+    "description": "Draw Freeform (F)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     349.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Add Simple PDU (P)",
+    "description": "Add Simple PDU (P)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     401.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXCheckBox",
+    "subrole": "",
+    "title": "Add Complex PDU (C)",
+    "description": "Add Complex PDU (C)",
+    "identifier": "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton",
+    "value": "0",
+    "frame": [
+     443.0,
+     103.0,
+     38.0,
+     38.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXPress",
+     "AXRaise"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXCloseButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     8.0,
+     40.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXFullScreenButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     48.0,
+     40.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress",
+     "AXZoomWindow",
+     "AXShowMenu"
+    ],
+    "children": [
+     {
+      "role": "AXGroup",
+      "subrole": "",
+      "title": "",
+      "description": "",
+      "identifier": "",
+      "value": "",
+      "frame": [
+       47.0,
+       39.0,
+       14.0,
+       16.0
+      ],
+      "actions": [],
+      "children": [
+       {
+        "role": "AXGroup",
+        "subrole": "",
+        "title": "",
+        "description": "",
+        "identifier": "",
+        "value": "",
+        "frame": [
+         47.0,
+         39.0,
+         14.0,
+         16.0
+        ],
+        "actions": [],
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "role": "AXButton",
+    "subrole": "AXMinimizeButton",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "",
+    "frame": [
+     28.0,
+     40.0,
+     12.0,
+     14.0
+    ],
+    "actions": [
+     "AXPress"
+    ],
+    "children": []
+   },
+   {
+    "role": "AXStaticText",
+    "subrole": "",
+    "title": "",
+    "description": "",
+    "identifier": "",
+    "value": "Cisco Packet Tracer - ~/packet tracer/backups/pre-phase00-canvas-2026-10-10.pkt",
+    "frame": [
+     449.0,
+     38.0,
+     613.0,
+     16.0
+    ],
+    "actions": [],
+    "children": []
+   }
+  ]
+ }
+}

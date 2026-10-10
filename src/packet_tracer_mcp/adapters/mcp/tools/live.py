@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import time
+from pathlib import Path
 from mcp.server.fastmcp import FastMCP
 from ....domain.models.plans import TopologyPlan
 from ....domain.models.requests import TopologyRequest
@@ -24,6 +25,21 @@ from ....infrastructure.execution.bridge_token import token_was_rotated, token_i
 from ..bridge_context import BridgeContext, DEPLOY_BATCH
 from ....shared.enums import RoutingProtocol, TopologyTemplate
 from ....shared.utils import js_escape, safe_name_component, classify_ping as _classify_ping
+
+
+def mailbox_line(status: dict) -> str:
+    """One status line naming the file mailbox PT polls, home shown as `~`.
+
+    `legacy` is the Windows-shaped directory the released V5.2 extension polls on
+    macOS and Linux (PLAN/INTERFACES.md §5): worth saying, because a rebuilt
+    extension moves it to the canonical directory.
+    """
+    home = str(Path.home())
+    shown = status["dir"]
+    if home != "/" and shown.startswith(home):
+        shown = "~" + shown[len(home):]
+    note = " (legacy location polled by the released V5.2 extension)" if status.get("legacy") else ""
+    return f"  • file mailbox: {shown}{note}"
 
 
 # --- Device console (real ping) ----------------------------------------------
@@ -519,11 +535,13 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         if ctx.instance is not None and ctx.instance._client_headers:
             hdr = f"\nPT client headers: {ctx.instance._client_headers}"
 
+        mailbox = ("\n" + mailbox_line(_file_bridge.mailbox_status())) if file_alive else ""
         if http_connected and file_alive:
             return (
                 "CONNECTED over both channels:\n"
                 f"  • HTTP (window open) — http://127.0.0.1:{_BRIDGE_PORT}\n"
-                "  • file-bridge (Script Engine, keeps working if you close the window)" + hdr
+                "  • file-bridge (Script Engine, keeps working if you close the window)"
+                + mailbox + hdr
             )
         if http_connected:
             return (
@@ -537,7 +555,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                 "CONNECTED over file-bridge (the window is closed, but PT is still "
                 "open with the extension). Deployment works the same, a bit "
                 "slower than over HTTP. Open MCP Control Center if you want the HTTP "
-                "channel and the log panel."
+                "channel and the log panel." + mailbox
             )
 
         # No channel.

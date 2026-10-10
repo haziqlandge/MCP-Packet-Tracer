@@ -138,12 +138,13 @@ Class: `PTCommandBridge` — Singleton with `ThreadingHTTPServer`, thread-safe Q
 Authenticated with an auto-generated local token (see `bridge_token.py`).
 
 ### `file_bridge.py` — File Bridge (window closed)
-File mailbox under `%LOCALAPPDATA%\packet-tracer-mcp\bridge\`: the server writes
+File mailbox `bridge/` under the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`), or wherever the extension's heartbeat is (the
+released V5.2 polls `~/AppData/Local/packet-tracer-mcp/bridge` on macOS and Linux): the server writes
 `req_*.js`, the Script Engine reads it, runs it and returns `res_*.txt`.
 Class: `FileBridge` — `send(js)`, `send_and_wait(js, timeout)`.
 
 ### `bridge_token.py` — HTTP bridge token
-Auto-generated local token (under `%LOCALAPPDATA%`) that authenticates the HTTP bridge. No
+Auto-generated local token (in the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`)) that authenticates the HTTP bridge. No
 manual bootstrap or pairing; the server and the extension read it from disk.
 
 ---

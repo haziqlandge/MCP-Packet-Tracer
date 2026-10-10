@@ -30,9 +30,13 @@ MODULES: dict[str, str] = {
     "infrastructure/execution/": "live HTTP bridge, file bridge, token, console session engine",
     "infrastructure/generator/": "PTBuilder JS and IOS CLI generators (json.dumps for every JS field)",
     "infrastructure/persistence/": "project repository (save/load plans)",
-    "infrastructure/ui/": "UI mode: Win32 + UI Automation presenter (Windows, [ui] extra)",
+    "infrastructure/platform/": "the one home of OS facts: state dir, mailbox candidates, clipboard, output root, host",
+    "infrastructure/ui/": "UI mode: OS-agnostic presenter, WindowBackend seam (backend.py), widget locators",
+    "infrastructure/ui/backends/": "one UI backend per OS, load_backend(); windows/ = Win32 + UI Automation ([ui] extra), null elsewhere",
     "shared/": "constants, enums, ui_mode store, utils (safe paths, js_escape, to_json, reply_json)",
     "devtools/codemap.py": "this generator",
+    "devtools/live_smoke.py": "runs tests/live/*.json tool calls from this checkout against a live PT",
+    "devtools/macos_probe.py": "macOS probe: TCC permissions, CG/AX windows, AX tree fixtures, click and capture routes",
 }
 
 HEADER = """# CODEMAP

@@ -30,6 +30,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
     "Intended Audience :: System Administrators",
+    "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
@@ -46,13 +47,23 @@ dependencies = [
     # startup at the first @mcp.tool() with a PydanticUserError. Keep both in sync.
     "mcp[cli]>=1.13,<2",
     "pydantic>=2.11,<3",
+    # UI mode (open/capture the device windows) installs by itself on the OS
+    # that uses it: UI Automation through comtypes on Windows, Accessibility /
+    # Core Graphics / ScreenCaptureKit through pyobjc on macOS (floors: the
+    # versions verified on the Mac in PHASE-00). Nothing extra on Linux.
+    "comtypes>=1.4; sys_platform == 'win32'",
+    "pyobjc-core>=12.2; sys_platform == 'darwin'",
+    "pyobjc-framework-Cocoa>=12.2; sys_platform == 'darwin'",
+    "pyobjc-framework-Quartz>=12.2; sys_platform == 'darwin'",
+    "pyobjc-framework-ApplicationServices>=12.2; sys_platform == 'darwin'",
+    "pyobjc-framework-ScreenCaptureKit>=12.2; sys_platform == 'darwin'",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=8", "pyflakes>=3"]
-# UI mode (open/capture the device windows): Windows UI Automation through
-# comtypes. Optional: without it everything still works headless.
-ui = ["comtypes>=1.4; sys_platform == 'win32'"]
+# Kept so `pip install packet-tracer-mcp[ui]` still works for anyone who has it
+# in a script: the UI dependencies are core dependencies now (see above).
+ui = []
 
 [project.urls]
 Homepage = "https://www.mcpnetwork.top"

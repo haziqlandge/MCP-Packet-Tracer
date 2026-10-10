@@ -1,0 +1,20 @@
+[
+  {"tool": "pt_estimate_plan"},
+  {"tool": "pt_bridge_status"},
+  {"tool": "pt_export_topology"},
+  {"tool": "pt_list_modules", "router_model": "2911"},
+  {"tool": "pt_apply_acl", "router": "R1", "name_or_number": "10", "acl_type": "standard", "entries": [{"action": "permit", "source": "192.168.10.0 0.0.0.255"}], "binding_interface": "GigabitEthernet0/0", "dry_run": true},
+  {"tool": "pt_apply_nat", "router": "R1", "mode": "pat", "inside_interface": "GigabitEthernet0/0", "outside_interface": "GigabitEthernet0/1", "inside_networks": ["192.168.10.0 0.0.0.255"], "use_interface_overload": true, "dry_run": true},
+  {"tool": "pt_read_vlans", "switch": "SW1"},
+  {"tool": "pt_apply_vlan", "switch": "SW1", "vlans": [{"vlan_id": 10, "name": "SALES"}], "access_ports": [{"switch": "SW1", "port": "FastEthernet0/5", "vlan_id": 10}], "dry_run": true},
+  {"tool": "pt_audit_security", "device": "R1"},
+  {"tool": "pt_inspect_ports", "device": "R1", "only_linked": true},
+  {"tool": "pt_health_check"},
+  {"tool": "pt_read_packet_trace"},
+  {"tool": "pt_screenshot", "filename": "smoke-headless"},
+  {"tool": "pt_project_metadata"},
+  {"tool": "pt_configure_dhcp_server", "device": "SRV1", "network": "192.168.10.0", "mask": "255.255.255.0", "gateway": "192.168.10.1", "start_ip": "192.168.10.100", "max_users": 50},
+  {"tool": "pt_read_qos", "device": "R1"},
+  {"tool": "pt_read_device_panel", "device": "PC1"},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip interface brief"]}
+]

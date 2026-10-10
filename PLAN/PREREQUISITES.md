@@ -8,7 +8,7 @@ time go to "Hard-won notes" at the bottom, numbered, as they are learned.
 | Item | Version / note | Used by |
 |---|---|---|
 | macOS | Record `sw_vers` in PHASE-00. 14+ for the SCK capture path | all |
-| Rosetta 2 | Needed on Apple Silicon if PT is x86-64 (`softwareupdate --install-rosetta`) | PT |
+| Rosetta 2 | Needed on Apple Silicon if PT is x86-64 (`softwareupdate --install-rosetta`). PT 9.0.1 is universal: not needed (2026-10-10) | PT |
 | Cisco Packet Tracer | 9.0.x for macOS, already installed on the Mac (user, 2026-10-10) | PHASE-00 onward |
 | MCP Control Center `.pts` | V5.2 from upstream Releases (`docs/live-deploy.md`) | PHASE-00 onward |
 | Python | ≥ 3.11, **not** the system `/usr/bin/python3`. uv (`uv python install 3.13`) or python.org | all |
@@ -58,3 +58,9 @@ Which app gets the grant is answered in PHASE-00 (`RESEARCH/SYNTHESIS.md` §9, q
    `"command": "python3"` can resolve to the system Python 3.9 and crash on
    `requires-python`. Use an absolute interpreter path (`pt-mcp doctor
    --print-config`). Expected from SYNTHESIS §6; confirm in PHASE-00.
+2. Under Claude desktop's Code tab the macOS grants go to the bundled Claude Code
+   CLI, `~/Library/Application Support/Claude/claude-code/<version>/<hash>/claude.app`,
+   not to `Claude.app`. In System Settings use **+**, then Cmd+Shift+G and paste the
+   path. Measured 2026-10-10 (PREVIOUS_WORK 2.4 #9).
+3. PT listens on TCP 39000 on macOS, the MCP server's default HTTP port. Use the
+   stdio transport, or another port for HTTP (ISSUES X8).

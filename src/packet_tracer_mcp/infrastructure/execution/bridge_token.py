@@ -21,6 +21,9 @@ import secrets
 import time
 from pathlib import Path
 
+from ..platform.base import detect_os
+from ..platform.paths import state_dir
+
 _TOKEN_FILE = "bridge_token"
 _ENV_VAR = "PT_MCP_BRIDGE_TOKEN"
 _MIN_LEN = 32
@@ -40,17 +43,11 @@ class BridgeTokenError(RuntimeError):
 def token_dir() -> Path:
     """Token directory, per user and local to the machine.
 
-    On Windows it goes to %LOCALAPPDATA% and not %APPDATA%: the latter syncs in
-    roaming profiles, and a loopback secret has no reason to travel to a file
-    server. On POSIX, XDG_STATE_HOME is respected.
+    The platform layer owns the location (PLAN/INTERFACES.md §5): %LOCALAPPDATA%
+    on Windows (not the roaming %APPDATA%), `~/.local/state/packet-tracer-mcp`
+    elsewhere. XDG_STATE_HOME is not honoured: the extension cannot read it.
     """
-    if os.name == "nt":
-        base = os.environ.get("LOCALAPPDATA") or os.environ.get("APPDATA")
-        return Path(base) / "packet-tracer-mcp" if base else Path.home() / ".packet-tracer-mcp"
-    xdg = os.environ.get("XDG_STATE_HOME")
-    if xdg:
-        return Path(xdg) / "packet-tracer-mcp"
-    return Path.home() / ".local" / "state" / "packet-tracer-mcp"
+    return state_dir(detect_os(), os.environ, Path.home())
 
 
 def token_path() -> Path:
