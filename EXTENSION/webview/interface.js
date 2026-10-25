@@ -114,6 +114,7 @@ function init() {
     // cached copy would go stale and the failure would be invisible.
     loadToken();
     refreshBootstrapSnippet();
+    applyShortcutLabels(IS_MAC);
 
     // Load persisted code
     try {
@@ -738,18 +739,63 @@ function loadFromHistory(idx) {
 
 // -------------------------------------------------- Keyboard shortcuts -----
 
+// Shortcuts use the OS's own modifier: Command on macOS, Ctrl elsewhere. On a
+// Mac, Control+K is the text system's "delete to end of line" and Control+L
+// centres the caret line, so the editor must not take them over there.
+var SHORTCUTS = {
+    run:      { key: "enter", mac: "⌘↩", other: "Ctrl+Enter" },
+    clear:    { key: "k",     mac: "⌘K",      other: "Ctrl+K" },
+    clearLog: { key: "l",     mac: "⌘L",      other: "Ctrl+L" },
+};
+
+function isMacPlatform(platform, userAgent) {
+    return /Mac|iPhone|iPad|iPod/i.test(platform || "")
+        || /Macintosh|Mac OS X/i.test(userAgent || "");
+}
+
+var IS_MAC = isMacPlatform(navigator.platform, navigator.userAgent);
+
+// True when e is the named shortcut on this OS: the OS's modifier held, and no
+// other modifier (so Ctrl+Cmd+K or Shift+Ctrl+K stay free for the system).
+function isShortcut(e, name, mac) {
+    var primary = mac ? e.metaKey : e.ctrlKey;
+    var other = mac ? e.ctrlKey : e.metaKey;
+    return !!primary && !other && !e.altKey && !e.shiftKey
+        && String(e.key).toLowerCase() === SHORTCUTS[name].key;
+}
+
+function shortcutLabel(name, mac) {
+    return mac ? SHORTCUTS[name].mac : SHORTCUTS[name].other;
+}
+
+// Rewrites the hints in index.html for this OS: data-shortcut="<name>" sets the
+// element's text, data-shortcut-title="<name>" its tooltip ("<data-title> (<key>)").
+// The HTML keeps the Windows text as a fallback if this never runs.
+function applyShortcutLabels(mac) {
+    var labels = document.querySelectorAll("[data-shortcut]");
+    for (var i = 0; i < labels.length; i++) {
+        labels[i].textContent = shortcutLabel(labels[i].getAttribute("data-shortcut"), mac);
+    }
+    var titled = document.querySelectorAll("[data-shortcut-title]");
+    for (var j = 0; j < titled.length; j++) {
+        var el = titled[j];
+        el.title = el.getAttribute("data-title") + " ("
+            + shortcutLabel(el.getAttribute("data-shortcut-title"), mac) + ")";
+    }
+}
+
 function editorKeyDown(e) {
     var editor = document.getElementById("codeeditor");
 
-    // Ctrl+Enter → Run
-    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+    // Cmd+Return (macOS) / Ctrl+Enter → Run
+    if (isShortcut(e, "run", IS_MAC)) {
         e.preventDefault();
         executeCode();
         return;
     }
 
-    // Ctrl+K → Clear editor
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    // Cmd+K (macOS) / Ctrl+K → Clear editor
+    if (isShortcut(e, "clear", IS_MAC)) {
         e.preventDefault();
         clearEditor();
         return;
@@ -778,9 +824,9 @@ function editorKeyDown(e) {
     }
 }
 
-// Global keyboard shortcut — Ctrl+L to clear log from any tab
+// Global keyboard shortcut — Cmd+L (macOS) / Ctrl+L to clear log from any tab
 document.addEventListener("keydown", function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === "l") {
+    if (isShortcut(e, "clearLog", IS_MAC)) {
         e.preventDefault();
         clearLog();
     }

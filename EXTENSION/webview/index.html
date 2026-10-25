@@ -960,14 +960,14 @@
 
     <!-- EDITOR TOOLBAR -->
     <div class="toolbar" id="editor-toolbar">
-        <button class="btn btn-run" onclick="executeCode()" title="Run (Ctrl+Enter)"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21"/></svg> Run</button>
+        <button class="btn btn-run" onclick="executeCode()" title="Run (Ctrl+Enter)" data-title="Run" data-shortcut-title="run"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21"/></svg> Run</button>
         <div class="toolbar-sep"></div>
         <button class="btn btn-ghost" onclick="pasteFromClipboard()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 17 15 14"/></svg> Paste</button>
         <button class="btn btn-ghost" onclick="copyToClipboard()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>
         <div class="toolbar-sep"></div>
-        <button class="btn btn-danger" onclick="clearEditor()"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Clear</button>
+        <button class="btn btn-danger" onclick="clearEditor()" title="Clear editor (Ctrl+K)" data-title="Clear editor" data-shortcut-title="clear"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Clear</button>
         <div class="toolbar-spacer"></div>
-        <button class="btn btn-warn" onclick="clearLog()" title="Clear log"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg> Clear Log</button>
+        <button class="btn btn-warn" onclick="clearLog()" title="Clear log (Ctrl+L)" data-title="Clear log" data-shortcut-title="clearLog"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg> Clear Log</button>
     </div>
 
     <!-- PANES -->
@@ -984,8 +984,8 @@
                         <span class="save-indicator" id="saveIndicator">● auto-save</span>
                     </div>
                     <span class="editor-shortcuts">
-                        <span class="kbd">Ctrl+Enter</span> Run &nbsp;
-                        <span class="kbd">Ctrl+K</span> Clear &nbsp;
+                        <span class="kbd" data-shortcut="run">Ctrl+Enter</span> Run &nbsp;
+                        <span class="kbd" data-shortcut="clear">Ctrl+K</span> Clear &nbsp;
                         <span class="kbd">↑↓</span> History
                     </span>
                 </div>

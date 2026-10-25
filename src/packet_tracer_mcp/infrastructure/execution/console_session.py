@@ -82,8 +82,9 @@ PROMPT_QUESTION_RE = re.compile(_CONFIRM_RE.pattern + "|" + _QUESTION_RE.pattern
 # timestamp or sequence number. IOS prints them whenever they happen, so they
 # can land after the "Press RETURN" banner or the initial dialog's question
 # (seen live on PT 9.0.0: a 2960 with an active link). The prefix excludes `>`
-# and `#`, so a prompt with a log glued to it is not taken for a log line.
-_LOG_LINE_RE = re.compile(r"^[*.]?[\w :.]*%[A-Z0-9_]+-\d-[A-Z0-9_]+:")
+# and `#`, so a prompt with a log glued to it is not taken for a log line. It
+# allows the comma of `service timestamps log datetime`: `*Mar 01, 00:02:01.022:`.
+_LOG_LINE_RE = re.compile(r"^[*.]?[\w :.,]*%[A-Z0-9_]+-\d-[A-Z0-9_]+:")
 # An IOS prompt alone on its line: `Switch>`, `R1(config-if)#`.
 _PROMPT_LINE_RE = re.compile(r"^[^\s>#()]+(\([^)\n]*\))?[>#]$")
 _IOS_ERROR_RE = re.compile(
@@ -116,10 +117,11 @@ def _resolve_line_js(dev: str) -> str:
 
 # `done`: the current prompt appears at the end of the output, AFTER the echo
 # of the command (otherwise a command containing the prompt's text would count
-# as finished before producing anything), and it is not a question.
+# as finished before producing anything), and it is not a question. Async log
+# lines printed after the prompt do not count (`__core`, defined in `_CORE_JS`).
 _SNAPSHOT_JS = (
     "var p=String(cl.getPrompt()||'');"
-    "var sl=out.slice(from);var st=sl.replace(/\\s+$/,'');var pt=p.replace(/\\s+$/,'');"
+    "var sl=out.slice(from);var st=__core(sl).replace(/\\s+$/,'');var pt=p.replace(/\\s+$/,'');"
     "var nl=st.indexOf('\\n');"
     f"var qre=new RegExp({json.dumps(PROMPT_QUESTION_RE.pattern)},'i');"
     "var done=pt.length>0&&nl>=0&&st.length-nl>=pt.length&&st.slice(-pt.length)===pt"
@@ -138,8 +140,9 @@ _SIZE_JS = (
 
 
 # `__core(o)`: the buffer without its trailing blank and async log lines, i.e.
-# what the console last showed on its own. The banner / dialog checks look at
-# this, not at the raw end of the buffer, which a %LINK line can follow.
+# what the console last showed on its own. The banner / dialog checks and the
+# `done` test look at this, not at the raw end of the buffer, which a %LINK or
+# %IPS line can follow. Python's `_core` is the same rule.
 _CORE_JS = (
     f"var __lre=new RegExp({json.dumps(_LOG_LINE_RE.pattern)});"
     "function __core(o){var end=o.length;while(end>0){var s=o.lastIndexOf('\\n',end-1);"
@@ -158,7 +161,6 @@ _CORE_JS = (
 # Without it, the first command is spent as the RETURN (and reported as an
 # empty `ok`). A console at a prompt, a pager or a question gets nothing.
 _PRIME_JS = (
-    _CORE_JS +
     f"var __pre=new RegExp({json.dumps(_PROMPT_LINE_RE.pattern)});"
     f"var __mre=new RegExp({json.dumps(_MORE_RE.pattern)});"
     f"var __qre=new RegExp({json.dumps(PROMPT_QUESTION_RE.pattern)},'i');"
@@ -190,6 +192,7 @@ def build_run_js(device: str, commands: list[str], start: int, cap: int = OUTPUT
         f"var cmds={json.dumps(list(commands))};var start={int(start)};var cap={int(cap)};"
         f"var soft={int(BATCH_SOFT_BYTES)};var hard={int(BATCH_HARD_BYTES)};var used=256;"
         + _SIZE_JS
+        + _CORE_JS
         + _resolve_line_js(dev) +
         "var host=(typeof d.getCommandPrompt==='function');"
         "if(typeof d.isBooting==='function'&&d.isBooting()&&typeof d.skipBoot==='function'){d.skipBoot();}"
@@ -235,6 +238,7 @@ def build_poll_js(
     return (
         "(function(){"
         f"var cap={int(cap)};var cmd={json.dumps(command)};"
+        + _CORE_JS
         + _resolve_line_js(dev)
         + _ACTIONS_JS[action] +
         "var out=String(cl.getOutput());"
@@ -254,10 +258,18 @@ def _strip_more(text: str) -> str:
     return _MORE_ANY_RE.sub("", text.replace("\x08", ""))
 
 
+def _core(text: str) -> str:
+    """`text` without its trailing blank and async log lines (the JS `__core`)."""
+    lines = text.split("\n")
+    while lines and (not lines[-1].strip() or _LOG_LINE_RE.match(lines[-1].strip())):
+        lines.pop()
+    return "\n".join(lines)
+
+
 def is_done(out: str, prompt: str) -> bool:
-    """Same rule as the JS: prompt at the end, after the command's echo, and
-    the prompt is not a question."""
-    st = (out or "").rstrip()
+    """Same rule as the JS: prompt at the end (async log lines after it aside),
+    after the command's echo, and the prompt is not a question."""
+    st = _core(out or "").rstrip()
     pt = (prompt or "").rstrip()
     nl = st.find("\n")
     return (bool(pt) and nl >= 0 and len(st) - nl >= len(pt) and st.endswith(pt)
@@ -269,7 +281,8 @@ def classify_tail(out: str, prompt: str) -> str:
     if is_done(out, prompt):
         return DONE
     raw = (out or "").replace("\x08", "")
-    tail = raw.rstrip()
+    # A log line can also land after --More-- or a question: it hides neither.
+    tail = _core(raw).rstrip()
     if _MORE_RE.search(tail):
         return MORE
     if _TRANSLATING_RE.search(raw[-400:]):

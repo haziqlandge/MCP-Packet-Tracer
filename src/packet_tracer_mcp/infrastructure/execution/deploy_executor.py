@@ -27,7 +27,7 @@ class DeployExecutor(ExecutorBase):
 
     Strategy:
     1. Generates the PTBuilder script (addDevice + addLink)
-    2. Copies it to the Windows clipboard
+    2. Copies it to the system clipboard
     3. Exports files to disk (CLI configs, plan JSON)
     4. Returns step-by-step instructions
     """
@@ -111,7 +111,7 @@ class DeployExecutor(ExecutorBase):
             steps.append("")
             steps.append("  1. Open Packet Tracer")
             steps.append("  2. Go to Extensions > Scripting (or Builder Code Editor)")
-            steps.append("  3. Paste the script (Ctrl+V)")
+            steps.append(f"  3. Paste the script ({pt_platform.current().shortcut('V')})")
             steps.append("  4. Click 'Run' or press the run button")
             steps.append("")
             steps.append(f"The devices and links will be created automatically.")

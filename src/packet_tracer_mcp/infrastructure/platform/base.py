@@ -52,6 +52,10 @@ class Platform:
     clipboard: Clipboard
     _ui: object = field(default=None, init=False, repr=False, compare=False)
 
+    def shortcut(self, key: str) -> str:
+        """A menu shortcut the way this OS writes it: "⌘V" on macOS, "Ctrl+V" elsewhere."""
+        return f"⌘{key}" if self.host.os == "macos" else f"Ctrl+{key}"
+
     def ui_backend(self) -> "WindowBackend":
         """The UI backend for this OS, built on first use and then reused."""
         if self._ui is None:

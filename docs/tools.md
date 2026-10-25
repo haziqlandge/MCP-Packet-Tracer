@@ -112,7 +112,7 @@ prompts `/mcp__packet-tracer__ui_on`, `ui_off` and `ui_status`.
 | OS | UI mode |
 |---|---|
 | Windows | UI Automation and posted canvas clicks; the real cursor does not move. Captures use `PrintWindow`. |
-| macOS | Accessibility navigates panels; PT comes to the front, and canvas clicks briefly move and restore the cursor. Capture requires Screen Recording permission. |
+| macOS | Accessibility navigates panels; PT comes to the front (leaving full screen), the canvas zoom is reset to 100 %, and canvas clicks briefly move and restore the cursor. Keys typed while PT is in front switch its canvas tool. Capture requires Screen Recording permission. |
 | Linux | UI mode not yet available; every panel tool works headless. |
 
 UI dependencies install automatically. On macOS, `pt_ui_mode("ui")` requests the

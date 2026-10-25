@@ -25,6 +25,7 @@ from ....infrastructure.execution.bridge_token import token_was_rotated, token_i
 from ..bridge_context import BridgeContext, DEPLOY_BATCH
 from ....shared.enums import RoutingProtocol, TopologyTemplate
 from ....shared.utils import js_escape, safe_name_component, classify_ping as _classify_ping, reply_json
+from ....infrastructure import platform as pt_platform
 from ....infrastructure.platform.doctor import platform_status
 
 
@@ -303,7 +304,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                     parts.append("Instructions:")
                     parts.append("  1. Open Packet Tracer")
                     parts.append("  2. Go to Extensions > Scripting")
-                    parts.append("  3. Paste (Ctrl+V) and run")
+                    parts.append(f"  3. Paste ({pt_platform.current().shortcut('V')}) and run")
                     parts.append("")
                     parts.append(f"Files exported to: {deploy_result['project_dir']}")
                     parts.append("  CLI configs in *_config.txt files")
@@ -659,7 +660,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         Saves Packet Tracer's active topology as a .pkt file.
 
         Closes the loop: until now the MCP built the topology but saving it
-        needed Ctrl+S by hand.
+        was a manual step in PT.
 
         Parameters:
         - filename: file name (.pkt is added if missing)

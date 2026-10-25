@@ -107,6 +107,12 @@ with the default outline.
   **anything typed meanwhile is dropped, not queued**. Abort with `cl.enterChar(30,0)` (Ctrl+Shift+6);
   hosts abort with `cl.enterChar(3,0)` (Ctrl+C).
 - `CiscoDevice.enterCommand(cmd, mode)` runs on a **hidden** line — not shown in the CLI tab.
+- **`license boot module c2900 technology-package securityk9` needs a `pt_cli` call of its own**
+  (PT 9.0.1, 2026-10-24). Sent in the same call right after `configure terminal`, PT drops it without a
+  word: no EULA, and `show version` keeps `security ... Next reboot None` (3 of 3 tries). In its own call
+  it shows the EULA and `ACCEPT? [yes/no]:`; send `yes` in the next call, check `Next reboot securityk9`,
+  then `write memory` + `reload` (the reload reports TIMEOUT: the router is booting). Verified on a 2911;
+  the lab report it came from says a 1941 could not take the licence on 9.0.1 (not re-checked here).
 
 **Processes** (`d.getProcess(name)`, wrap each in try/catch)
 - PC: `HttpClient` (`go(url)` async → `getLastPageContent()`), `EmailClient`, `DhcpClient`, `DnsClient`.
@@ -142,7 +148,7 @@ with the default outline.
 | OS | GUI behavior |
 |---|---|
 | Windows | Posted canvas click (cursor stays still), then UI Automation. |
-| macOS | PT comes to the front; a canvas click briefly moves and restores the cursor, then Accessibility selects tabs/apps. Grant Accessibility and Screen Recording to the app/path in the remedy. |
+| macOS | PT comes to the front (leaving full screen) and its canvas zoom is reset to 100 %; a canvas click briefly moves and restores the cursor, then Accessibility selects tabs/apps. Keys typed while PT is in front switch its canvas tool, so ask the user not to type during UI mode. Grant Accessibility and Screen Recording to the app/path in the remedy. |
 | Linux | UI mode not yet available; all panel operations remain available headless. |
 
 UI dependencies install with the package. `pt-mcp doctor --ui` checks the process running it;

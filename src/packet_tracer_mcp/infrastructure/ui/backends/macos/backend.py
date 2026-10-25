@@ -17,6 +17,7 @@ import os
 from typing import Callable, NamedTuple
 
 from ...backend import BackendError, BackendUnavailable, Capture, Role, UiElement, WindowHandle
+from ...locators import SELECT_TOOL, locate
 from . import ax
 from . import capture as mac_capture
 from . import events
@@ -44,6 +45,10 @@ def _responsible() -> tuple[str | None, str | None]:
 
 class MacBackend:
     name = "macos"
+    # Reads of PT's window list after activating it (each empty read already
+    # retries for ~0.45 s in `windows.ax_windows`); listed at once live (X13).
+    WINDOW_POLLS = 4
+    FULL_SCREEN_POLLS = 12
 
     def __init__(self, *, responsible: Callable[[], tuple[str | None, str | None]] | None = None,
                  io: events.EventIO | None = None):
@@ -85,11 +90,51 @@ class MacBackend:
         self._windows[cg_id] = (pid, ax_window)
         return cg_id
 
+    def _find(self, pid: int, title: str, *, prefix: bool = False) -> tuple[int, object] | None:
+        listed = windows.ax_windows(pid)
+        if not listed:
+            listed = self._bring_forward(pid)
+        if self._leave_full_screen(listed):
+            listed = windows.ax_windows(pid)
+        return windows.find(pid, title, prefix=prefix, listed=listed)
+
+    def _leave_full_screen(self, listed: list) -> bool:
+        """With PT's main window in full screen, macOS gives each dialog a
+        full-screen Space of its own: captured at screen size, and the main
+        window is then on another Space (ISSUES X13, live 2026-10-25). Out of
+        full screen every dialog opened and was captured at its own size, so the
+        main window leaves it (the user can go back with ⌃⌘F)."""
+        main = next((el for el, t, _ in listed
+                     if windows.title_matches(t, windows.MAIN_TITLE, prefix=True)), None)
+        if main is None or ax.attr(main, "AXFullScreen") is not True:
+            return False
+        ax.set_attr(main, "AXFullScreen", False)
+        for _ in range(self.FULL_SCREEN_POLLS):  # the animation takes ~1 s
+            self._io.sleep(0.25)
+            if ax.attr(main, "AXFullScreen") is not True:
+                break
+        self._io.sleep(0.5)  # the frame settles after the flag
+        return True
+
+    def _bring_forward(self, pid: int) -> list:
+        """AX lists none of PT's windows while all of them are off the current
+        Space: PT in full screen or on another desktop, the client in front
+        (ISSUES X13). Activating PT through LaunchServices lists them again at
+        once (live 2026-10-24/25). Only an empty list does this: a dialog that is
+        merely not open yet never pulls PT forward."""
+        self._io.open_app(pid)
+        for _ in range(self.WINDOW_POLLS):
+            self._io.sleep(0.25)
+            listed = windows.ax_windows(pid)
+            if listed:
+                return listed
+        return []
+
     def find_window(self, pid: int, title: str) -> WindowHandle | None:
-        return self._remember(pid, windows.find(pid, title))
+        return self._remember(pid, self._find(pid, title))
 
     def main_window(self, pid: int) -> WindowHandle | None:
-        handle = self._remember(pid, windows.find(pid, windows.MAIN_TITLE, prefix=True))
+        handle = self._remember(pid, self._find(pid, windows.MAIN_TITLE, prefix=True))
         if handle is not None:
             self._mains.add(handle)
         return handle
@@ -115,7 +160,27 @@ class MacBackend:
     # -- navigation ---------------------------------------------------------------
     def click(self, handle: WindowHandle, x: int, y: int) -> str:
         pid, window = self._entry(handle)
-        return events.click(pid, window, x, y, io=self._io)
+        return events.click(pid, window, x, y, io=self._io,
+                            ready=lambda: self._select_tool_still_on(handle))
+
+    def _select_tool_still_on(self, handle: WindowHandle) -> str | None:
+        """Runs with PT in front, just before the click. The presenter checked the
+        Select tool before PT came forward; a key reaching PT since then switches
+        the tool (N places a note, C a complex PDU, Del deletes). Seen live twice
+        (ISSUES X20), so Select is checked again here and turned back on."""
+        els = self.elements(handle, Role.CHECKBOX)
+        select = locate(els, SELECT_TOOL)
+        if select is None or self.toggle_state(select) == 1:
+            return None  # without a Select tool the presenter refused already
+        self._perform(select, "AXPress")
+        self._io.sleep(0.1)
+        if self.toggle_state(select) == 1:
+            return None
+        active = next((e.name for e in els if e is not select and self.toggle_state(e) == 1),
+                      "another tool")
+        return (f"PT's canvas tool became '{active}' while PT came to the front, and Select "
+                "could not be turned back on; not clicking. A key typed into PT switches its "
+                "tool (N places a note, C a complex PDU, Del deletes).")
 
     def elements(self, handle: WindowHandle, role: Role | None = None) -> list[UiElement]:
         _, window = self._entry(handle)

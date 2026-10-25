@@ -223,6 +223,17 @@ class Presenter:
                     "A click with Delete active would delete the device, so I won't click."
                 )
             steps.append("Select tool activated")
+        if int(st.get("zoom", 0)) != 0:
+            # The click point is calibrated at 100% only; elsewhere the device is
+            # centred and the view's centre clicked, which misses a device near
+            # the scene's edge (ISSUES X19). Zoom Reset brings back 100%.
+            reset = locate(els, locators.ZOOM_RESET)
+            if reset is not None:
+                b.press(reset)
+                self._sleep(0.25)
+                st = self._state(device)
+                if int(st.get("zoom", 0)) == 0:
+                    steps.append("zoom reset to 100% (the click is placed at 100%)")
         vp = locate(els, locators.LOGICAL_CANVAS)
         if vp is None:
             raise PresenterError("Can't find PT's logical canvas.")

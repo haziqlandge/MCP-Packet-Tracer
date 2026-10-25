@@ -14,18 +14,27 @@ A HID click lands on whatever is on top, so `click` refuses unless PT is
 frontmost and the point hits PT's logical canvas. Every pyobjc name here was
 exercised by `devtools/macos_probe.py` first (C6); they are imported inside
 `QuartzIO`, so this module imports on every OS (C2).
+
+Activation (ISSUES X18, measured 2026-10-24 on macOS 26.6): from a background
+process such as the MCP server under the Claude Code helper,
+`activateWithOptions_` can leave the other app in front (2 of 2 tries), while
+LaunchServices (`open -a` on PT's own bundle) brought PT forward 3 of 3. So
+`_wait_front` falls back to it once if PT is not in front shortly. Whether PT
+is in front is read from its `AXFrontmost`, live (see `QuartzIO.is_frontmost`).
 """
 
 from __future__ import annotations
 
+import subprocess
 import time
-from typing import Protocol
+from typing import Callable, Protocol
 
 from ...backend import BackendError
 
 KEY_SPACE = 49            # kVK_Space
 CANVAS_IDENT = "m_pViewArea_Window.m_workspaceWS"
-FRONT_TIMEOUT_S = 1.5     # activation took ~0.4 s in PHASE-00
+ACTIVATE_GRACE_S = 0.5    # activateWithOptions_ took ~0.4 s in PHASE-00
+FRONT_TIMEOUT_S = 3.0     # in all, including the LaunchServices fallback
 # PT reports frontmost before its windows are raised over the others (measured
 # live): the point is hit-tested again until PT's canvas is on top.
 HIT_TIMEOUT_S = 1.0
@@ -35,8 +44,9 @@ _HIT_DEPTH = 12           # parents climbed from the hit element
 
 class EventIO(Protocol):
     def activate(self, pid: int) -> None: ...
+    def open_app(self, pid: int) -> None: ...
     def raise_window(self, ax_window) -> None: ...
-    def frontmost_pid(self) -> int | None: ...
+    def is_frontmost(self, pid: int) -> bool: ...
     def hit_idents(self, x: float, y: float) -> list[str]: ...
     def cursor(self) -> tuple[float, float]: ...
     def post_click(self, x: float, y: float) -> None: ...
@@ -48,7 +58,11 @@ class EventIO(Protocol):
 
 def _wait_front(pid: int, io: EventIO, what: str) -> None:
     waited = 0.0
-    while io.frontmost_pid() != pid:
+    opened = False
+    while not io.is_frontmost(pid):
+        if not opened and waited >= ACTIVATE_GRACE_S:
+            io.open_app(pid)
+            opened = True
         if waited >= FRONT_TIMEOUT_S:
             raise BackendError(f"Packet Tracer is not the frontmost app, so the {what} was not sent "
                                "(macOS delivers it to whatever is in front).")
@@ -56,8 +70,12 @@ def _wait_front(pid: int, io: EventIO, what: str) -> None:
         waited += _POLL_S
 
 
-def click(pid: int, main_ax_window, x: float, y: float, *, io: EventIO | None = None) -> str:
-    """Left click at a screen point (points) on PT's canvas. Returns "cursor-restored"."""
+def click(pid: int, main_ax_window, x: float, y: float, *, io: EventIO | None = None,
+          ready: Callable[[], str | None] | None = None) -> str:
+    """Left click at a screen point (points) on PT's canvas. Returns "cursor-restored".
+
+    `ready` runs with PT in front, right before the click is posted; a string
+    from it is the reason not to click (the canvas tool, ISSUES X20)."""
     io = io or QuartzIO()
     io.activate(pid)
     io.raise_window(main_ax_window)
@@ -73,6 +91,9 @@ def click(pid: int, main_ax_window, x: float, y: float, *, io: EventIO | None = 
                                f"({top[-60:]}); not clicking. Move or close it and try again.")
         io.sleep(_POLL_S)
         waited += _POLL_S
+    why = ready() if ready is not None else None
+    if why:
+        raise BackendError(why)
     saved = io.cursor()
     try:
         io.post_click(x, y)
@@ -102,14 +123,30 @@ class QuartzIO:
         if app is not None:
             app.activateWithOptions_(0)
 
+    def open_app(self, pid: int) -> None:
+        """Activate the running PT through LaunchServices (`open -a` its bundle)."""
+        from AppKit import NSRunningApplication
+        app = NSRunningApplication.runningApplicationWithProcessIdentifier_(pid)
+        url = app.bundleURL() if app is not None else None
+        if url is None:
+            return
+        try:
+            subprocess.run(["open", "-a", str(url.path())], capture_output=True,
+                           timeout=10, check=False)
+        except (OSError, subprocess.SubprocessError):
+            pass  # _wait_front still refuses unless PT comes to the front
+
     def raise_window(self, ax_window) -> None:
         from . import ax
         ax.perform(ax_window, "AXRaise")
 
-    def frontmost_pid(self) -> int | None:
-        from AppKit import NSWorkspace
-        app = NSWorkspace.sharedWorkspace().frontmostApplication()
-        return int(app.processIdentifier()) if app is not None else None
+    def is_frontmost(self, pid: int) -> bool:
+        # Not NSWorkspace.frontmostApplication(): in a process that runs no
+        # AppKit event loop (the MCP server) its answer is cached, measured
+        # stuck on one app while focus moved twice (2026-10-24). PT's own
+        # AXFrontmost followed every move.
+        from . import ax
+        return bool(ax.attr(ax._as().AXUIElementCreateApplication(pid), "AXFrontmost"))
 
     def hit_idents(self, x: float, y: float) -> list[str]:
         """Idents of the element at (x, y) and of its parents, innermost first."""

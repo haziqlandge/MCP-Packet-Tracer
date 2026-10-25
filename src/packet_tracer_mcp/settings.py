@@ -476,7 +476,9 @@ then run `pt-mcp doctor` and `pt-mcp doctor --print-config claude-code` (or
 interpreter path and stdio, avoiding GUI PATH differences and PT's HTTP port.
 On macOS, `pt_ui_mode("ui")` requests Accessibility and Screen Recording once;
 the remedy names the responsible client app and its full path in System Settings.
-Navigation can bring PT forward and briefly move then restore the cursor.
+Navigation can bring PT forward and briefly move then restore the cursor; it
+takes PT out of full screen and resets the canvas zoom to 100% before a click.
+Keys typed while PT is in front switch its canvas tool (N, C, Del).
 Status diagnostics never request grants. Missing grants leave API work usable;
 `pt-mcp doctor --ui` checks capture too. Linux supports headless tools; UI mode
 is not available yet. Canonical and released-extension mailbox paths are listed

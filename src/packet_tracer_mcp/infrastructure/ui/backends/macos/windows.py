@@ -90,10 +90,12 @@ def ax_windows(pid: int) -> list[tuple[object, str, list[float] | None]]:
     return []
 
 
-def find(pid: int, title: str, *, prefix: bool = False) -> tuple[int, object] | None:
-    """(CGWindowID, AX window) of PT's window titled `title`, or None."""
+def find(pid: int, title: str, *, prefix: bool = False,
+         listed: list[tuple[object, str, list[float] | None]] | None = None) -> tuple[int, object] | None:
+    """(CGWindowID, AX window) of PT's window titled `title`, or None.
+    `listed`: an `ax_windows` answer already read, so it is not read twice."""
     cg = cg_windows(pid)
-    for el, t, frame in ax_windows(pid):
+    for el, t, frame in (ax_windows(pid) if listed is None else listed):
         if title_matches(t, title, prefix=prefix):
             cg_id = join_window(frame, cg, t)
             if cg_id is not None:

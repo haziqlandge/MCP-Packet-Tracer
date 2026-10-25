@@ -66,6 +66,16 @@ def _select_name(e: UiElement) -> bool:
 # A name match, kept as it is: the same predicate is the fallback, so whether
 # the platform exposes an ident for the tool button does not matter.
 SELECT_TOOL = Locator("select_tool", _select_name, lambda e, els: _select_name(e))
+
+
+def _zoom_reset_name(e: UiElement) -> bool:
+    return e.name.startswith("Zoom Reset")
+
+
+# The main toolbar's Zoom Reset (macOS: "Zoom Reset",
+# `PtApp.CAppWindowBase.m_pToolBar.QToolButton`, seen live 2026-10-25).
+# Matched by name for the same reason as SELECT_TOOL.
+ZOOM_RESET = Locator("zoom_reset", _zoom_reset_name, lambda e, els: _zoom_reset_name(e))
 # macOS (PHASE-00 fixture `main-window.json`): no CLogicalWorkspace.QWidget in
 # the AX tree; the canvas is the AXGroup `...m_pViewArea_Window.m_workspaceWS`,
 # whose frame is the view (0,180 1512×526 pt there).

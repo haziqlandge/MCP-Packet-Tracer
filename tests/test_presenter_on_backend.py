@@ -198,6 +198,54 @@ class TestOpenDialog:
         assert r["steps"][0] == "canvas centred on the device (zoom other than 100%)"
         assert clicks(b) == [("click", MAIN, *CENTER)]
 
+    @staticmethod
+    def _zoomed(zoom: list[int]):
+        """send() whose getCurrentZoom() answer is zoom[0] at the time of the call."""
+        base, _ = pt()
+
+        def send(js: str, timeout: float):
+            out = base(js, timeout)
+            if "getCenterXCoordinate" in js:
+                data = json.loads(out)
+                data["zoom"] = zoom[0]
+                return json.dumps(data)
+            return out
+
+        return send
+
+    def test_zoomed_canvas_resets_the_zoom_then_clicks_the_device(self):
+        # ISSUES X19: at zoom −2 a device near the scene's edge cannot be centred,
+        # so the centre click hit empty canvas. Zoom Reset makes the calibrated
+        # 100% point usable (live 2026-10-25: 4 of 4 opened).
+        zoom = [-2]
+        reset = el("Zoom Reset", f"{APP}.m_pToolBar.QToolButton", Role.BUTTON,
+                   on_press=lambda b, e: zoom.__setitem__(0, 0))
+        b = FakeBackend(main=MAIN, trees={MAIN: main_tree() + [reset]},
+                        click_opens={(199, 500): ("R1", 5)})
+        r = presenter(self._zoomed(zoom), b).open("R1")
+        assert r["steps"] == ["zoom reset to 100% (the click is placed at 100%)",
+                              "dialog opened (click posted, cursor not moved)"]
+        assert b.log.index(("press", "Zoom Reset")) < b.log.index(("click", MAIN, 199, 500))
+        assert clicks(b) == [("click", MAIN, 199, 500)]
+
+    def test_zoom_that_does_not_reset_falls_back_to_the_centre(self):
+        zoom = [3]
+        reset = el("Zoom Reset", f"{APP}.m_pToolBar.QToolButton", Role.BUTTON)
+        b = FakeBackend(main=MAIN, trees={MAIN: main_tree() + [reset]},
+                        click_opens={CENTER: ("R1", 5)})
+        r = presenter(self._zoomed(zoom), b).open("R1")
+        assert ("press", "Zoom Reset") in b.log
+        assert "canvas centred on the device (zoom other than 100%)" in r["steps"]
+        assert clicks(b) == [("click", MAIN, *CENTER)]
+
+    def test_zoom_reset_is_left_alone_at_100_percent(self):
+        reset = el("Zoom Reset", f"{APP}.m_pToolBar.QToolButton", Role.BUTTON)
+        send, _ = pt(zoom=0)
+        b = FakeBackend(main=MAIN, trees={MAIN: main_tree() + [reset]},
+                        click_opens={(199, 500): ("R1", 5)})
+        presenter(send, b).open("R1")
+        assert ("press", "Zoom Reset") not in b.log
+
     def test_second_attempt_clicks_the_centre(self):
         send, _ = pt()
         b = FakeBackend(main=MAIN, trees={MAIN: main_tree()}, click_opens={CENTER: ("R1", 5)})

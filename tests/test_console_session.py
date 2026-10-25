@@ -482,6 +482,76 @@ class TestPriming:
         assert "BODY OF show vlan brief" in out["results"][0]["out"]
 
 
+# ---------------------------------------------------------------------------
+# Async log lines AFTER the prompt. Seen live on PT 9.0.1 (2026-10-24, the
+# IOS IPS lab on a 2911): `engine` under `ip ips signature-definition` printed
+# its prompt and then four `*Mar 01, 00:02:01.022:  %IPS-6-...` lines
+# (`service timestamps log datetime msec`), so the buffer did not END with the
+# prompt and pt_cli waited out the full 60 s timeout on a finished command.
+# ---------------------------------------------------------------------------
+
+_IPS_PROMPT = "R-EDGE(config-sigdef-sig-engine)#"
+_IPS_LOGS = (
+    "*Mar 01, 00:02:01.022:  %IPS-6-ENGINE_BUILDS_STARTED:  00:02:01 UTC Mar 01 1993\n"
+    "*Mar 01, 00:02:01.022:  %IPS-6-ENGINE_BUILDING: atomic-ip - 3 signatures - 1 of 13 engines\n"
+    "*Mar 01, 00:02:01.022:  %IPS-6-ENGINE_READY: atomic-ip - build time 8 ms - "
+    "packets for this engine will be scanned\n"
+    "*Mar 01, 00:02:01.022:  %IPS-6-ALL_ENGINE_BUILDS_COMPLETE: elapsed time 8 ms"
+)
+_IPS_OUT = "engine\n" + _IPS_PROMPT + "\n" + _IPS_LOGS  # the live buffer, verbatim
+
+
+class TestAsyncLogsAfterThePrompt:
+    def test_prompt_followed_by_datetime_stamped_logs_is_done(self):
+        assert is_done(_IPS_OUT, _IPS_PROMPT)
+        assert classify_tail(_IPS_OUT, _IPS_PROMPT) == DONE
+
+    def test_prompt_followed_by_plain_logs_is_done(self):
+        assert is_done("no shutdown\nR1(config-if)#\n" + _LINK_LOGS, "R1(config-if)#")
+
+    def test_logs_after_output_with_no_prompt_are_not_done(self):
+        out = "ping 10.0.0.1\nType escape sequence to abort.\n!!\n" + _IPS_LOGS
+        assert classify_tail(out, "R1#") == WAIT
+
+    def test_a_command_echo_alone_followed_by_logs_is_not_done(self):
+        assert not is_done("engine\n" + _IPS_LOGS, _IPS_PROMPT)
+
+    @pytest.mark.parametrize("question,state", [
+        ("Do you want to accept these changes? [confirm]", CONFIRM),
+        ("ACCEPT? [yes/no]: ", QUESTION),
+    ])
+    def test_a_question_followed_by_logs_is_still_a_question(self, question, state):
+        assert classify_tail("exit\n" + question + "\n" + _IPS_LOGS, "R1(config)#") == state
+
+    def test_the_command_finishes_without_waiting_out_its_timeout(self):
+        # The batch already holds the whole output: no poll may follow.
+        script = Script([run_reply(snap(0, _IPS_OUT, _IPS_PROMPT))])
+        r = run(script, ["engine"], timeout=60.0)
+        assert len(script.sent) == 1
+        assert r.results[0].status == ST_OK
+
+    @requires_node
+    def test_the_js_reports_it_done_too(self, tmp_path):
+        fake = (
+            f"var __out={json.dumps('xx\\n' + _IPS_OUT)};"
+            "var cl={getOutput:function(){return __out;},"
+            f"getPrompt:function(){{return {json.dumps(_IPS_PROMPT)};}},"
+            "getMode:function(){return 'global';},enterChar:function(){},"
+            "enterCommand:function(){}};"
+            "var d={getCommandLine:function(){return cl;}};"
+            "var ipc={network:function(){return {getDevice:function(){return d;}};}};"
+        )
+        reports = run_pt_js(build_poll_js("R-EDGE", 3, "engine"), fake, tmp_path)
+        assert json.loads(reports[0])["done"] is True
+
+    @requires_node
+    def test_banner_followed_by_datetime_stamped_logs_is_woken(self, tmp_path):
+        # getPrompt() can already read "Switch>" at the banner, so only the
+        # trimmed buffer tells that the console is still asleep.
+        out = _prime_run(tmp_path, "boot\n" + _BANNER + _IPS_LOGS + "\n", "Switch>", "asleep")
+        assert out["primed"] == [""] and out["__typed"] == ["", "show vlan brief"]
+
+
 def test_bridge_timeout_mid_run_says_commands_may_have_run():
     # The first batch stopped after "enable"; the reply to the second batch
     # never arrives, although PT may well have typed "conf t" and "hostname X".

@@ -16,6 +16,7 @@ import pytest
 from src.packet_tracer_mcp.infrastructure.ui.backend import BackendError, Role, UiElement
 from src.packet_tracer_mcp.infrastructure.ui.backends.macos import ax as mac_ax
 from src.packet_tracer_mcp.infrastructure.ui.backends.macos import events
+from src.packet_tracer_mcp.infrastructure.ui.backends.macos import windows as mac_windows
 from src.packet_tracer_mcp.infrastructure.ui.backends.macos.backend import MacBackend, Ref
 
 PID = 4242
@@ -24,24 +25,30 @@ CANVAS = "PtApp.CAppWindowBase.centralwidget.m_pWorkSpaceWnd.m_pViewArea_Window.
 
 class FakeIO:
     def __init__(self, *, front=PID, front_after=0, hit=("Workspace Description", CANVAS),
-                 cursor=(10.0, 20.0), post_fails=False, focus_err=0):
+                 cursor=(10.0, 20.0), post_fails=False, focus_err=0, open_brings_front=False):
         self.front, self.front_after = front, front_after
         self.hit = list(hit)
         self.pos = cursor
         self.post_fails = post_fails
         self.focus_err = focus_err
+        self.open_brings_front = open_brings_front
         self.log: list[tuple] = []
         self.polls = 0
 
     def activate(self, pid):
         self.log.append(("activate", pid))
 
+    def open_app(self, pid):
+        self.log.append(("open_app", pid))
+        if self.open_brings_front:
+            self.front = pid
+
     def raise_window(self, ax_window):
         self.log.append(("raise", ax_window))
 
-    def frontmost_pid(self):
+    def is_frontmost(self, pid):
         self.polls += 1
-        return self.front if self.polls > self.front_after else 1
+        return (self.front if self.polls > self.front_after else 1) == pid
 
     def hit_idents(self, x, y):
         self.log.append(("hit", x, y))
@@ -92,6 +99,20 @@ class TestClick:
         with pytest.raises(BackendError, match="not the frontmost app"):
             events.click(PID, "MAIN", 1, 2, io=io)
         assert "click" not in kinds(io) and "warp" not in kinds(io)
+        assert kinds(io).count("open_app") == 1  # the fallback was tried, once
+
+    def test_activation_ignored_falls_back_to_launch_services(self):
+        # Live, 2026-10-24 (ISSUES X18): from the Claude Code helper on macOS 26.6,
+        # activateWithOptions_ left Claude in front 2 of 2 times; `open -a` worked.
+        io = FakeIO(front=999, open_brings_front=True)
+        assert events.click(PID, "MAIN", 299, 330, io=io) == "cursor-restored"
+        assert kinds(io)[:3] == ["activate", "raise", "open_app"]
+        assert ("click", 299, 330) in io.log
+
+    def test_no_fallback_when_activation_works(self):
+        io = FakeIO(front_after=3)
+        events.click(PID, "MAIN", 1, 2, io=io)
+        assert "open_app" not in kinds(io)
 
     def test_refuses_when_something_covers_the_canvas(self):
         io = FakeIO(hit=("PtApp.CWorkstationDialog.m_tabs", "PC1"))
@@ -119,6 +140,26 @@ class TestClick:
         assert io.log[-1] == ("warp", 10.0, 20.0)
 
 
+class TestToolCheckedAtTheClick:
+    # Live 2026-10-25, twice: the click landed with another canvas tool active
+    # although Select was on when the presenter checked, before PT came to the
+    # front: once a note editor opened (Place Note, N), once "Create Complex
+    # PDU" for PC4 (C). A key reaching PT in between switches the tool, and
+    # with Delete (Del) the click would delete the device.
+
+    def test_checked_after_pt_is_in_front_and_before_the_click(self):
+        io = FakeIO()
+        events.click(PID, "MAIN", 299, 330, io=io, ready=lambda: io.log.append(("ready",)))
+        assert io.log.index(("hit", 299, 330)) < io.log.index(("ready",)) < io.log.index(
+            ("click", 299, 330))
+
+    def test_not_ready_means_no_click_and_the_cursor_untouched(self):
+        io = FakeIO()
+        with pytest.raises(BackendError, match="Place Note"):
+            events.click(PID, "MAIN", 299, 330, io=io, ready=lambda: "tool is Place Note (N)")
+        assert not [a for a in io.log if a[0] in ("click", "warp")]
+
+
 class TestKeyboardPress:
     def test_focus_then_space_to_the_pid(self):
         io = FakeIO()
@@ -131,11 +172,44 @@ class TestKeyboardPress:
             events.press_by_keyboard(PID, "EL", io=io)
         assert "key" not in kinds(io)
 
+    def test_activation_ignored_falls_back_to_launch_services(self):
+        io = FakeIO(front=999, open_brings_front=True)
+        events.press_by_keyboard(PID, "EL", io=io)
+        assert io.log == [("activate", PID), ("open_app", PID), ("focus", "EL"),
+                          ("key", PID, events.KEY_SPACE)]
+
     def test_refuses_when_the_element_takes_no_focus(self):
         io = FakeIO(focus_err=-25205)
         with pytest.raises(BackendError, match="-25205"):
             events.press_by_keyboard(PID, "EL", io=io)
         assert "key" not in kinds(io)
+
+
+class TestFrontmostIsReadLive:
+    """Live, 2026-10-24: in a process that runs no AppKit event loop (the MCP
+    server), `NSWorkspace.frontmostApplication()` kept answering PT while focus
+    moved to Safari and then Claude; PT's own `AXFrontmost` followed each move.
+    The click route waited on the cached answer and timed out."""
+
+    def test_reads_pt_axfrontmost_and_never_nsworkspace(self, monkeypatch):
+        import sys
+        from types import ModuleType
+        read: list[tuple] = []
+        fake_as = SimpleNamespace(AXUIElementCreateApplication=lambda pid: ("app", pid))
+        monkeypatch.setattr(mac_ax, "_as", lambda: fake_as)
+        monkeypatch.setattr(mac_ax, "attr",
+                            lambda el, name: read.append((el, name)) or name == "AXFrontmost")
+        stale = ModuleType("AppKit")
+        stale.NSWorkspace = SimpleNamespace(sharedWorkspace=lambda: pytest.fail("NSWorkspace read"))
+        monkeypatch.setitem(sys.modules, "AppKit", stale)
+        assert events.QuartzIO().is_frontmost(PID) is True
+        assert read == [(("app", PID), "AXFrontmost")]
+
+    def test_a_failed_read_counts_as_not_frontmost(self, monkeypatch):
+        monkeypatch.setattr(mac_ax, "_as",
+                            lambda: SimpleNamespace(AXUIElementCreateApplication=lambda pid: pid))
+        monkeypatch.setattr(mac_ax, "attr", lambda el, name: None)
+        assert events.QuartzIO().is_frontmost(PID) is False
 
 
 # ---------------------------------------------------------------------------
@@ -292,3 +366,146 @@ class TestNavigation:
         tabs = stub.backend.elements(DIALOG, Role.TAB)
         assert [(t.name, t.raw) for t in tabs] == [("CLI", Ref("CLI", DIALOG))]
         assert seen["root"] == "DLGWIN" and seen["keep_el"] is True and seen["with_actions"] is False
+
+
+# ---------------------------------------------------------------------------
+# Window lookup with PT off the current Space (ISSUES X13)
+# ---------------------------------------------------------------------------
+
+MAIN_FRAME = [0.0, 49.0, 1470.0, 851.0]
+R1_FRAME = [335.0, 33.0, 800.0, 923.0]
+MAIN_TITLE = "Cisco Packet Tracer - /Users/x/lab.pkt"
+
+
+@pytest.fixture
+def lookup(monkeypatch):
+    """AX lists played one per `ax_windows` call (the last one repeats)."""
+    state = SimpleNamespace(answers=[], calls=0)
+
+    def ax_windows(pid):
+        state.calls += 1
+        return state.answers.pop(0) if len(state.answers) > 1 else state.answers[0]
+
+    state.attrs = {}
+    state.sets = []
+
+    def set_attr(el, name, value):
+        state.sets.append((el, name, value))
+        state.attrs[(el, name)] = value
+        return 0
+
+    monkeypatch.setattr(mac_ax, "attr", lambda el, name: state.attrs.get((el, name)))
+    monkeypatch.setattr(mac_ax, "set_attr", set_attr)
+    monkeypatch.setattr(mac_windows, "ax_windows", ax_windows)
+    monkeypatch.setattr(mac_windows, "cg_windows", lambda pid: [
+        {"cg_id": 2431, "name": "R1", "layer": 0, "onscreen": True, "frame": R1_FRAME},
+        {"cg_id": 528, "name": MAIN_TITLE, "layer": 0, "onscreen": True, "frame": MAIN_FRAME},
+    ])
+    state.io = FakeIO()
+    state.backend = MacBackend(io=state.io, responsible=lambda: ("claude", None))
+    return state
+
+
+class TestWindowLookupOffSpace:
+    # Live 2026-10-25: with Claude in front and PT on another Space, PT's
+    # AXWindows read [] and every show/capture said "Can't find Packet
+    # Tracer's main window"; after `open -a` the same calls worked.
+
+    def test_no_window_listed_brings_pt_forward_then_finds_it(self, lookup):
+        lookup.answers = [[], [], [("MAINWIN", MAIN_TITLE, MAIN_FRAME)]]
+        assert lookup.backend.main_window(PID) == 528
+        assert lookup.io.log.count(("open_app", PID)) == 1
+
+    def test_a_dialog_is_found_after_bringing_pt_forward(self, lookup):
+        lookup.answers = [[], [("MAINWIN", MAIN_TITLE, MAIN_FRAME), ("R1WIN", "R1", R1_FRAME)]]
+        assert lookup.backend.find_window(PID, "R1") == 2431
+        assert lookup.io.log == [("open_app", PID)]
+
+    def test_listed_windows_never_activate_pt(self, lookup):
+        # A dialog that is not open yet (the presenter polls for it after the
+        # click) must not pull PT forward on every poll.
+        lookup.answers = [[("MAINWIN", MAIN_TITLE, MAIN_FRAME)]]
+        assert lookup.backend.find_window(PID, "R1") is None
+        assert lookup.backend.main_window(PID) == 528
+        assert lookup.io.log == []
+
+    def test_gives_up_when_pt_never_lists_a_window(self, lookup):
+        lookup.answers = [[]]
+        assert lookup.backend.main_window(PID) is None
+        assert lookup.io.log == [("open_app", PID)]
+        assert lookup.calls <= 1 + MacBackend.WINDOW_POLLS
+
+
+FULL_FRAME = [0.0, 33.0, 1470.0, 923.0]
+
+
+class TestFullScreen:
+    # Live 2026-10-25: with PT's main window in full screen, a dialog opened by
+    # click got a full-screen Space of its own (capture 2940x1846, mostly
+    # blank) and the next call could not find the main window. Out of full
+    # screen, every dialog opened and was captured at its own size.
+
+    def test_full_screen_main_window_is_taken_out_then_found_at_its_new_frame(self, lookup):
+        lookup.attrs[("MAINWIN", "AXFullScreen")] = True
+        lookup.answers = [[("MAINWIN", MAIN_TITLE, FULL_FRAME)],
+                          [("MAINWIN", MAIN_TITLE, MAIN_FRAME)]]
+        assert lookup.backend.main_window(PID) == 528
+        assert lookup.sets == [("MAINWIN", "AXFullScreen", False)]
+
+    def test_a_dialog_lookup_also_leaves_full_screen_first(self, lookup):
+        lookup.attrs[("MAINWIN", "AXFullScreen")] = True
+        lookup.answers = [[("MAINWIN", MAIN_TITLE, FULL_FRAME)],
+                          [("MAINWIN", MAIN_TITLE, MAIN_FRAME), ("R1WIN", "R1", R1_FRAME)]]
+        assert lookup.backend.find_window(PID, "R1") == 2431
+        assert lookup.sets == [("MAINWIN", "AXFullScreen", False)]
+
+    def test_windowed_pt_is_left_alone(self, lookup):
+        lookup.attrs[("MAINWIN", "AXFullScreen")] = False
+        lookup.answers = [[("MAINWIN", MAIN_TITLE, MAIN_FRAME)]]
+        assert lookup.backend.main_window(PID) == 528
+        assert lookup.sets == []
+
+    def test_a_full_screen_dialog_is_not_touched(self, lookup):
+        lookup.attrs[("R1WIN", "AXFullScreen")] = True
+        lookup.answers = [[("MAINWIN", MAIN_TITLE, MAIN_FRAME), ("R1WIN", "R1", R1_FRAME)]]
+        assert lookup.backend.find_window(PID, "R1") == 2431
+        assert lookup.sets == []
+
+
+TOOLBAR = "PtApp.CAppWindowBase.m_pPlToolBar.QToolButton"
+
+
+@pytest.fixture
+def tools(stub, monkeypatch):
+    """The main window's tool buttons; Select is off when the click comes."""
+    names = ["Select (Esc)", "Delete (Del)", "Place Note (N)", "Add Complex PDU (C)"]
+    els = [ui(n, Role.CHECKBOX, MAIN, n, ident=TOOLBAR) for n in names]
+    for n in names:
+        stub.attrs[n] = {"AXValue": 0}
+    stub.attrs["Add Complex PDU (C)"]["AXValue"] = 1
+    monkeypatch.setattr(stub.backend, "elements", lambda handle, role=None: els)
+    return stub
+
+
+class TestSelectToolAtTheClick:
+    def test_select_is_turned_back_on_then_the_click_goes(self, tools):
+        def perform(el, action):
+            tools.log.append(("perform", el, action))
+            tools.attrs[el]["AXValue"] = 1
+            return 0
+        mac_ax.perform = perform  # monkeypatched by the fixture, restored after
+        assert tools.backend.click(MAIN, 299, 330) == "cursor-restored"
+        assert ("perform", "Select (Esc)", "AXPress") in tools.log
+        assert ("click", 299, 330) in tools.io.log
+
+    def test_select_that_stays_off_refuses_and_names_the_tool(self, tools):
+        with pytest.raises(BackendError, match=r"Add Complex PDU \(C\).*not clicking"):
+            tools.backend.click(MAIN, 299, 330)
+        assert not [a for a in tools.io.log if a[0] == "click"]
+
+    def test_select_already_on_is_not_pressed(self, tools):
+        tools.attrs["Select (Esc)"]["AXValue"] = 1
+        tools.attrs["Add Complex PDU (C)"]["AXValue"] = 0
+        tools.backend.click(MAIN, 299, 330)
+        assert not [a for a in tools.log if a[0] == "perform"]
+        assert ("click", 299, 330) in tools.io.log

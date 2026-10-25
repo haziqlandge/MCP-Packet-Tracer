@@ -109,6 +109,30 @@
 
 ### Fixed
 
+- **macOS UI mode works with the client in front.** With PT on another Space (full
+  screen, another desktop) its windows were invisible to Accessibility and every
+  `show=True`/capture failed with "Can't find Packet Tracer's main window". UI mode
+  now brings PT forward when its windows are not listed, takes PT out of full screen
+  (each dialog had got a Space of its own), resets the canvas zoom to 100 % before
+  clicking a device (a zoomed-out click could land on empty canvas), and checks the
+  Select tool again right before the click (a key typed into PT switches its tool).
+- **`pt_cli` no longer waits out its timeout when IOS logs after the prompt.** A command
+  whose prompt was followed by async log lines (`%IPS-6-ENGINE_BUILDING` under
+  `ip ips signature-definition`, seen on PT 9.0.1) was taken as unfinished until the
+  timeout. Trailing log lines are now ignored when looking for the prompt, `[confirm]`,
+  questions and `--More--`, and timestamps from `service timestamps log datetime` count
+  as log lines.
+- **The MCP Control Center's shortcuts follow the OS.** On macOS the editor shows and
+  takes ⌘↩ (run), ⌘K (clear) and ⌘L (clear log); Control+K is left to the text system
+  (delete to end of line) instead of clearing the editor. Other OSes keep Ctrl. Needs
+  the next `.pts` build.
+- **macOS UI mode brings Packet Tracer to the front reliably.** From a background process
+  (the MCP server under its client), macOS can ignore an activation request, and the
+  "is PT in front?" check read a cached answer, so a canvas click could time out with
+  "Packet Tracer is not the frontmost app". The click and key routes now fall back to
+  LaunchServices and read PT's own `AXFrontmost`.
+- **The paste step in `pt_deploy`/`pt_full_build` instructions names ⌘V on macOS**
+  instead of Ctrl+V.
 - **`pt_deploy` copies to the clipboard on macOS and Linux too** (`pbcopy` with a UTF-8 locale;
   `wl-copy`, `xclip` or `xsel`). It only knew Windows' `clip.exe` before.
 

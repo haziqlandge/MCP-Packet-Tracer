@@ -140,6 +140,26 @@ class TestDeployUsesThePlatformClipboard:
         script = (tmp_path / "p" / "topology.js").read_text(encoding="utf-8")
         assert fake.texts == [script]
 
+    @pytest.mark.parametrize("os_name, paste, other", [
+        ("macos", "Paste the script (⌘V)", "Ctrl+V"),
+        ("windows", "Paste the script (Ctrl+V)", "⌘V"),
+        ("linux", "Paste the script (Ctrl+V)", "⌘V"),
+    ])
+    def test_the_paste_step_names_this_os_shortcut(self, tmp_path, monkeypatch, os_name,
+                                                   paste, other):
+        # The steps said "Ctrl+V" on a Mac, where paste is Command+V.
+        from src.packet_tracer_mcp.domain.models.requests import TopologyRequest
+        from src.packet_tracer_mcp.domain.services.orchestrator import plan_from_request
+        from src.packet_tracer_mcp.infrastructure import platform as pt_platform
+        from src.packet_tracer_mcp.infrastructure.platform.base import HostInfo, Platform
+        from src.packet_tracer_mcp.infrastructure.execution.deploy_executor import DeployExecutor
+        host = HostInfo(os=os_name, os_version="1", arch="arm64", python="3.12.15")
+        monkeypatch.setattr(pt_platform, "current", lambda: Platform(
+            host=host, state_dir=tmp_path, clipboard=FakeClipboard()))
+        plan, _ = plan_from_request(TopologyRequest(routers=1, pcs_per_lan=1))
+        steps = DeployExecutor(output_dir=tmp_path).execute(plan, project_name="p")["instructions"]
+        assert paste in steps and other not in steps
+
     @pytest.mark.parametrize("name, expected", [("pbcopy", True), ("none", False)])
     def test_is_available_reports_the_clipboard(self, tmp_path, monkeypatch, name, expected):
         from src.packet_tracer_mcp.infrastructure.execution.deploy_executor import DeployExecutor

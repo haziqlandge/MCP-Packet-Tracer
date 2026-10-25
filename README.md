@@ -245,7 +245,7 @@ tab or app; `capture=True` saves a PNG of it. The backend depends on the OS:
 | OS | UI behavior |
 |---|---|
 | Windows | UI Automation navigates the panels; canvas clicks are posted without moving the real cursor, and `PrintWindow` captures the windows. |
-| macOS | Accessibility navigates the panels; PT comes to the front, and a canvas click can briefly move the cursor before restoring it. Captures require Screen Recording permission. |
+| macOS | Accessibility navigates the panels; PT comes to the front (leaving full screen), the canvas zoom is reset to 100 %, and a canvas click can briefly move the cursor before restoring it. Don't type while PT is in front: its single-key shortcuts switch the canvas tool. Captures require Screen Recording permission. |
 | Linux | UI mode is not available yet; device-panel tools work headless through PT's API. |
 
 Dependencies install with the server. On macOS, follow the [two-grant setup](#macos-setup).
