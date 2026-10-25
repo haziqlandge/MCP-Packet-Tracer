@@ -1,0 +1,7 @@
+[
+  {"tool": "pt_host_command", "device": "Attacker-PC", "command": "ping 192.168.10.100", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-1", "command": "ping 192.168.10.50", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-1", "command": "ping 192.168.10.100", "timeout": 40},
+  {"tool": "pt_cli", "device": "SW-CORE", "commands": ["show monitor session 1"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "commands": ["show ip route", "show version | include License|securityk9|technology"]}
+]

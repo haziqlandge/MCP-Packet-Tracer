@@ -1,0 +1,8 @@
+[
+  {"tool": "pt_cli", "device": "R1", "commands": ["enable", "show ip interface brief"]},
+  {"tool": "pt_cli", "device": "R2", "commands": ["enable", "show ip interface brief"]},
+  {"tool": "pt_cli", "device": "R3", "commands": ["enable", "show ip interface brief"]},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip route"]},
+  {"tool": "pt_host_command", "device": "PC1", "command": "ping 192.168.10.1", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC1", "command": "ping 192.168.30.10", "timeout": 40}
+]

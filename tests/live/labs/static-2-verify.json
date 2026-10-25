@@ -1,0 +1,14 @@
+[
+  {"tool": "pt_cli", "device": "R1", "commands": ["enable", "show ip route static", "show ip interface brief"]},
+  {"tool": "pt_cli", "device": "R2", "commands": ["enable", "show ip route static", "show ip interface brief"]},
+  {"tool": "pt_cli", "device": "R3", "commands": ["enable", "show ip route static", "show ip interface brief"]},
+  {"tool": "pt_host_command", "device": "PC-A1", "command": "ping 192.168.1.11", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-A1", "command": "ping 192.168.1.74", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-A1", "command": "ping 192.168.1.138", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-B2", "command": "ping 192.168.1.139", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-C2", "command": "ping 192.168.1.11", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC-A2", "command": "tracert 192.168.1.139", "timeout": 60},
+  {"tool": "pt_verify_connectivity", "from_device": "PC-B1", "to_ip": "192.168.1.10"},
+  {"tool": "pt_verify_connectivity", "from_device": "PC-C1", "to_ip": "192.168.1.75"},
+  {"tool": "pt_screenshot", "filename": "lab-static-routing-topology"}
+]

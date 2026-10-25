@@ -1,0 +1,9 @@
+[
+  {"tool": "pt_cli", "device": "R1", "timeout": 30, "commands": [
+    "enable", "configure terminal", "interface GigabitEthernet0/2", "no shutdown", "end"]},
+  {"tool": "pt_host_command", "device": "PC1", "command": "ping -n 50 192.168.30.10", "timeout": 180},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip ospf neighbor"]},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip route ospf"]},
+  {"tool": "pt_host_command", "device": "PC1", "command": "tracert 192.168.30.10", "timeout": 60},
+  {"tool": "pt_screenshot", "filename": "ospf-fig-restored"}
+]

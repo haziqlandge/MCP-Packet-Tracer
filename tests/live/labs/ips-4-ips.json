@@ -1,0 +1,29 @@
+[
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["enable", "mkdir ipsdir"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["configure terminal"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 60, "commands": [
+    "ip ips config location flash:ipsdir",
+    "ip ips name IOSIPS",
+    "ip ips notify log",
+    "logging host 192.168.10.50",
+    "ip ips signature-category",
+    "category all", "retired true", "exit",
+    "category ios_ips basic", "retired false", "exit",
+    "exit"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 60, "commands": [
+    "interface GigabitEthernet0/0", "ip ips IOSIPS in", "exit",
+    "ip ips signature-definition",
+    "signature 2004 0",
+    "status", "retired false", "enabled true", "exit",
+    "engine", "event-action produce-alert", "event-action deny-packet-inline", "exit",
+    "exit", "exit"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 60, "commands": [
+    "access-list 110 deny tcp any host 192.168.10.100 eq telnet",
+    "access-list 110 permit ip any any",
+    "interface GigabitEthernet0/0", "ip access-group 110 in",
+    "end", "write memory"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": [
+    "show ip ips all",
+    "show ip ips signatures count",
+    "show running-config | include ip ips|access-group|access-list 110|license boot|logging"]}
+]

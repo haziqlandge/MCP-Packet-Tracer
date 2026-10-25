@@ -1,0 +1,17 @@
+[
+  {"tool": "pt_cli", "device": "R1", "commands": ["enable", "show ip ospf neighbor"]},
+  {"tool": "pt_cli", "device": "R2", "commands": ["enable", "show ip ospf neighbor"]},
+  {"tool": "pt_cli", "device": "R3", "commands": ["enable", "show ip ospf neighbor"]},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip protocols"]},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip ospf database"]},
+  {"tool": "pt_cli", "device": "R1", "commands": ["show ip route"]},
+  {"tool": "pt_cli", "device": "R2", "commands": ["show ip route ospf"]},
+  {"tool": "pt_cli", "device": "R3", "commands": ["show ip route ospf"]},
+  {"tool": "pt_host_command", "device": "PC1", "command": "ping 192.168.20.10", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC1", "command": "ping 192.168.30.10", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC3", "command": "ping 192.168.30.11", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC6", "command": "ping 192.168.10.11", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC4", "command": "ping 192.168.10.10", "timeout": 40},
+  {"tool": "pt_host_command", "device": "PC1", "command": "tracert 192.168.30.10", "timeout": 60},
+  {"tool": "pt_screenshot", "filename": "ospf-fig-converged"}
+]

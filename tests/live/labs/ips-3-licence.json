@@ -1,0 +1,8 @@
+[
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["enable", "configure terminal"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["license boot module c2900 technology-package securityk9"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["yes"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["end", "show version | begin Technology Package"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 120, "commands": ["write memory", "reload"]},
+  {"tool": "pt_cli", "device": "R-EDGE", "timeout": 30, "commands": ["enable", "show version | begin Technology Package"]}
+]

@@ -1,0 +1,11 @@
+[
+  {"tool": "pt_server_service", "device": "Syslog-Server", "service": "syslog"},
+  {"tool": "pt_host_command", "device": "Attacker-PC", "command": "ping 192.168.10.100", "timeout": 40},
+  {"tool": "pt_server_service", "device": "Syslog-Server", "service": "syslog"},
+  {"tool": "pt_host_command", "device": "PC-1", "command": "ping 192.168.10.100", "timeout": 40},
+  {"tool": "pt_server_service", "device": "Syslog-Server", "service": "syslog"},
+  {"tool": "pt_cli", "device": "R-EDGE", "commands": ["enable", "show logging"]},
+  {"tool": "pt_cli", "device": "SW-CORE", "commands": ["enable", "show monitor session 1"]},
+  {"tool": "pt_web_browser", "device": "Attacker-PC", "url": "http://192.168.10.100", "timeout": 30},
+  {"tool": "pt_screenshot", "filename": "lab-cce2-ips-topology"}
+]
