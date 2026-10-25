@@ -103,6 +103,23 @@ not scroll when the scene fits, so click the device point, not the viewport cent
 The corner measurement below still applies. The Control Center window may cover the
 canvas: check `AXUIElementCopyElementAtPosition` returns the canvas before clicking.
 
+**Amendment 2026-10-25 (live, ISSUES X13/X19/X20, PREVIOUS_WORK 2.12).** Four
+changes, each from a live failure with Claude in front:
+1. Window lookup: when PT's AX window list is empty (its windows off the current
+   Space), `MacBackend` activates PT through LaunchServices (`open -a`) and reads
+   the list again. A dialog that is merely not open never activates PT.
+2. Full screen: a full-screen main window gives each dialog its own Space (captured
+   at screen size, main window then unreachable). The lookup sets `AXFullScreen`
+   false on the main window first; the user can return with ⌃⌘F.
+3. Zoom: the click point is calibrated at 100 % only, and "centre then click the
+   viewport centre" misses a device near the scene's edge. When
+   `getCurrentZoom()` is not 0, the presenter presses the toolbar's Zoom Reset
+   (by name, like Select) and re-reads the device; without that button it keeps
+   the old centre route. This part is OS-neutral and unverified on Windows.
+4. The Select guard is repeated by the macOS click route with PT in front, right
+   before the click (pressing Select again once), because a key reaching PT after
+   the presenter's check switches the tool (N, C, Del).
+
 Use `events.click(handle, x, y)` in the PHASE-00 route order. It returns
 `"posted"` (no cursor movement) or `"cursor-restored"`, and the presenter's step
 text reports which. The Select-tool guard in `_open_by_click` stays exactly as

@@ -111,6 +111,27 @@ README uses).
 - [ ] `EVALUATION.md` §6 passed on the Mac: action count, doctor output and PNG recorded in PREVIOUS_WORK — **BLOCKED: fresh-client setup and real permission-reset approval pending; no action count or PNG claimed**
 - [x] `CHANGELOG.md` Unreleased lists the platform layer, mailbox discovery, the XDG change, macOS UI mode, automatic UI dependencies and `pt-mcp doctor` — Unreleased section reviewed, 2026-10-10
 
+Added 2026-10-24 (upstream merge, Mac lab runs, OS-aware shortcuts):
+
+- [x] Upstream `main` @ `d9bb732` merged into the branch with no conflicts; suite passes on the Mac — merge `f7cb31e`, 1348 passed in 38.55 s, 2026-10-24
+- [x] Control Center editor shortcuts and hints follow the OS (⌘ on macOS, Ctrl elsewhere) — `tests/test_webview_shortcuts.py` 8 passed, 8 failed before the fix; Mac Chromium render check, 2026-10-24
+- [x] The OS-aware shortcuts show and work in PT's own Control Center on the Mac (needs a rebuilt `.pts`) — `MCP-BUILDER-os-shortcuts.pts` built and installed with the user's OK; AX read of the webview: "Run (⌘↩)", "Clear editor (⌘K)", "Clear log (⌘L)", ⌘↩/⌘K hints; ⌘K cleared the editor, Control+K left `line1⏎line2`; ⌘L cleared the log, Control+L did not; ⌘↩ ran once, Control+↩ did not, 2026-10-24
+- [x] Lab task list for the two live labs written (`tests/live/labs/`) — README + 7 call lists, results recorded, 2026-10-24
+- [x] CCE2 IPS lab (PDF pp. 6–10): topology, addressing and routing built through the MCP on the Mac — `ips-1-build.json` all calls ok, 9 devices/8 links, PC-1 4/4 to .100 and .50, 2026-10-24
+- [x] CCE2 IPS lab: securityk9 licence, IOS IPS, ACL 110 and SPAN configured on the Mac — `show version` securityk9 Evaluation; `show ip ips all` IOSIPS inbound Gi0/0, 1 active sig; `show monitor` Gi0/1→Fa0/24, 2026-10-24
+- [x] CCE2 IPS lab: all six rows of the PDF's Table 7 observed on the Mac — attacker ping reply → dropped with `%IPS-4-SIGNATURE Sig:2004`; syslog 5→7 per 2 attack pings, unchanged by internal; HTTP page served; PC-1 4/4, 2026-10-24
+- [x] Static-routing lab: subnetted topology built and configured through the MCP on the Mac — `static-1-build.json`: 12 devices/11 links, R1 18/18, R2 22/22, R3 18/18 commands ok, /26 and /30 masks in `pt_query_topology`, 2026-10-24
+- [x] Static-routing lab: every LAN reaches every other LAN; `show ip route` lists the static routes — R1 3, R2 2, R3 3 `S` routes; warm matrix 9/9 pings 4/4 (A↔B, A↔C, B↔C both ways); tracert .1→.194→.198→.139, 2026-10-24
+- [x] OSPF lab (single area 0, three routers in a triangle) built, converged and failed over through the MCP on the Mac — `ospf-1..6`: 3×2 neighbours FULL, `O` routes cost 2; R1–R3 shut → LAN3 `[110/3] via 10.0.12.2`, tracert via R2, 4/4 ping; restored → `[110/2] via 10.0.13.2`, 50/50 pings, 2026-10-25
+- [x] macOS UI activation (ISSUES X18): `_wait_front` falls back to LaunchServices and reads PT's `AXFrontmost` live instead of the cached `NSWorkspace` answer — `tests/test_macos_click_route.py` 29 passed (new tests failed before), 2026-10-25
+- [x] UI mode end to end on the Mac after the Screen Recording grant: real window captures of a CLI and a Command Prompt — DHCP lab through `live_smoke` with PT in front at 100 % zoom: R1, DHCP-Server, PC1, PC3 opened by click; 12 non-blank window captures incl. R1 CLI (1400×1416) and PC1/PC3 Command Prompt; `projects/dhcp-lab/screens/`, 2026-10-25
+- [x] UI activation fix (ISSUES X18) live: with Claude in front, `pt_ui_open` brings PT forward and opens the dialog — after the X13 fix: Claude frontmost, PT's AX list empty → PC4, PC2, SW2, then R1, DHCP-Server, PC2 (reopened lab) all opened by click and captured; `projects/dhcp-lab/live-proof/`, 2026-10-25
+- [x] X13: an empty PT window list activates PT (`open -a`) and is read again; a dialog not yet open never activates PT — 4 tests (3 failed before); live as above, 2026-10-25
+- [x] Full screen: the window lookup takes PT's main window out of full screen first — 4 tests (2 failed before); live: PT full screen + Claude in front → R1, DHCP-Server, PC2 opened and captured, 2026-10-25
+- [x] X19: at zoom ≠ 100 % the presenter presses Zoom Reset before the canvas click — 3 tests (2 failed before), Windows-flow tests unchanged; live at zoom −2: step "zoom reset to 100%", PC4 and R1 opened, 2026-10-25
+- [x] X20: the macOS click route re-checks the Select tool with PT in front right before the click — 5 tests (4 failed before); live: 7 clicks after it, no stray note or PDU, 2026-10-25
+- [x] No Windows-only key shortcut is left in a user-facing tool description or reply on macOS — paste steps use `Platform.shortcut()` (test fails without it); `pt_save_project` description made OS-neutral, `tool_api.json` diff = that description only; grep of src/docs/skill/webview clean, 2026-10-24
+
 ## Known failure conditions
 
 - `tool_api.json` shows a schema change → a parameter changed by accident.

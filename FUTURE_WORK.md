@@ -5,7 +5,7 @@ in `PREVIOUS_WORK.md`.
 
 ---
 
-## 0. Start here (written 2026-10-10, after PHASE-06/07 implementation)
+## 0. Start here (written 2026-10-25, after macOS UI mode was fixed and proven live)
 
 Read `CLAUDE.md` first, then this section. Replace this section rather than
 appending another one.
@@ -13,57 +13,52 @@ appending another one.
 ### The situation
 
 PHASE-00 to PHASE-03 and PHASE-05 are complete. PHASE-04 still has its real
-permission-revocation gate open (previously declined). PHASE-06 diagnostics,
-onboarding and platform status are implemented. PHASE-07 docs, installed skill,
-API snapshot and CODEMAP are updated. Neither phase is complete until its real
-client/UI acceptance gates pass; do not replace those checks with offline tests.
+permission-revocation gate open. PHASE-06 and PHASE-07 are implemented; their
+real-client and fresh-grant gates are open, but every PHASE-07 UI-mode box is now
+ticked. Upstream `main` @ `d9bb732` is merged (`f7cb31e`). Nothing since
+`f7cb31e` is committed or pushed, so CI has not run on it. The user commits
+through their own `/commitskill`.
 
 ### Verification state
 
-Mac: **1233 passed** in 34.72 s using `.venv/bin/python -B -m pytest -q -p
-no:cacheprovider`. Registry/CODEMAP: 8 passed. Tool snapshot changes only two
-descriptions (`pt_deploy`, `pt_ui_open`); schemas and names unchanged. Strict
-MkDocs build passes; installed skill diff empty. Planning checker skipped:
-its skill is not installed. The current implementation's CI matrix is pending.
+Mac (macOS 26.6, PT 9.0.1): **1389 passed** in 38.43 s
+(`.venv/bin/python -B -m pytest -q -p no:cacheprovider`), 2026-10-25. Planning
+checker skipped: not installed. Windows backend files unchanged.
 
-Live: headless doctor passes with PT and extension; platform status reports
-both channels and the legacy V5.2 mailbox. ChatGPT is the responsible app for
-this executor: Accessibility false, Screen Recording true. The missing-grant
-remedy is correct and no preflight check prompts. Headless smoke: all 17
-non-capture calls completed; the first R1 CLI response was empty (X11), and
-both commands on a repeat produced the expected interface table. The optional
-screenshot call was omitted at the user's request.
+macOS UI mode works live end to end with Claude in front, PT in full screen and
+the canvas zoomed out (PREVIOUS_WORK 2.12, last two subsections). Closed today:
+X4, X13, X16, X18, X19. Open: X20 (a tool switch before the click, now guarded,
+cause unconfirmed), X12 (no canvas scroll bars on macOS).
 
 ### What this session did
 
-Implemented doctor/client config/--port, status diagnostics and degraded UI
-onboarding. Updated per-OS documentation, CHANGELOG, CONTRIBUTING and CODEMAP;
-regenerated the API snapshot deliberately; synced the installed skill. Evidence
-is in PREVIOUS_WORK 2.10 and 2.11.
-
-Separately completed the user's two live assessments via MCP. The first was
-submitted by the user. The second used the on-screen diagram: Central-SW Fa0/5
-uplink and Fa0/6 User-A, with Central-RT/User-B on G0/0/0. Both hosts and rack
-network devices were powered on; addressing, saved IOS security configuration,
-24 unused-port shutdowns, host connectivity and authenticated SSH were checked.
-No assessment screenshots were saved. The MCP disconnected after verification.
+Built a DHCP lab and wrote the user a Word write-up with 11 UI-mode captures
+(`projects/dhcp-lab/`). Then fixed UI mode test-first: activate PT when its
+windows are off the current Space, leave full screen, reset the zoom before a
+canvas click, and re-check the Select tool right before the click. Docs updated:
+README, `docs/tools.md`, `skill/reference/rough-edges.md`, `pt://guide`, and a
+PHASE-05 amendment. The lab's call lists live only in the session scratchpad.
+The OSPF canvas is backed up as `projects/ospf-lab/lab-ospf-live-backup.pkt`.
 
 ### NEXT, in order
 
-1. Commit and push the implementation to this fork's cross-platform branch,
-   then record its six-job CI result.
-2. Finish PHASE-06/07 fresh-client and real-grant acceptance only after the
-   pending user approval. Back up setup before reset; count real user actions.
-3. Keep Windows live regression and PHASE-04 revocation gaps honest.
+1. The user commits through `/commitskill`, then, with their OK, push
+   `cross-platform` and record the CI result.
+2. X20: ask whether keys were typed on the Mac during the runs; if it recurs,
+   the guard's refusal names the tool that was active.
+3. The OSPF write-up in the user's CCE2 format still waits on their details
+   (experiment number, title, group). Retake its UI captures with the fixes.
+4. Optional: save the DHCP lab call lists under `tests/live/labs/` like the
+   others (`dhcp-*`), if the user wants them in the repo.
+5. A release `.pts` should carry the fixed `main.js` and the new webview (X3).
+6. Keep the Windows live regression (§2, now including the presenter's Zoom
+   Reset, X5) and the PHASE-04 revocation gap honest.
 
 ### Waiting on the user
 
-A permission question is pending for the fresh acceptance run: back up/reset
-MCP setup, configure a fresh Claude client, reset its grants, then have the
-user grant Accessibility and Screen Recording. No elapsed time is approval.
-The Claude desktop app exists, but Claude Code CLI is not available in PATH.
-An upstream PR still requires separate user approval. See §2 for Windows live
-regression and §3 for the upstream-PR cleanup rules.
+Commit, push, the OSPF document details, and the fresh-client acceptance run
+(back up/reset setup, reset grants). An upstream PR requires separate approval;
+see §2 for Windows live regression and §3 for the upstream-PR cleanup rules.
 
 ---
 

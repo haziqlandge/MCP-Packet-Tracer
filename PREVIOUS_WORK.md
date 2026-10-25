@@ -413,6 +413,170 @@ registry and CODEMAP checks: **60 passed**. New Windows-path regression failed
 before the `.as_posix()` fix and passed afterward. Pyflakes on all new modules
 and tests is clean; `git diff --check` is clean.
 
+## 2.12 Upstream merge, two live labs, console and shortcut fixes (2026-10-24)
+
+Mac: macOS 26.6 (arm64), PT 9.0.1, Python 3.13.17 `.venv`. The Mac had been reset
+since 2.11: `~/Cisco Packet Tracer 9.0.1/extensions/` empty, the released V5.2
+`.pts` (from `~/Downloads`) loaded, bridge on the legacy mailbox
+`~/AppData/Local/packet-tracer-mcp/bridge`, no installed `packet-tracer` skill.
+
+- **Upstream merged cleanly.** `upstream/main` @ `d9bb732` (17 commits since
+  `bcb2ef3`: console batching/deadlines, DHCP pools, mask validation,
+  `pt_server_http` guards, browser stale page, FastMCP rename guard) merged as
+  `f7cb31e` with no textual conflicts; nine files overlapped and auto-merged. No
+  OS-specific code in upstream's source diff. Suite 1348 passed right after.
+- **Both labs ran end to end through the MCP, headless** (`tests/live/labs/`,
+  results in its README). CCE2 IPS lab (PDF pp. 6–10): all six rows of Table 7
+  observed; `show ip ips all` / signature count / running-config match the PDF's
+  Figs 4–5. Static routing over a VLSM /24: 8 static routes, warm ping matrix
+  9/9 at 4/4, tracert through three routers. `.pkt` files and canvas PNGs in
+  `projects/` (git-ignored).
+- **PT drops the licence line after `configure terminal` in one batch** (ISSUES
+  X15): 3 of 3 silent, 2 of 2 with EULA when sent alone. Answering the EULA with
+  anything but `yes` (I sent `end` once) prints the same "use 'write'" note but
+  leaves `Next reboot None`: read `show version` before reloading.
+- **Async IOS logs after a prompt stalled `pt_cli` for the full timeout.** Live
+  buffer: `engine\nR-EDGE(config-sigdef-sig-engine)#\n*Mar 01, 00:02:01.022:  %IPS-6-...`
+  ×4 → 67.5 s for that batch. `is_done`/`classify_tail` and the JS `done` now use
+  the buffer minus trailing log lines (`_core`/`__core`), and `_LOG_LINE_RE`
+  accepts the comma of datetime timestamps (upstream's priming fix missed those
+  too). 9 tests (7 failed before). The re-run took 0.53 s, but the logs did not
+  land on `engine` that time, so the live proof is "no regression"; the stall
+  itself is covered by the verbatim buffer.
+- **Control Center shortcuts follow the OS** (`interface.js`, `index.html`):
+  ⌘↩/⌘K/⌘L on macOS, Ctrl elsewhere; Control+K no longer clears the editor on a
+  Mac. 8 node tests (8 failed before); Mac Chromium render via a local
+  `http.server` showed the ⌘ hints and Ctrl+K leaving the text. Not yet in PT's
+  webview (X17, needs a `.pts` build).
+- **Paste steps name ⌘V on macOS** (`Platform.shortcut()`); `pt_save_project`'s
+  "Ctrl+S" description made OS-neutral. `UPDATE_TOOL_API=1`: only that
+  description changed.
+- **Images without Screen Recording:** `pt_screenshot` (`getWorkspaceImage`)
+  needs no macOS grant: PT renders its own canvas. The user's Screen Recording
+  grant did not take effect in the running session while Accessibility did
+  (X16). X13 reproduced: `AXMainWindow`/`AXFocusedWindow` answer while
+  `AXWindows` is empty (PT full-screen on another Space).
+- Headless smoke (setup + `headless.json`, this checkout): 18/18 calls, no
+  Traceback/NameError/PT_ERROR/EXCEPTION; first `pt_cli` printed its table (X11
+  did not recur).
+
+Final: **1368 passed** in 38.89 s. Planning checker skipped: not installed.
+
+### The OS-aware `.pts`, built and checked in PT (same day, closed ISSUES X17)
+
+With the user's OK, driven through AX + HID clicks with PT frontmost (no Screen
+Recording):
+
+- **Built** `~/Cisco Packet Tracer 9.0.1/extensions/MCP-BUILDER-os-shortcuts.pts`
+  (126,426 bytes) by editing the installed V5.2 module's Custom Interfaces
+  `interface.js` and `index.html`, then Info → **Export**. Before editing, V5.2's
+  copies were read out: `index.html` identical to the repo at `f7cb31e`,
+  `interface.js` identical with comments stripped (only Spanish → English). So
+  the build differs from V5.2 only by the shortcut change. Script Engine files
+  untouched. Rollback: Remove, then Add `~/Downloads/V5.2.pts` (sha256
+  `175f7755…bc071`, unchanged).
+- **Installed**: Remove, Add (open panel via ⌘⇧G + full path), Launch. The
+  other six modules are untouched; `pt_bridge_status` and `pt_query_topology`
+  answered right after.
+- **Checked in PT's webview** (its content is in the AX tree: the
+  "Logs - MCP BUILDER" window *is* the Control Center): tooltips "Run (⌘↩)",
+  "Clear editor (⌘K)", "Clear log (⌘L)" and hints ⌘↩ / ⌘K, so QtWebEngine
+  reports a Mac `navigator.platform`. Keys: ⌘K cleared `line1⏎line2`; Control+K
+  left it; ⌘L cleared the log, Control+L did not; ⌘↩ logged one "Editor is empty"
+  and Control+↩ nothing. Command arrives as `metaKey`, so Qt does not swap the
+  modifiers in the webview.
+- **Traps on the way** (each cost a retry):
+  - Setting `AXValue` on the module editor's text area parses HTML as rich text:
+    `index.html` (50,921 chars) became its 1,665 chars of rendered text. JS went
+    in exactly. HTML went in exactly by pasting plain text (`pbcopy`, ⌘A, ⌘V;
+    the user's clipboard was saved and restored).
+  - `AXPress` on the module list's Remove did nothing, and so did a HID click
+    whose down and up were back to back. Qt push buttons need a gap (0.12 s
+    worked). The macOS backend's `post_click` has no gap but only clicks the
+    canvas, which acts on mouse-down (worked in PHASE-05).
+  - Qt reports the module list's cells as `AXCell`, `AXGroup` or
+    `AXStaticText` from one read to the next: match by title, not role.
+    `AXSelectedRows` stays empty although the selection changes (the
+    description pane follows it).
+  - `activateWithOptions_` did not bring PT forward from this executor; `open -a`
+    did (ISSUES X18). Activation also cured X13's empty `AXWindows`.
+
+### OSPF lab and the activation fix (2026-10-25)
+
+- **OSPF area 0 lab** (`tests/live/labs/ospf-*`, results in its README): INIT →
+  2WAY → FULL in ~35 s (the 40 s DR wait), `O` routes at cost 2, failover to
+  cost 3 via R2 and back. `show ip route` read straight after a `shutdown` still
+  showed the old path once: read it after a traceroute.
+- **`NSWorkspace.frontmostApplication()` is cached** in a process with no AppKit
+  event loop: it kept answering PT while System Events showed Safari, then
+  Claude. PT's `AXFrontmost` followed both. The click route's frontmost check
+  used it, so it could time out with PT already in front. Now `is_frontmost`
+  reads `AXFrontmost`, and `_wait_front` falls back to `open -a` once after
+  0.5 s (5 new tests; 3 failed before the fallback, 2 before the live read).
+  Live proof waits for the relaunch (X16).
+
+### UI mode live: the DHCP lab (2026-10-25, closed ISSUES X16)
+
+- **X16 closed by the relaunch.** After Claude was restarted, `macos_probe
+  perms` read accessibility, screen_recording and post_event all true
+  (responsible `claude`, pid 15717). CG window names came back too.
+- **UI mode worked end to end once three conditions held**: PT activated
+  (`open -a` its bundle), PT out of full screen (`AXFullScreen` false on the
+  main window), canvas at 100 % (Zoom Reset pressed through AX). Then a DHCP lab
+  (R1 2911 with IOS pool `LAN-B`, Server-PT `serverPool`, two 2960s, four PCs)
+  ran through `live_smoke`: R1, DHCP-Server, PC1, PC3 opened by click, 12
+  non-blank window captures. Leases PC1 .10.101, PC2 .10.103 (server), PC3
+  .20.101, PC4 .20.103 (R1, excluded .1–.99 respected); `show ip dhcp binding`
+  2 rows; PC1 → PC3/PC4 3/4 each. Files: `projects/dhcp-lab/` (`lab-dhcp.pkt`,
+  `screens/`, `DHCP-Lab-Packet-Tracer.docx`), all git-ignored.
+- **Without them it failed**: with Claude in front, PT's AX window list is empty
+  and every show/capture says "Can't find Packet Tracer's main window" (X13);
+  at zoom −2 the click hit empty canvas and once left a note editor (X19).
+- **`output_dir` is one path component.** `safe_name_component` flattens
+  `projects/dhcp-lab/screens` to `projects_dhcp-lab_screens/` under the cwd.
+  Pass a plain folder name and move the files after.
+- The OSPF canvas was saved first as `projects/ospf-lab/lab-ospf-live-backup.pkt`
+  before its devices were deleted for this lab (user's OK).
+
+### UI mode with Claude in front: three fixes (2026-10-25, closed ISSUES X4, X13, X18, X19)
+
+Each fix had a failing test first; suite 1373 → 1389. PHASE-05 has the amendment.
+
+- **X13, PT off the current Space**: `MacBackend._find` reads PT's AX window list
+  and, only when it is empty, runs `open -a` on PT's bundle and reads it again
+  (≤ 4 reads). A dialog that is merely not open never activates PT, so the
+  presenter's post-click polling cannot keep pulling PT forward.
+- **Full screen**: with PT's main window in full screen, SW1's dialog got its
+  own full-screen Space, captured at 2940×1846 and mostly blank. The next call
+  could not reach the main window. `_find` now sets `AXFullScreen` false on the
+  main window first (polls the flag, then 0.5 s for the frame). Dialogs opened
+  after that come out about 1470×853 pt instead of 700×708: PT seems to size them
+  from the full-screen state. The captures are right, just wide. Dialogs first
+  shown while PT was still in full screen keep that size.
+- **X19, zoom**: when `getCurrentZoom()` is not 0, the presenter presses the
+  toolbar's "Zoom Reset" (AX name, located like Select) and re-reads the device,
+  then clicks the 100 % point. With no such button the old centre route stays,
+  so the Windows tests are unchanged.
+- **X20, guard**: the macOS click route checks the Select tool again with PT in
+  front, just before posting (`events.click(ready=...)`). Select is pressed once
+  more if needed; otherwise the route refuses and names the active tool. This
+  came from a "Create Complex PDU" dialog for PC4 that appeared where a click
+  meant to open PC4 landed. PT's tools have one-key shortcuts (N note, C complex
+  PDU, Del delete).
+- **Live proof** (`live_smoke`, this checkout, Claude in front every time): PT
+  windowed at zoom −2 → PC4 opened with the step "zoom reset to 100%", then PC2
+  and SW2 by click (`projects/dhcp-lab/live-proof/proof-*`). PT in full screen
+  at zoom −2, lab reopened so no dialog existed → R1 (CLI), DHCP-Server
+  (Services › DHCP), PC2 (IP Configuration, lease renewed to .10.100) all opened
+  by click and captured (`final-*`). No stray note or PDU after the guard.
+  X18's own `_wait_front` fallback did not need to run: `_find` activates PT
+  first.
+- **X4 closed**: macOS UI mode works live end to end. `tests/live/ui.json`
+  already passed 8/8 on 2026-10-10 (PHASE-05), so the row's "not run on the
+  Mac" was stale.
+- PT stores empty orphan note IDs in the `.pkt` (14 here, none visible, back
+  after a reload). `pt_clear_annotations` already documents them.
+
 ## Where the detailed evidence lives
 
 | Artifact | Contents |
