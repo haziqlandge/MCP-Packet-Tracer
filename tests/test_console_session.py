@@ -482,6 +482,37 @@ class TestPriming:
         assert "BODY OF show vlan brief" in out["results"][0]["out"]
 
 
+# ---------------------------------------------------------------------------
+# ASA: seen live on PT 9.0.1, a 5506-X returns null from getCommandLine() and
+# has no getCommandPrompt; its CLI tab is getConsoleLine().
+# ---------------------------------------------------------------------------
+
+def _asa_fake() -> str:
+    return (
+        "var __out='Type help or \\'?\\' for a list of available commands.\\n\\nciscoasa>';"
+        "var __typed=[];"
+        "var cl={getOutput:function(){return __out;},getPrompt:function(){return 'ciscoasa>';},"
+        "getMode:function(){return 'user';},enterChar:function(){},"
+        "enterCommand:function(c){__typed.push(c);__out+=c+'\\nBODY OF '+c+'\\nciscoasa>';}};"
+        "var d={getCommandLine:function(){return null;},getConsoleLine:function(){return cl;}};"
+        "var ipc={network:function(){return {getDevice:function(){return d;}};}};"
+    )
+
+
+@requires_node
+class TestAsaConsole:
+    def test_run_falls_back_to_the_console_line(self, tmp_path):
+        out = json.loads(run_pt_js(build_run_js("FW1", ["show route"], 0), _asa_fake(),
+                                   tmp_path)[0])
+        assert out["ok"] is True
+        assert "BODY OF show route" in out["results"][0]["out"]
+
+    def test_poll_falls_back_to_the_console_line(self, tmp_path):
+        out = json.loads(run_pt_js(build_poll_js("FW1", 0, "snap"), _asa_fake(), tmp_path)[0])
+        assert out.get("error") != "no_console"
+        assert out["prompt"] == "ciscoasa>"
+
+
 def test_bridge_timeout_mid_run_says_commands_may_have_run():
     # The first batch stopped after "enable"; the reply to the second batch
     # never arrives, although PT may well have typed "conf t" and "hostname X".
