@@ -105,12 +105,15 @@ KEY_CTRL_SHIFT_6 = 30
 
 def _resolve_line_js(dev: str) -> str:
     """Resolve `d` and `cl` (the console). `getCommandLine` works on routers and
-    hosts; `getCommandPrompt` is a fallback because it only exists on hosts."""
+    hosts; `getCommandPrompt` is a fallback because it only exists on hosts.
+    `getConsoleLine` is the ASA's: on a 5506-X (PT 9.0.1) getCommandLine()
+    returns null and the CLI tab is the console line."""
     return (
         f"var d=ipc.network().getDevice({dev});"
         "if(!d){reportResult(JSON.stringify({ok:false,error:'device_not_found'}));return;}"
         "var cl=null;try{cl=d.getCommandLine();}catch(e){}"
         "if(!cl&&typeof d.getCommandPrompt==='function'){try{cl=d.getCommandPrompt();}catch(e){}}"
+        "if(!cl&&typeof d.getConsoleLine==='function'){try{cl=d.getConsoleLine();}catch(e){}}"
         "if(!cl){reportResult(JSON.stringify({ok:false,error:'no_console'}));return;}"
     )
 

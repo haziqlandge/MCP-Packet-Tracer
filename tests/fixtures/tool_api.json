@@ -2765,6 +2765,62 @@
    "type": "object"
   }
  },
+ "pt_simulate_pdu": {
+  "description": "Sends a simple PDU (ICMP echo) in Simulation mode and runs it to the end.\n\nThe GUI's \"Add Simple PDU\" + Capture/Forward or Play, until PT marks the\nPDU Successful or Failed. Returns ONLY this PDU's hops (STP and other\nbackground frames left out), the device path and, on failure, the\ndevice that dropped it and PT's reason.\n\nParameters:\n- source / destination: device NAMES (pt_query_topology), not IPs.\n- animate: True presses Play so the envelope moves on the canvas\n  (slow, ~2 s per hop); False steps the engine at once.\n- warm_up: first sends the PDU in Realtime so cold ARP caches do not\n  drop it (each cold router hop drops one packet).\n- clear_list: empties the PDU list first (removes the warm-up rows).\n- only_icmp: hides every other event type, so STP BPDUs dropped by\n  PCs no longer show red X's.\n- max_steps (headless, 1-1000) / timeout_s (animated, seconds).\n- include_decisions: PT's per-OSI-layer log on every hop (a dropped\n  hop always carries it).\n\nPT stays in Simulation mode; pt_simulation_mode(on=False) returns to\nRealtime.\n\nExample: pt_simulate_pdu(\"PC1\", \"Remote-Server\", animate=True)",
+  "inputSchema": {
+   "properties": {
+    "animate": {
+     "default": false,
+     "title": "Animate",
+     "type": "boolean"
+    },
+    "clear_list": {
+     "default": true,
+     "title": "Clear List",
+     "type": "boolean"
+    },
+    "destination": {
+     "title": "Destination",
+     "type": "string"
+    },
+    "include_decisions": {
+     "default": false,
+     "title": "Include Decisions",
+     "type": "boolean"
+    },
+    "max_steps": {
+     "default": 200,
+     "title": "Max Steps",
+     "type": "integer"
+    },
+    "only_icmp": {
+     "default": true,
+     "title": "Only Icmp",
+     "type": "boolean"
+    },
+    "source": {
+     "title": "Source",
+     "type": "string"
+    },
+    "timeout_s": {
+     "default": 120,
+     "title": "Timeout S",
+     "type": "integer"
+    },
+    "warm_up": {
+     "default": true,
+     "title": "Warm Up",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "source",
+    "destination"
+   ],
+   "title": "pt_simulate_pduArguments",
+   "type": "object"
+  }
+ },
  "pt_simulation_mode": {
   "description": "Switches PT between Realtime and Simulation mode.\n\nIn Simulation mode packets do NOT move on their own: they stay queued in the\nevent list and have to be moved with pt_simulation_step. That is what\nallows reading the path packet by packet with pt_read_packet_trace.\n\nParameters:\n- on: True enters Simulation (default), False goes back to Realtime.\n\nExample: pt_simulation_mode(on=True)",
   "inputSchema": {

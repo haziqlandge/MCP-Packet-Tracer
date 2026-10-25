@@ -59,9 +59,12 @@ class-maps and policy-maps with IOS CLI and use this to verify.
 **Simulation:** `pt_simulation_mode(on)` (Realtime ↔ Simulation), `pt_simulation_step(action, times)`
 (`forward`/`back`/`reset`), `pt_read_packet_trace(limit, device, include_decisions)` — the event list
 plus PT's own per-OSI-layer explanation of each decision (same text as the GUI's PDU Details pane).
-Workflow: `pt_simulation_mode(on=True)` → generate traffic (`pt_verify_connectivity`) → `pt_read_packet_trace`.
-There is **no `pt_send_pdu`**: PT does not let an extension originate a packet the way the GUI's
-*Add Simple PDU* button does. Generate traffic with a real ping instead.
+**`pt_simulate_pdu(source, destination, animate, warm_up, clear_list, only_icmp, max_steps,
+timeout_s, include_decisions)`** is the GUI's *Add Simple PDU* run to the end in one call
+(`UserCreatedPDU.addSimplePdu`): verdict Successful/Failed, this PDU's path only, and on failure the
+device that dropped it with PT's reason. `animate=True` presses Play so the envelope moves on the
+canvas. By default it warms ARP in Realtime first (each cold router hop drops one packet), empties the
+PDU list and hides everything but ICMP (STP BPDUs dropped by PCs show as red X's).
 **Device panel (CLI / Desktop / Services, live):** `pt_cli(device, commands)` types IOS commands
 in the router's real CLI tab one at a time, waiting for the prompt, and marks each `ok` / `ERROR` /
 `UNKNOWN COMMAND` / `WAITING FOR ANSWER` / `TIMEOUT`; `pt_host_command(host, command, inputs)` is the

@@ -169,14 +169,21 @@ device once each.
   checking that it was applied.
 
 ## Step-by-step simulation
-Flow: `pt_simulation_mode(on=True)` → generate traffic (`pt_verify_connectivity`)
-→ `pt_read_packet_trace()` → `pt_simulation_step(action="forward")` to advance.
-- `pt_read_packet_trace` returns, per frame, the path AND PT's decision log per
-  OSI layer — the same text as the GUI's "PDU Details" panel. That is where the
-  real cause of a failing ping is ("The next-hop IP address is not in the ARP
-  table..."), not just the symptom.
-- `pt_send_pdu` does NOT exist: PT does not let an extension originate a packet
-  the way the GUI's "Add Simple PDU" button does. Generate traffic with a real ping.
+One call: `pt_simulate_pdu(source, destination)` is the GUI's "Add Simple PDU"
+run to Successful/Failed, returning only that PDU's path and, on failure, the
+device that dropped it and why. `animate=True` presses Play so the user sees the
+envelope move (~2 s per hop). By default it first warms ARP in Realtime, empties
+the PDU list and shows only ICMP events.
+- Cold ARP caches drop the first packet at every router hop (an ASA also ARPs
+  for each inside host): a PDU right after a reload or Reset Simulation Fails
+  with red X's. Keep warm_up=True, and do not press Reset Simulation (it clears
+  ARP) before a demo.
+- Red X's on PCs during Simulation are usually STP BPDUs that PCs drop:
+  only_icmp=True hides them.
+Manual flow: `pt_simulation_mode(on=True)` → traffic → `pt_simulation_step` →
+`pt_read_packet_trace()`. It returns, per frame, the path AND PT's decision log
+per OSI layer — the same text as the GUI's "PDU Details" panel ("The next-hop IP
+address is not in the ARP table..."), not just the symptom.
 
 ## Device panel (CLI, Desktop, Services) — headless or UI
 Everything in a device's window is driven through the API, without taking the mouse or keyboard:
