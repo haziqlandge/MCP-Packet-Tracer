@@ -4,6 +4,16 @@
 
 ### Added
 
+- **`pt_simulate_pdu` — the GUI's *Add Simple PDU*, run to the end in one call.**
+  `UserCreatedPDU.addSimplePdu()` turned out to be scriptable (the docs said it
+  was not). The tool follows only that PDU's frames through
+  `FrameInstance.getTrafficSource()` and reads PT's own Successful/Failed from
+  `UserTraffic.getStatus()`. It returns the path and, on failure, the device that
+  dropped the PDU with PT's reason. `animate=True` uses the Simulation Panel's Play
+  button so the envelope moves on the canvas; the headless mode now refreshes the
+  panel's event list, which engine-only stepping left empty. By default it warms
+  ARP in Realtime, empties the PDU list and hides everything but ICMP, so the run
+  shows no red X's (STP BPDUs dropped by PCs, cold-ARP drops).
 - **Device-panel control: every tab of a device window, without touching the screen.**
   17 new tools (62 → 79 with upstream's `pt_configure_dhcp_server`) drive what a student does inside a device through Packet
   Tracer's own API: `pt_cli` (IOS CLI tab — one command at a time, waits for the
@@ -67,6 +77,8 @@
 
 ### Fixed
 
+- **`pt_cli` on an ASA.** A 5506-X returns null from `getCommandLine()`; its CLI
+  tab is `getConsoleLine()`, now the last fallback.
 - **`pt_add_module` always reported a timeout, even when the module was installed.**
   Its JS used `return` instead of `reportResult`, so the bridge never got an answer.
   It now reports `installed` / `failed` directly.

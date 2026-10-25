@@ -252,6 +252,7 @@ them in real time, which is what makes a step-by-step trace possible.
 | `pt_simulation_mode` | Switch between Realtime and Simulation. |
 | `pt_simulation_step` | Advance, rewind or reset the simulation (`forward` / `back` / `reset`). |
 | `pt_read_packet_trace` | Read the event list: per frame the device, ingress/egress port, source, destination, traffic type and outcome — **plus PT's own per-OSI-layer explanation** of what the device decided and why. |
+| `pt_simulate_pdu` | The GUI's *Add Simple PDU*, run to Successful or Failed in one call: only that PDU's path, and on failure the device that dropped it and why. `animate=True` plays it on the canvas. Warms ARP in Realtime first, empties the PDU list and shows only ICMP by default. |
 
 !!! tip "`pt_read_packet_trace` answers *why*, not just *what*"
     The decision log is the same text Packet Tracer shows in its **PDU Details**
@@ -263,10 +264,12 @@ them in real time, which is what makes a step-by-step trace possible.
           send an ARP request for that IP address and buffers this packet.
     ```
 
-!!! warning "There is no `pt_send_pdu`"
-    Packet Tracer does not let an extension originate a packet the way the GUI's
-    *Add Simple PDU* button does. Generate traffic the way a user would —
-    `pt_verify_connectivity` runs a real ping — and then read the trace.
+!!! tip "Why a first simulated ping fails, and the red X's"
+    Every router hop with a cold ARP cache drops the packet that triggers its
+    ARP (and an ASA ARPs for each inside host), so the first PDU after a reload
+    or *Reset Simulation* fails. A 2960 also floods STP BPDUs that PCs drop,
+    which PT draws as red X's. `pt_simulate_pdu` warms ARP in Realtime and shows
+    only ICMP by default, so a demo run is clean.
 
 !!! warning "`pt_audit_security` never returns credentials"
     Passwords and hashes do not leave the device. The reader classifies each

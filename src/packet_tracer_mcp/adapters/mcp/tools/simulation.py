@@ -1,10 +1,13 @@
-"""Simulation tools: mode, step, packet trace."""
+"""Simulation tools: mode, step, packet trace, simple PDU."""
 
 from __future__ import annotations
 
 import json
 from mcp.server.fastmcp import FastMCP
-from ....domain.services.packet_trace import summarize_trace, traffic_type_label
+from ....domain.services.packet_trace import (
+    summarize_pdu_run, summarize_trace, traffic_type_label,
+)
+from ....infrastructure.execution.pdu_run import PduRunError, run_simulated_pdu
 from ..bridge_context import BridgeContext, TIMEOUT_MSG
 from ....shared.utils import reply_json
 
@@ -272,3 +275,57 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                 f"⚠ {len(result['failures'])} frame(s) did not reach their destination. {reasons}"
             )
         return reply_json(result)
+
+    @mcp.tool()
+    def pt_simulate_pdu(
+        source: str,
+        destination: str,
+        animate: bool = False,
+        warm_up: bool = True,
+        clear_list: bool = True,
+        only_icmp: bool = True,
+        max_steps: int = 200,
+        timeout_s: int = 120,
+        include_decisions: bool = False,
+    ) -> str:
+        """
+        Sends a simple PDU (ICMP echo) in Simulation mode and runs it to the end.
+
+        The GUI's "Add Simple PDU" + Capture/Forward or Play, until PT marks the
+        PDU Successful or Failed. Returns ONLY this PDU's hops (STP and other
+        background frames left out), the device path and, on failure, the
+        device that dropped it and PT's reason.
+
+        Parameters:
+        - source / destination: device NAMES (pt_query_topology), not IPs.
+        - animate: True presses Play so the envelope moves on the canvas
+          (slow, ~2 s per hop); False steps the engine at once.
+        - warm_up: first sends the PDU in Realtime so cold ARP caches do not
+          drop it (each cold router hop drops one packet).
+        - clear_list: empties the PDU list first (removes the warm-up rows).
+        - only_icmp: hides every other event type, so STP BPDUs dropped by
+          PCs no longer show red X's.
+        - max_steps (headless, 1-1000) / timeout_s (animated, seconds).
+        - include_decisions: PT's per-OSI-layer log on every hop (a dropped
+          hop always carries it).
+
+        PT stays in Simulation mode; pt_simulation_mode(on=False) returns to
+        Realtime.
+
+        Example: pt_simulate_pdu("PC1", "Remote-Server", animate=True)
+        """
+        err = _check_bridge()
+        if err:
+            return err
+        src, dst = source.strip(), destination.strip()
+        if not src or not dst:
+            return json.dumps({"error": "source and destination are device names."})
+        try:
+            data = run_simulated_pdu(
+                _bridge_send_and_wait, src, dst, animate=animate, warm_up=warm_up,
+                clear_list=clear_list, only_icmp=only_icmp, max_steps=max_steps,
+                timeout_s=timeout_s, include_decisions=include_decisions,
+            )
+        except PduRunError as exc:
+            return _TIMEOUT_MSG if str(exc) == "timeout" else str(exc)
+        return reply_json(summarize_pdu_run(data, src, dst))
