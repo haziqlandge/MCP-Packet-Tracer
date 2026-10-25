@@ -376,6 +376,30 @@ class Presenter:
                 return True
         return False
 
+    def show_simulation_mode(self) -> None:
+        """Press the main window's Simulation switch.
+
+        On the Mac, `Simulation.setSimulationMode(true)` switches PT's engine
+        but leaves the window in Realtime, where Play draws nothing (live
+        2026-10-26); PT 9.0.1 has no IPC call that switches the window. It
+        never prompts (C3: only pt_ui_mode asks); without Accessibility the
+        backend's reason says what to grant.
+        """
+        ok, why = self.available()
+        if not ok:
+            raise PresenterError(why)
+        b = self.backend
+        try:
+            main = b.main_window(self._pid())
+            if main is None:
+                raise PresenterError("Can't find Packet Tracer's main window.")
+            switch = locate(b.elements(main, Role.CHECKBOX), locators.SIMULATION_SWITCH)
+            if switch is None:
+                raise PresenterError("Can't find PT's Simulation switch in the main window.")
+            b.press(switch)
+        except (BackendUnavailable, BackendError) as exc:
+            raise PresenterError(str(exc)) from exc
+
     def scroll_consoles(self, hwnd: int) -> bool:
         """Scroll the visible consoles (CLI / Command Prompt / Terminal) to the end."""
         b = self.backend

@@ -13,6 +13,9 @@ Order, each step learned live on PT 9.0.1 (2026-10-26):
    hide every event type but ICMP (STP BPDUs dropped by PCs are red X's).
 3. Run: headless (engine forward() in one call, fast) or animated (the
    Play button, then polling: the canvas only moves between script calls).
+   Animated, PT's window must show Simulation too: on the Mac
+   setSimulationMode(true) leaves it in Realtime and Play draws nothing
+   (live 2026-10-26), so `show_simulation` presses the window's switch.
 """
 
 from __future__ import annotations
@@ -23,6 +26,7 @@ from typing import Callable
 
 from ..generator.simulation_js import (
     MAX_STEPS, poll_play_js, prepare_js, simple_pdu_js, start_play_js, warm_up_js,
+    window_mode_js,
 )
 
 Send = Callable[[str, float], "str | None"]
@@ -31,10 +35,33 @@ WARM_UP_ROUNDS = 4       # one per cold L3 hop on a 3-router path, plus one
 WARM_UP_GAP_S = 2.0      # a Realtime PDU crosses the lab path well under this
 POLL_EVERY_S = 1.0
 MAX_TIMEOUT_S = 600.0
+SWITCH_SETTLE_S = 0.5    # the window followed its switch within this (probe, 2026-10-26)
+
+WINDOW_IN_REALTIME = (
+    "PT's window stayed in Realtime although the engine is in Simulation, so Play "
+    "would animate nothing on the canvas. Click Simulation (bottom right of PT's "
+    "window), then run pt_simulate_pdu again."
+)
 
 
 class PduRunError(Exception):
     """PT did not answer, or answered something unreadable."""
+
+
+def _window_to_simulation(send: Send, show_simulation: Callable[[], None] | None,
+                          sleep: Callable[[float], None]) -> str | None:
+    """Press the window's Simulation switch; None once the window shows it,
+    else why not."""
+    if show_simulation is None:
+        return WINDOW_IN_REALTIME
+    try:
+        show_simulation()
+    except Exception as exc:  # the UI path's own reason (Accessibility, no switch...)
+        return f"{WINDOW_IN_REALTIME} Switching it automatically failed: {exc}"
+    sleep(SWITCH_SETTLE_S)
+    if _call(send, window_mode_js(), 10.0).get("window_sim") is False:
+        return WINDOW_IN_REALTIME
+    return None
 
 
 def _call(send: Send, js: str, timeout: float) -> dict:
@@ -61,6 +88,7 @@ def run_simulated_pdu(
     max_steps: int = 200,
     timeout_s: float = 120.0,
     include_decisions: bool = False,
+    show_simulation: Callable[[], None] | None = None,
     sleep: Callable[[float], None] = time.sleep,
     clock: Callable[[], float] = time.monotonic,
 ) -> dict:
@@ -68,6 +96,10 @@ def run_simulated_pdu(
 
     The result is simple_pdu_js's shape, plus `warm_up_rounds`,
     `cleared_pdus` and `animated`. Raises PduRunError when PT fails to answer.
+    `show_simulation` (animated runs only) presses PT's Simulation switch when
+    the window stayed in Realtime; it raises when it can't. Without it, or if
+    the window is still in Realtime afterwards, the run stops before Play with
+    `{ok:false, window_error}`.
     """
     warmed = 0
     if warm_up:
@@ -92,6 +124,13 @@ def run_simulated_pdu(
                                           or prep.get("entered_simulation"))
         data.update(extra)
         return data
+
+    # Only a definite Realtime counts: None means PT could not tell.
+    if prep.get("window_sim") is False:
+        why = _window_to_simulation(send, show_simulation, sleep)
+        if why:
+            return {"ok": False, "window_error": why, **extra}
+        extra["window_switched"] = True
 
     start = _call(send, start_play_js(source, destination), 10.0)
     if not start.get("ok"):

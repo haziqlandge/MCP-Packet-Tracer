@@ -118,6 +118,9 @@ def _path(hops: list[dict]) -> list[str]:
 
 def summarize_pdu_run(data: dict, source: str, destination: str) -> dict:
     """Turns the reply of simple_pdu_js into a verdict, a path and a cause."""
+    if data.get("window_error"):
+        # Stopped before Play: never a verdict on the PDU itself.
+        return {"result": "window_in_realtime", "summary": data["window_error"]}
     if not data.get("ok"):
         code = data.get("add_error")
         return {
@@ -151,7 +154,7 @@ def summarize_pdu_run(data: dict, source: str, destination: str) -> dict:
         out["steps"] = data.get("steps", 0)
     if data.get("hops_omitted"):
         out["hops_omitted"] = data["hops_omitted"]
-    for key in ("animated", "warm_up_rounds", "cleared_pdus"):
+    for key in ("animated", "warm_up_rounds", "cleared_pdus", "window_switched"):
         if key in data:
             out[key] = data[key]
 

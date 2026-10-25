@@ -76,6 +76,16 @@ def _zoom_reset_name(e: UiElement) -> bool:
 # `PtApp.CAppWindowBase.m_pToolBar.QToolButton`, seen live 2026-10-25).
 # Matched by name for the same reason as SELECT_TOOL.
 ZOOM_RESET = Locator("zoom_reset", _zoom_reset_name, lambda e, els: _zoom_reset_name(e))
+
+# The Simulation half of the Realtime/Simulation switch, bottom right of the
+# main window (macOS: AXCheckBox "Simulation Mode",
+# `PtApp.CAppWindowBase.centralwidget.m_RSFrame.m_simulationSwitch`; AXPress
+# switches the window, devtools/macos_probe.py press, live 2026-10-26).
+SIMULATION_SWITCH = Locator(
+    "simulation_switch",
+    lambda e: e.ident.endswith(".m_simulationSwitch"),
+    lambda e, els: e.name == "Simulation Mode",
+)
 # macOS (PHASE-00 fixture `main-window.json`): no CLogicalWorkspace.QWidget in
 # the AX tree; the canvas is the AXGroup `...m_pViewArea_Window.m_workspaceWS`,
 # whose frame is the view (0,180 1512×526 pt there).

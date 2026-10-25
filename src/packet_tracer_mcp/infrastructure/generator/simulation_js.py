@@ -123,8 +123,17 @@ def warm_up_js(source: str, destination: str) -> str:
     )
 
 
+# What PT's window shows, read apart from the engine: on the Mac,
+# setSimulationMode(true) leaves the window in Realtime (live 2026-10-26).
+# null when PT has no AppWindow.isSimulationMode().
+_WINDOW_SIM_JS = "var ws=null;try{ws=!!ipc.appWindow().isSimulationMode();}catch(e){}"
+
+
 def prepare_js(*, clear_list: bool = True, only_icmp: bool = True) -> str:
-    """Enter Simulation mode, optionally empty the PDU list and hide all but ICMP."""
+    """Enter Simulation mode, optionally empty the PDU list and hide all but ICMP.
+
+    Also reports `window_sim`: whether PT's window followed the engine.
+    """
     return (
         "(function(){"
         + _cfg(clear=bool(clear_list), icmp=bool(only_icmp), filters=list(EVENT_FILTERS))
@@ -135,10 +144,16 @@ def prepare_js(*, clear_list: bool = True, only_icmp: bool = True) -> str:
         "for(var i=0;i<500;i++){try{u.deletePDU(0);del++;}catch(e){break;}}}"
         "if(c.icmp){for(var k=0;k<c.filters.length;k++){"
         "try{p.setFilter(c.filters[k],c.filters[k]==='ICMP');}catch(e){}}}"
-        "p.populateEventList();"
-        "reportResult(JSON.stringify({ok:true,entered_simulation:!was,deleted:del}));"
+        "p.populateEventList();" + _WINDOW_SIM_JS +
+        "reportResult(JSON.stringify({ok:true,entered_simulation:!was,deleted:del,"
+        "window_sim:ws}));"
         "})();"
     )
+
+
+def window_mode_js() -> str:
+    """Report `{ok:true, window_sim}`: is PT's window in Simulation mode?"""
+    return "(function(){" + _WINDOW_SIM_JS + "reportResult(JSON.stringify({ok:true,window_sim:ws}));})();"
 
 
 def simple_pdu_js(

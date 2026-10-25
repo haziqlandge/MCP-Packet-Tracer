@@ -8,6 +8,7 @@ from ....domain.services.packet_trace import (
     summarize_pdu_run, summarize_trace, traffic_type_label,
 )
 from ....infrastructure.execution.pdu_run import PduRunError, run_simulated_pdu
+from ....infrastructure.ui.presenter import Presenter
 from ..bridge_context import BridgeContext, TIMEOUT_MSG
 from ....shared.utils import reply_json
 
@@ -299,7 +300,10 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         Parameters:
         - source / destination: device NAMES (pt_query_topology), not IPs.
         - animate: True presses Play so the envelope moves on the canvas
-          (slow, ~2 s per hop); False steps the engine at once.
+          (slow, ~2 s per hop); False steps the engine at once. If PT's
+          window stays in Realtime (macOS), its Simulation switch is
+          pressed through UI mode (Accessibility); failing that, the reply
+          says to click Simulation instead of animating nothing.
         - warm_up: first sends the PDU in Realtime so cold ARP caches do not
           drop it (each cold router hop drops one packet).
         - clear_list: empties the PDU list first (removes the warm-up rows).
@@ -325,6 +329,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                 _bridge_send_and_wait, src, dst, animate=animate, warm_up=warm_up,
                 clear_list=clear_list, only_icmp=only_icmp, max_steps=max_steps,
                 timeout_s=timeout_s, include_decisions=include_decisions,
+                show_simulation=Presenter(_bridge_send_and_wait).show_simulation_mode,
             )
         except PduRunError as exc:
             return _TIMEOUT_MSG if str(exc) == "timeout" else str(exc)

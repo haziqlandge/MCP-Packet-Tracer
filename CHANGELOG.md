@@ -119,6 +119,13 @@
 
 ### Fixed
 
+- **`pt_simulate_pdu(animate=True)` animates on macOS.** On the Mac,
+  `Simulation.setSimulationMode(true)` switches PT's engine but leaves the window in
+  Realtime, so Play ran unseen and the PDU list just said Successful. When the
+  window (`AppWindow.isSimulationMode()`) stays in Realtime, the run now presses PT's
+  Simulation switch through UI mode and checks again. If the window still shows
+  Realtime, it stops before Play and says to click Simulation. Headless runs are
+  unchanged, and nothing new prompts for a permission.
 - **macOS UI mode works with the client in front.** With PT on another Space (full
   screen, another desktop) its windows were invisible to Accessibility and every
   `show=True`/capture failed with "Can't find Packet Tracer's main window". UI mode

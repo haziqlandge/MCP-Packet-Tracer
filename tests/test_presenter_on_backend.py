@@ -407,6 +407,46 @@ class TestCapture:
             presenter(pt()[0], FakeBackend()).capture("PC1", tmp_path / "a.png")
 
 
+RS = f"{APP}.centralwidget.m_RSFrame"
+
+
+def rs_frame(*, sim=0, sticky=False):
+    """PT's Realtime / Simulation switches, as the AX probe saw them (2026-10-26)."""
+    return [el("Realtime Mode", f"{RS}.m_realtimeSwitch", Role.CHECKBOX, toggle=1 - sim),
+            el("Simulation Mode", f"{RS}.m_simulationSwitch", Role.CHECKBOX, toggle=sim,
+               sticky=sticky)]
+
+
+class TestShowSimulationMode:
+    def test_presses_the_simulation_switch(self):
+        b = FakeBackend(main=MAIN, trees={MAIN: main_tree() + rs_frame()})
+        presenter(pt()[0], b).show_simulation_mode()
+        assert ("press", "Simulation Mode") in b.log
+        assert ("press", "Realtime Mode") not in b.log
+        assert b.requests == [False]  # C3: only pt_ui_mode may bring up a prompt
+
+    def test_found_by_name_when_the_ident_differs(self):
+        tree = [el("Simulation Mode", "", Role.CHECKBOX, toggle=0)]
+        b = FakeBackend(main=MAIN, trees={MAIN: tree})
+        presenter(pt()[0], b).show_simulation_mode()
+        assert b.log == [("press", "Simulation Mode")]
+
+    def test_no_switch_is_an_error(self):
+        b = FakeBackend(main=MAIN, trees={MAIN: main_tree()})
+        with pytest.raises(PresenterError, match="Simulation"):
+            presenter(pt()[0], b).show_simulation_mode()
+        assert not [a for a in b.log if a[0] == "press"]
+
+    def test_no_main_window_is_an_error(self):
+        with pytest.raises(PresenterError, match="main window"):
+            presenter(pt()[0], FakeBackend()).show_simulation_mode()
+
+    def test_unavailable_backend_gives_its_reason(self):
+        b = FakeBackend(available=(False, "Grant Accessibility to Claude."))
+        with pytest.raises(PresenterError, match="^Grant Accessibility to Claude.$"):
+            presenter(pt()[0], b).show_simulation_mode()
+
+
 class TestAvailability:
     @pytest.mark.parametrize("call", [
         lambda p, tmp: p.open("PC1"), lambda p, tmp: p.capture("PC1", tmp / "a.png"),

@@ -17,11 +17,11 @@ from src.packet_tracer_mcp.domain.services.packet_trace import (
     ADD_PDU_ERRORS, TRAFFIC_STATUS, TRAFFIC_TYPES, summarize_pdu_run,
 )
 from src.packet_tracer_mcp.infrastructure.execution.pdu_run import (
-    WARM_UP_ROUNDS, PduRunError, run_simulated_pdu,
+    WARM_UP_ROUNDS, WINDOW_IN_REALTIME, PduRunError, run_simulated_pdu,
 )
 from src.packet_tracer_mcp.infrastructure.generator.simulation_js import (
     EVENT_FILTERS, MAX_HOPS, MAX_STEPS, poll_play_js, prepare_js, simple_pdu_js,
-    start_play_js, warm_up_js,
+    start_play_js, warm_up_js, window_mode_js,
 )
 
 from tests._pt_js import requires_node, run_pt_js
@@ -32,16 +32,20 @@ _ARP_DROP = ("The next-hop IP address is not in the ARP table. The ARP process "
 
 def _sim_fake(path: list[str], *, outcome: int = 3, add_error: int = 0,
               start_sim: bool = True, stp_every_step: bool = True,
-              pdu_rows: tuple[str, ...] = (), playing: bool = False) -> str:
+              pdu_rows: tuple[str, ...] = (), playing: bool = False,
+              window_follows: bool = True) -> str:
     """A PT whose PDU walks `path`, one device per forward(), then ends in `outcome`.
 
     With outcome 2 the last device of `path` drops the frame with _ARP_DROP.
-    The report carries the fake's own counters under `__fake`.
+    The report carries the fake's own counters under `__fake`. The window's
+    Realtime/Simulation tab follows setSimulationMode() as on Windows; with
+    `window_follows=False` it stays where it was, as on the Mac (live 2026-10-26).
     """
     return (
         f"var __path={json.dumps(path)};var __outcome={outcome};var __adderr={add_error};"
         f"var __stp={json.dumps(stp_every_step)};var __drop={json.dumps(_ARP_DROP)};"
         f"var __sim={json.dumps(start_sim)};var __fw=0;var __added=[];var __status=0;"
+        f"var __wsim=__sim;var __wfollow={json.dumps(window_follows)};"
         "var __frames=[];var __pos=0;"
         "function __dev(n){return {getName:function(){return n;}};}"
         "function __traffic(src,dst,type){return {getCanonicalSource:function(){return src;},"
@@ -64,7 +68,8 @@ def _sim_fake(path: list[str], *, outcome: int = 3, add_error: int = 0,
         "getFrameDecsionAt:function(j){return decs[j];},"
         "getTrafficSource:function(){return traffic;}};__frames.push(f);}"
         "var __bg=__traffic('SW1','STP Multicast Address','STP');"
-        "var sim={isSimulationMode:function(){return __sim;},setSimulationMode:function(v){__sim=v;},"
+        "var sim={isSimulationMode:function(){return __sim;},"
+        "setSimulationMode:function(v){__sim=v;if(__wfollow){__wsim=v;}},"
         "getFrameInstanceCount:function(){return __frames.length;},"
         "getFrameInstanceAt:function(i){return __frames[i];},getCurrentSimTime:function(){return __fw;},"
         "forward:function(){__fw++;"
@@ -84,6 +89,7 @@ def _sim_fake(path: list[str], *, outcome: int = 3, add_error: int = 0,
         "populateEventList:function(){__refreshed++;},"
         "setFilter:function(n,v){__filters[n]=v;}};"
         "var ipc={simulation:function(){return sim;},appWindow:function(){return {"
+        "isSimulationMode:function(){return __wsim;},isRealtimeMode:function(){return !__wsim;},"
         "getSimulationPanel:function(){return panel;},"
         "getUserCreatedPDU:function(){return {"
         "deletePDU:function(i){if(!__pdus.length){throw 'Invalid index';}__pdus.splice(i,1);__deleted++;},"
@@ -208,6 +214,28 @@ class TestGuiJs:
         assert f["filters"]["STP"] is False and f["filters"]["ARP"] is False
         assert set(f["filters"]) == set(EVENT_FILTERS)
 
+    def test_prepare_reports_a_window_that_followed_the_engine(self, tmp_path):
+        data = _js(tmp_path, prepare_js(), _sim_fake(_ROUND_TRIP, start_sim=False))
+        assert data["__fake"]["sim"] is True and data["window_sim"] is True
+
+    def test_prepare_reports_a_window_left_in_realtime(self, tmp_path):
+        # The Mac: setSimulationMode(true) moved the engine, not the window.
+        data = _js(tmp_path, prepare_js(),
+                   _sim_fake(_ROUND_TRIP, start_sim=False, window_follows=False))
+        assert data["__fake"]["sim"] is True and data["window_sim"] is False
+
+    def test_prepare_without_a_window_reading_says_unknown(self, tmp_path):
+        fake = _sim_fake(_ROUND_TRIP) + "var __aw=ipc.appWindow;ipc.appWindow=function(){" \
+            "var w=__aw();delete w.isSimulationMode;return w;};"
+        assert _js(tmp_path, prepare_js(), fake)["window_sim"] is None
+
+    @pytest.mark.parametrize("follows", [True, False])
+    def test_window_mode_reads_the_window_not_the_engine(self, tmp_path, follows):
+        fake = _sim_fake(_ROUND_TRIP, start_sim=False, window_follows=follows) \
+            + "sim.setSimulationMode(true);"
+        data = _js(tmp_path, window_mode_js(), fake)
+        assert data == {"ok": True, "window_sim": follows, "__fake": data["__fake"]}
+
     def test_prepare_can_keep_the_list_and_the_filters(self, tmp_path):
         data = _js(tmp_path, prepare_js(clear_list=False, only_icmp=False),
                    _sim_fake(_ROUND_TRIP, pdu_rows=("a",)))
@@ -250,11 +278,17 @@ class TestGuiJs:
 class _Script:
     """A fake `send`: answers each JS by what kind of call it is."""
 
-    def __init__(self, *, refuse: int = 0, polls_before_end: int = 2, end_status: int = 3):
+    def __init__(self, *, refuse: int = 0, polls_before_end: int = 2, end_status: int = 3,
+                 window: tuple[bool | None, ...] = (True,)):
         self.calls: list[str] = []
         self.refuse = refuse
         self.polls_left = polls_before_end
         self.end_status = end_status
+        # What the window reports: at prepare, then at each later check.
+        self.window = list(window)
+
+    def _window(self) -> bool | None:
+        return self.window.pop(0) if len(self.window) > 1 else self.window[0]
 
     def __call__(self, js: str, timeout: float) -> str:
         if "getUserCreatedPDU().addSimplePdu" in js and "was_simulation" in js:
@@ -263,7 +297,11 @@ class _Script:
                                "was_simulation": False})
         if "c.filters" in js:
             self.calls.append("prepare")
-            return json.dumps({"ok": True, "entered_simulation": True, "deleted": 4})
+            return json.dumps({"ok": True, "entered_simulation": True, "deleted": 4,
+                               "window_sim": self._window()})
+        if js == window_mode_js():
+            self.calls.append("window")
+            return json.dumps({"ok": True, "window_sim": self._window()})
         if "while(steps<c.max" in js:
             self.calls.append("headless")
             return json.dumps({"ok": True, "status": 3, "steps": 10, "hops": []})
@@ -311,6 +349,55 @@ class TestRunSimulatedPdu:
         assert data["timed_out"] is True and data["status"] == 1
         assert s.calls.count("poll") == 3
 
+    # -- PT's window left in Realtime (the Mac, live 2026-10-26) --------------
+    def test_animated_switches_a_realtime_window_before_play(self):
+        s = _Script(polls_before_end=0, window=(False, True))
+        shown = []
+        data = self._run(s, animate=True, warm_up=False,
+                         show_simulation=lambda: shown.append(s.calls[-1]))
+        assert shown == ["prepare"]
+        assert s.calls == ["prepare", "window", "play", "poll"]
+        assert data["status"] == 3 and data["window_switched"] is True
+
+    def test_animated_refuses_when_the_window_stays_in_realtime(self):
+        s = _Script(window=(False, False))
+        data = self._run(s, animate=True, warm_up=False, show_simulation=lambda: None)
+        assert s.calls == ["prepare", "window"]  # no Play: nothing would be drawn
+        assert data["ok"] is False and "Realtime" in data["window_error"]
+
+    def test_animated_without_a_ui_path_refuses(self):
+        s = _Script(window=(False,))
+        data = self._run(s, animate=True, warm_up=False)
+        assert s.calls == ["prepare"]
+        assert data["ok"] is False and data["window_error"]
+
+    def test_a_failed_click_keeps_its_reason(self):
+        def show():
+            raise RuntimeError("Accessibility is off for this app")
+
+        s = _Script(window=(False, False))
+        data = self._run(s, animate=True, warm_up=False, show_simulation=show)
+        assert "Accessibility is off for this app" in data["window_error"]
+        assert "play" not in s.calls
+
+    def test_animated_with_the_window_in_simulation_touches_no_ui(self):
+        s = _Script(polls_before_end=0, window=(True,))
+        data = self._run(s, animate=True, warm_up=False,
+                         show_simulation=lambda: pytest.fail("no click needed"))
+        assert s.calls == ["prepare", "play", "poll"] and "window_switched" not in data
+
+    def test_unknown_window_mode_is_not_blocked(self):
+        s = _Script(polls_before_end=0, window=(None,))
+        self._run(s, animate=True, warm_up=False,
+                  show_simulation=lambda: pytest.fail("no click on an unknown mode"))
+        assert s.calls == ["prepare", "play", "poll"]
+
+    def test_headless_ignores_a_realtime_window(self):
+        s = _Script(window=(False,))
+        data = self._run(s, warm_up=False,
+                         show_simulation=lambda: pytest.fail("headless never clicks"))
+        assert s.calls == ["prepare", "headless"] and data["status"] == 3
+
     def test_refused_warm_up_stops_before_touching_simulation(self):
         s = _Script(refuse=20)
         data = self._run(s)
@@ -332,6 +419,17 @@ def _hop(device, **flags):
 
 
 class TestSummarizePduRun:
+    def test_window_left_in_realtime_is_not_reported_as_a_result(self):
+        out = summarize_pdu_run({"ok": False, "window_error": WINDOW_IN_REALTIME},
+                                "PC1", "Remote-Server")
+        assert out == {"result": "window_in_realtime", "summary": WINDOW_IN_REALTIME}
+        assert "Click Simulation" in out["summary"]
+
+    def test_a_switched_window_is_reported(self):
+        out = summarize_pdu_run({"ok": True, "status": 3, "hops": [], "animated": True,
+                                 "window_switched": True}, "PC1", "SRV1")
+        assert out["window_switched"] is True and out["result"] == "successful"
+
     def test_successful(self):
         hops = [_hop(d, sent=True) for d in _ROUND_TRIP[:-1]] + [_hop("PC1", accepted=True)]
         out = summarize_pdu_run({"ok": True, "status": 3, "steps": 10, "hops": hops},
