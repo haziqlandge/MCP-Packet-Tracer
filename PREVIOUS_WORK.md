@@ -577,6 +577,38 @@ Each fix had a failing test first; suite 1373 → 1389. PHASE-05 has the amendme
 - PT stores empty orphan note IDs in the `.pkt` (14 here, none visible, back
   after a reload). `pt_clear_annotations` already documents them.
 
+## 2.13 Main merged; `pt_simulate_pdu` animation on the Mac (2026-10-26)
+
+- **The user's `git pull --rebase` did not bring in main.** It rebased onto
+  the branch's upstream, `origin/cross-platform`, and linearised the merge
+  `f7cb31e`. The tree was unchanged, but main's `de63583` (ASA console) and
+  `0408e97` (`pt_simulate_pdu`) were missing. Merged with `git merge origin/main`
+  instead. Conflicts were in `console_session.py` (kept the Mac `_CORE_JS` move
+  plus main's `getConsoleLine` fallback), CHANGELOG and `test_console_session.py`
+  (both sides). `tool_api.json` was regenerated (80 tools). Suite: 1389 → 1428.
+- **Animated runs drew nothing on the Mac.** Read live through the bridge: after
+  `ipc.simulation().setSimulationMode(true)` the engine reports Simulation but
+  `ipc.appWindow().isSimulationMode()` stays false and `isRealtimeMode()` true.
+  `setSimulationMode(false)` likewise leaves a Simulation window as it is. On
+  Windows the same call switched the window (the user saw it live). PT 9.0.1's
+  IPC reference has no AppWindow setter for the mode.
+- **The window's switch**: AXCheckBox "Simulation Mode",
+  `PtApp.CAppWindowBase.centralwidget.m_RSFrame.m_simulationSwitch` (one match).
+  `macos_probe press` sent AXPress (err 0), and the window then read Simulation.
+  "Realtime Mode" (`m_realtimeSwitch`) works the same way. Pressing either
+  switch moves engine and window together.
+- **Fix** (test-first, suite 1428 → 1447): `prepare_js` reports `window_sim`.
+  When an animated run finds it false, `run_simulated_pdu` calls
+  `Presenter.show_simulation_mode()` (locator `SIMULATION_SWITCH`), waits 0.5 s
+  and re-reads it with `window_mode_js()`. If the window is still in Realtime it
+  returns `window_error` (result `window_in_realtime`) before Play. It never
+  prompts: C3's test allows `available(request=True)` only in `pt_ui_mode`, so a
+  missing grant comes back as the backend's reason.
+- **Live proof** (`live_smoke`, this checkout, PT windowed but on another Space,
+  window put in Realtime first): the run switched the window to Simulation, the
+  Simulation Panel opened, and envelopes moved through SW1 and PC1 (screenshot
+  sent to the user).
+
 ## Where the detailed evidence lives
 
 | Artifact | Contents |

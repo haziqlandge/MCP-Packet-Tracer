@@ -174,6 +174,8 @@ keyed by backend unit. Do not add an OS branch.
 - [x] The click route used is recorded (`posted` or `cursor-restored`), with the evidence — `cursor-restored`, always: posted clicks never reached the canvas (PHASE-00, 5 variants); every live open by click in this phase returned it (step text "click sent; the cursor moved there for a moment and was put back"), incl. the four canvas corners; the guard refused a click live when Claude's window was on top. PREVIOUS_WORK 2.9; 2026-10-10
 - [x] Every `by_shape` added has a fixture test — one added, `logical_canvas` → `...m_pViewArea_Window.m_workspaceWS`: `test_macos_locators.py::TestMainWindow::test_logical_canvas_is_the_workspace_group` (exactly one hit, rect 0,180→1512,706 pt in `main-window.json`); `select_tool`'s name fallback (PHASE-03) found once in the same fixture. Canvas scroll bars and the console scroll bar got **no** `by_shape`: no element exists in any fixture (pinned by `test_no_canvas_scroll_bars_in_the_recording`, `test_console_has_no_scroll_bar_element`; ISSUES X12); 2026-10-10
 
+- [x] `pt_simulate_pdu(animate=True)` puts PT's window in Simulation on the Mac (the engine call leaves it in Realtime) — `tests/test_simulate_pdu.py` window tests + `TestShowSimulationMode`, suite 1447 passed; live run from a Realtime window switched it and animated, PREVIOUS_WORK 2.13; 2026-10-26
+
 ## Known failure conditions
 
 - Tabs are found but pressing does nothing → AXPress maps to a Qt action the tab
