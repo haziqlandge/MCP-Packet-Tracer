@@ -22,7 +22,7 @@ no AI attribution and no `feat:`-style prefixes.
 
 ### Verification state
 
-Mac (macOS 26.6, PT 9.0.1): **1447 passed** in 39.4 s
+Mac (macOS 26.6, PT 9.0.1): **1453 passed** in 38.9 s
 (`.venv/bin/python -m pytest -q -p no:cacheprovider`), 2026-10-26. Planning
 checker (`planning-mode/scripts/check_plan.py .`): 0 errors, 0 warnings.
 Windows backend files unchanged.
@@ -31,7 +31,8 @@ Live on the Mac, from this checkout: setup + `tests/live/headless.json` 18/18,
 no Traceback/NameError/PT_ERROR. `pt_simulate_pdu` headless (PC1→SRV1,
 PC1→R1) and animated are successful. Animated from a Realtime window, the run
 switches the window to Simulation itself and the envelope moves (PREVIOUS_WORK
-2.13). CI has not run on the pushed tip yet.
+2.13). CI is green on all six jobs at `ae1274b` (run 40247628960); the push before
+it, `898b184`, failed 4 of 6 (PREVIOUS_WORK 2.13, last item).
 
 ### What this session did
 
@@ -44,15 +45,13 @@ message if the window stays in Realtime.
 
 ### NEXT, in order
 
-1. Read the CI result for the pushed `cross-platform` tip and record it in
-   CLAUDE.md §5.
-2. Windows live regression (§2) now also covers `pt_simulate_pdu(animate=True)`:
+1. Windows live regression (§2) now also covers `pt_simulate_pdu(animate=True)`:
    the window should follow the engine there, so no switch is pressed.
-3. X20: ask whether keys were typed on the Mac during the runs; if it recurs,
+2. X20: ask whether keys were typed on the Mac during the runs; if it recurs,
    the guard's refusal names the tool that was active.
-4. The OSPF write-up in the user's CCE2 format still waits on their details.
-5. A release `.pts` should carry the fixed `main.js` and the new webview (X3).
-6. Keep the PHASE-04 revocation gap honest.
+3. The OSPF write-up in the user's CCE2 format still waits on their details.
+4. A release `.pts` should carry the fixed `main.js` and the new webview (X3).
+5. Keep the PHASE-04 revocation gap honest.
 
 ### Waiting on the user
 

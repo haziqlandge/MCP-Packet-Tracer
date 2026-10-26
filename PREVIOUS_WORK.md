@@ -609,6 +609,17 @@ Each fix had a failing test first; suite 1373 → 1389. PHASE-05 has the amendme
   Simulation Panel opened, and envelopes moved through SW1 and PC1 (screenshot
   sent to the user).
 
+- **CI failed after the push (`898b184`, 4 of 6 jobs), all from tests only run
+  on the Mac's 3.13.** (1) `test_console_session.py` had a backslash inside an
+  f-string's `{...}`: legal from 3.12 (PEP 701), a SyntaxError on 3.11, so the
+  file failed to collect. `tests/test_python311_syntax.py` now scans every file
+  for it with `tokenize` (3.12+); `ast.parse(feature_version=(3, 11))` does not
+  catch it. Apple's `/usr/bin/python3` (3.9) reproduces it locally. (2) The
+  click-route test reached real pyobjc through the X20 Select check
+  (`ax.walk`); its fixture now blocks `_as` like Linux and fakes the main
+  window tree. (3) The webview test read node's UTF-8 as cp1252 on Windows;
+  `encoding="utf-8"` now. Green at `ae1274b` on all six jobs.
+
 ## Where the detailed evidence lives
 
 | Artifact | Contents |
