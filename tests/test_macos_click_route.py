@@ -243,6 +243,20 @@ def stub(monkeypatch):
     def attr(el, name):
         return state.attrs.get(el, {}).get(name)
 
+    def no_pyobjc():
+        # As on the Linux and Windows CI runners: a path that reaches real AX
+        # fails here on the Mac too, instead of passing on a live pyobjc.
+        raise ModuleNotFoundError("No module named 'ApplicationServices'")
+
+    # The main window holds a Select tool that is on, so the click route's
+    # check right before the click (ISSUES X20) reads it and lets the click go.
+    main_tree = {"role": "AXWindow", "frame": [0, 0, 100, 100], "_el": "MAINWIN", "children": [
+        {"role": "AXCheckBox", "title": "Select (Esc)", "description": "", "identifier": "a.b",
+         "value": "1", "frame": [0, 0, 10, 10], "actions": [], "_el": "SEL", "children": []}]}
+    state.attrs["SEL"] = {"AXValue": 1}
+
+    monkeypatch.setattr(mac_ax, "_as", no_pyobjc)
+    monkeypatch.setattr(mac_ax, "walk", lambda root, **kw: (main_tree, {}))
     monkeypatch.setattr(mac_ax, "perform", perform)
     monkeypatch.setattr(mac_ax, "set_attr", set_attr)
     monkeypatch.setattr(mac_ax, "attr", attr)

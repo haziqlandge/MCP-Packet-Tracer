@@ -39,7 +39,8 @@ def run(env: dict, keys: list[dict] | None = None) -> dict:
     scenario = dict(env, keys=keys or [])
     out = subprocess.run(
         [NODE, str(HARNESS), str(INTERFACE_JS), json.dumps(scenario)],
-        capture_output=True, text=True, timeout=30, check=True,
+        # node writes UTF-8 everywhere; without this Windows reads it as cp1252.
+        capture_output=True, text=True, encoding="utf-8", timeout=30, check=True,
     )
     return json.loads(out.stdout)
 
@@ -54,6 +55,21 @@ def test_mac_hints_show_command():
         "runTitle": "Run (⌘↩)",
         "clearLogTitle": "Clear log (⌘L)",
     }
+
+
+@needs_node
+def test_hints_survive_a_non_utf8_locale(monkeypatch):
+    # Windows runners decode a child's text output as cp1252 unless told
+    # otherwise; that turned ⌘ into 'â€˜' on CI (2026-10-26).
+    real_run = subprocess.run
+
+    def run_like_windows(*args, **kw):
+        if kw.get("text") and not kw.get("encoding"):
+            kw["encoding"] = "cp1252"
+        return real_run(*args, **kw)
+
+    monkeypatch.setattr(subprocess, "run", run_like_windows)
+    assert run(MAC)["hints"]["clearKbd"] == "⌘K"
 
 
 @needs_node

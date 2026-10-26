@@ -532,8 +532,9 @@ class TestAsyncLogsAfterThePrompt:
 
     @requires_node
     def test_the_js_reports_it_done_too(self, tmp_path):
+        out = json.dumps("xx\n" + _IPS_OUT)  # outside the f-string: 3.11 has no `\` in {...}
         fake = (
-            f"var __out={json.dumps('xx\\n' + _IPS_OUT)};"
+            f"var __out={out};"
             "var cl={getOutput:function(){return __out;},"
             f"getPrompt:function(){{return {json.dumps(_IPS_PROMPT)};}},"
             "getMode:function(){return 'global';},enterChar:function(){},"
