@@ -854,6 +854,25 @@
         }
 
         /* ================================================================
+           SIMULATION DEMOS
+        ================================================================ */
+        .sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .sim-demo-btn {
+            display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+            text-align: left; padding: 8px 10px; white-space: normal;
+            background: var(--bg-input); border: 1px solid var(--border-strong);
+            color: var(--text-primary); border-radius: var(--radius-sm);
+        }
+        .sim-demo-btn b { font-size: 12px; }
+        .sim-demo-btn span { font-size: 10.5px; color: var(--text-muted); line-height: 1.4; }
+        .sim-demo-btn:hover:not(:disabled) { border-color: var(--accent); }
+        .sim-demo-btn:disabled, #sim-stop:disabled { opacity: 0.45; cursor: default; }
+        .sim-status { flex: 1; font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+        .sim-status.ok { color: var(--text-primary); }
+        .sim-status.warn { color: #e8b04a; }
+        .sim-status.err { color: #ef6b6b; }
+
+        /* ================================================================
            SCROLLBARS
         ================================================================ */
         *::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -955,6 +974,9 @@
         </button>
         <button class="tab-btn" id="tab-quickbuild" onclick="switchTab('quickbuild')">
             <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> Quick Build
+        </button>
+        <button class="tab-btn" id="tab-simulation" onclick="switchTab('simulation'); if (!SIM.pcs) simRefreshDevices();">
+            <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></span> Simulation
         </button>
     </div>
 
@@ -1202,6 +1224,59 @@
                     <div style="margin-top:8px;font-size:10.5px;color:var(--text-muted);line-height:1.5">
                         Sends the complete topology script to Packet Tracer via the live bridge.
                         Make sure PT is connected (Status tab) before building.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="pane" id="pane-simulation">
+            <div class="qb-wrap">
+
+                <div class="qb-section">
+                    <div class="section-title">Devices</div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Source PC</label>
+                            <select class="form-select" id="sim-src"></select>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Destination PC</label>
+                            <select class="form-select" id="sim-dst"></select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Server</label>
+                            <select class="form-select" id="sim-server"></select>
+                        </div>
+                        <div class="form-field" style="justify-content:flex-end">
+                            <button class="btn btn-ghost" onclick="simRefreshDevices()">Refresh devices</button>
+                        </div>
+                    </div>
+                    <div class="toggle-row">
+                        <span class="toggle-label-text">Warm up first, unseen (switch learns every PC: no red X's)</span>
+                        <label class="toggle"><input type="checkbox" id="sim-warm" checked><span class="toggle-slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="qb-section">
+                    <div class="section-title">Ready-made demos</div>
+                    <div class="sim-grid">
+                        <button class="btn sim-demo-btn" onclick="simRun('broadcast')"><b>1. Broadcast to all</b><span>Source PC pings its LAN's broadcast address; the switch floods it to every PC</span></button>
+                        <button class="btn sim-demo-btn" onclick="simRun('pc2pc')"><b>2. PC to PC</b><span>One ping from the source PC to the destination PC</span></button>
+                        <button class="btn sim-demo-btn" onclick="simRun('srv2pc')"><b>3. Server to PC</b><span>The server pings the destination PC across the routers and firewall</span></button>
+                        <button class="btn sim-demo-btn" onclick="simRun('srv2all')"><b>4. Server to all PCs</b><span>The server pings every PC at once</span></button>
+                    </div>
+                    <div class="qb-actions" style="margin-top:8px">
+                        <div class="sim-status" id="sim-status">Open this tab with a topology loaded, then pick a demo.</div>
+                        <button class="btn btn-danger" id="sim-stop" onclick="simStop()" disabled>Stop</button>
+                    </div>
+                    <div style="margin-top:8px;font-size:10.5px;color:var(--text-muted);line-height:1.5">
+                        Runs in Simulation mode with only ICMP shown, and pauses Play by itself when
+                        every packet is done (2 to 3 minutes at most; Server to all PCs runs 10 PCs at a time, each batch after a reset; PT's Play
+                        speed slider makes it faster). On the Mac, click Simulation in PT
+                        once first: a script cannot switch PT's window there.
                     </div>
                 </div>
 

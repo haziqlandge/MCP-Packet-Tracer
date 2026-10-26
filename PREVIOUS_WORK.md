@@ -620,6 +620,35 @@ Each fix had a failing test first; suite 1373 → 1389. PHASE-05 has the amendme
   window tree. (3) The webview test read node's UTF-8 as cp1252 on Windows;
   `encoding="utf-8"` now. Green at `ae1274b` on all six jobs.
 
+## 2.14 Simulation demos in the Control Center, installed on the Mac (2026-10-26)
+
+- **What exists:** a SIMULATION tab in the webview (`index.html` +
+  `interface.js`) with Source PC / Destination PC / Server pickers and four
+  demos: broadcast to all, PC to PC, server to PC, server to all PCs. The
+  engine side is `simEngineHelpers()` in `interface.js`, installed with
+  `$se("runCode", SIM_ENGINE_JS)`; it needs no bridge.
+- **Built and installed** `~/Cisco Packet Tracer 9.0.1/extensions/MCP-BUILDER-sim-demos.pts`
+  (135,767 bytes after Save) from the os-shortcuts module, by pasting both files
+  into Custom Interfaces and checking each against the repo through the editor's
+  `AXValue` (byte-identical), then Export, Remove, Add, Start. Later edits used
+  Info → Save, which rewrote that same file in place, then Stop/Start.
+- **Webview -> Script Engine IPC strips newlines** (`$se("runCode", src)`).
+  The multi-line helpers then died at their first `//` comment: "SyntaxError:
+  Parse error", `mcpDemoDevices` undefined, tab showed "Could not read the
+  topology from PT." Proven live: `runCode(src)` from the engine works,
+  `runCode(src.replace(/\n/g," "))` raises the modal. Fix: send
+  `(new Function(<JSON string of src>))()`, which is one line.
+  `tests/test_webview_sim_engine.py` failed before (2) and passes after.
+- **Live from the buttons** on SLA2 (20 PCs, Remote-Server): PC to PC 1/1,
+  server to PC 1/1, broadcast 20 replies. Server to all PCs was started but not
+  read back (the user took over to check it).
+- **Traps:** `pbcopy` without `LANG=en_US.UTF-8` reads the file as Mac Roman
+  (em dashes became mojibake; caught by the byte compare). The module list's
+  Remove acts late: a second click hit the row that moved up and removed Marvel;
+  it was re-added from the app bundle's `extensions/Marvel/Marvel.pts`
+  (v2.0.7), left stopped. "Bridge: offline" in the webview only means nothing
+  listens on :54321; the MCP server starts it lazily and used the file mailbox.
+
 ## Where the detailed evidence lives
 
 | Artifact | Contents |

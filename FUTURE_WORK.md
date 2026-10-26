@@ -5,7 +5,7 @@ in `PREVIOUS_WORK.md`.
 
 ---
 
-## 0. Start here (written 2026-10-26, after main was merged and the simulation fix)
+## 0. Start here (written 2026-10-26, after the simulation demos were installed)
 
 Read `CLAUDE.md` first, then this section. Replace this section rather than
 appending another one.
@@ -14,50 +14,45 @@ appending another one.
 
 PHASE-00 to PHASE-03 and PHASE-05 are complete. PHASE-04 still has its real
 permission-revocation gate open. PHASE-06 and PHASE-07 are implemented; their
-real-client and fresh-grant gates are open. Main @ `0408e97` is merged into
-`cross-platform`, adding `pt_simulate_pdu` and the ASA console fallback. The
-branch is pushed to `origin/cross-platform` with no force-push. Commits go
-through the user's `commitskill` (essentialSkills, now in `~/.claude/skills/`):
-no AI attribution and no `feat:`-style prefixes.
+real-client and fresh-grant gates are open. The Control Center webview now has a
+SIMULATION tab with four ready-made demos (PREVIOUS_WORK 2.14). That work is on
+the branch `cross-platform-sim`, pushed to origin, not yet merged into
+`cross-platform`. Commits go through the user's `commitskill`: no AI
+attribution and no `feat:`-style prefixes.
 
 ### Verification state
 
-Mac (macOS 26.6, PT 9.0.1): **1453 passed** in 38.9 s
-(`.venv/bin/python -m pytest -q -p no:cacheprovider`), 2026-10-26. Planning
-checker (`planning-mode/scripts/check_plan.py .`): 0 errors, 0 warnings.
-Windows backend files unchanged.
+Mac (macOS 26.6, PT 9.0.1): **1455 passed** in 40.0 s
+(`.venv/bin/python -m pytest -q`), 2026-10-26. Planning checker not run this
+session. Windows backend files unchanged.
 
-Live on the Mac, from this checkout: setup + `tests/live/headless.json` 18/18,
-no Traceback/NameError/PT_ERROR. `pt_simulate_pdu` headless (PC1→SRV1,
-PC1→R1) and animated are successful. Animated from a Realtime window, the run
-switches the window to Simulation itself and the envelope moves (PREVIOUS_WORK
-2.13). CI is green on all six jobs at `ae1274b` (run 40247628960); the push before
-it, `898b184`, failed 4 of 6 (PREVIOUS_WORK 2.13, last item).
+Live on the Mac: the installed module is
+`~/Cisco Packet Tracer 9.0.1/extensions/MCP-BUILDER-sim-demos.pts`. From its
+buttons on SLA2: PC to PC 1/1, server to PC 1/1, broadcast 20 replies. Server to
+all PCs was started but the result was left to the user.
 
 ### What this session did
 
-Found that the user's `git pull --rebase` had rebased onto
-`origin/cross-platform`, not main, then merged `origin/main`. Fixed
-`pt_simulate_pdu(animate=True)` drawing nothing on the Mac:
-`setSimulationMode()` moves PT's engine but not its window, so the run now
-presses the window's Simulation switch through UI mode and refuses with a clear
-message if the window stays in Realtime.
+Pasted the new `index.html` and `interface.js` into the MCP-BUILDER module,
+exported and installed it. Found that `$se("runCode", ...)` loses newlines, so
+the demo helpers never loaded; now sent as one line, with a test.
 
 ### NEXT, in order
 
-1. Windows live regression (§2) now also covers `pt_simulate_pdu(animate=True)`:
-   the window should follow the engine there, so no switch is pressed.
-2. X20: ask whether keys were typed on the Mac during the runs; if it recurs,
-   the guard's refusal names the tool that was active.
-3. The OSPF write-up in the user's CCE2 format still waits on their details.
-4. A release `.pts` should carry the fixed `main.js` and the new webview (X3).
-5. Keep the PHASE-04 revocation gap honest.
+1. Hear back from the user on "Server to all PCs" and the demos in general.
+2. Merge `cross-platform-sim` into `cross-platform` once the user is happy.
+3. Windows live regression (§2), now also the SIMULATION tab and
+   `pt_simulate_pdu(animate=True)`.
+4. X20: ask whether keys were typed on the Mac during the runs.
+5. The OSPF write-up in the user's CCE2 format still waits on their details.
+6. A release `.pts` should carry the fixed `main.js` and the new webview (X3).
+7. Keep the PHASE-04 revocation gap honest.
 
 ### Waiting on the user
 
-The OSPF document details and the fresh-client acceptance run (back up/reset
-setup, reset grants). An upstream PR requires separate approval; see §2 for
-Windows live regression and §3 for the upstream-PR cleanup rules.
+Their check of the four demos, the OSPF document details and the fresh-client
+acceptance run. An upstream PR requires separate approval; see §2 for Windows
+live regression and §3 for the upstream-PR cleanup rules.
 
 ---
 

@@ -91,7 +91,7 @@ python -m src.packet_tracer_mcp.devtools.live_smoke tests/live/headless.json | g
 Baselines (each OS has its own line; a drop below it is a regression):
 
 - Windows: **825 passed** as of 2026-10-10, Windows 10 Pro, Python 3.14.8, at `bcb2ef3`.
-- macOS: **1453 passed** as of 2026-10-26, macOS 26.6 (arm64), Python 3.13.17 (Homebrew, `.venv`), after merging main `0408e97` (`pt_simulate_pdu`) plus the Mac Simulation-window fix.
+- macOS: **1455 passed** as of 2026-10-26, macOS 26.6 (arm64), Python 3.13.17 (Homebrew, `.venv`), with the Control Center simulation demos (`cross-platform-sim`).
 - CI (GitHub Actions, run 40247628960 at `ae1274b`, 2026-10-26): ubuntu 1452 + 1 skipped (3.13) / 1447 + 6 (3.11), windows 1450 + 3 / 1445 + 8, macos 1453 / 1448 + 5.
 
 These lines are the only place the baseline is recorded. Run the commands and
@@ -152,3 +152,6 @@ must show where the work really stands, all the time.
 - **Editing files through a shell can corrupt them.** On Windows, PowerShell
   `Set-Content` added a BOM and broke UTF-8. Use the editor tools, and write JSON
   as plain UTF-8.
+- **PT drops newlines from JS it is handed as text** (the Builder editor, and the
+  webview's `$se("runCode", src)`). A `//` comment then eats the rest. Send
+  multi-line source as a JSON string inside `new Function(...)`.

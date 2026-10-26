@@ -1341,6 +1341,335 @@ function quickBuild() {
     });
 }
 
+// ---------------------------------------------------- Simulation demos -----
+/* Ready-made Simulation demos for a LAN behind a remote server (local build,
+   not committed). The helpers below run in PT's Script Engine: runCode installs
+   them on GLOBAL, then $se calls them by name and gets their JSON back. Play is
+   always paused again: by the tick once every PDU ended, or after SIM_MAX_MS
+   (a Play left running fills PT's event buffer: "maximum number of events"). */
+var SIM_MAX_MS = { broadcast: 180000, pc2pc: 120000, srv2pc: 120000, srv2all: 150000 };  // per batch
+var SIM_BATCH = 10;
+var SIM_TICK_MS = 1000;
+var SIM = { running: false, timer: null, t0: 0, label: "" };
+
+function simEngineHelpers() {
+    var G = GLOBAL;
+    function J(o){ return JSON.stringify(o); }
+    function S(){ return ipc.simulation(); }
+    function P(){ return ipc.appWindow().getSimulationPanel(); }
+    function U(){ return ipc.appWindow().getUserCreatedPDU(); }
+    function winSim(){ try { return !!ipc.appWindow().isSimulationMode(); } catch(e){ return null; } }
+    function pause(){ try { if (P().isPlaying()) { P().play(); } } catch(e){} }
+    // Deleting a user PDU also drops its frames from the buffer (live, 388 -> 0).
+    function clearPdus(){ for (var i = 0; i < 500; i++) { try { U().deletePDU(0); } catch(e){ break; } } }
+    function hostIp(d){
+        var names = ["FastEthernet0", "GigabitEthernet0", "Wireless0"];
+        for (var i = 0; i < names.length; i++) {
+            try { var p = d.getPort(names[i]); if (p && String(p.getIpAddress()) !== "0.0.0.0") {
+                return {ip: String(p.getIpAddress()), mask: String(p.getSubnetMask())}; } } catch(e){}
+        }
+        return null;
+    }
+    function bcastOf(ip, mask){
+        var a = ip.split("."), m = mask.split("."), o = [];
+        for (var i = 0; i < 4; i++) { o.push((parseInt(a[i],10) & parseInt(m[i],10)) | (~parseInt(m[i],10) & 255)); }
+        return o.join(".");
+    }
+    // Status of each pair's PDU (UserTraffic: 1 running, 2 failed, 3 successful),
+    // read from its first frame at or after n0. `seen` remembers how far the
+    // buffer was scanned and each pair's first frame, so a check reads only the
+    // frames added since the last one (rescanning everything froze PT for minutes
+    // with 39 warm-up pings).
+    function statuses(pairs, n0, seen){
+        var s = S(), n = s.getFrameInstanceCount(), ok = 0, bad = 0, k, key;
+        if (seen.next === undefined) { seen.next = n0; seen.at = {}; }
+        for (var j = seen.next; j < n; j++) {
+            try { var t = s.getFrameInstanceAt(j).getTrafficSource();
+                if (t) { key = String(t.getCanonicalSource()) + ">" + String(t.getCanonicalDestination());
+                    if (seen.at[key] === undefined) { seen.at[key] = j; } }
+            } catch(e){}
+        }
+        seen.next = n;
+        for (k = 0; k < pairs.length; k++) {
+            var at = seen.at[pairs[k][0] + ">" + pairs[k][1]], code = 0;
+            if (at !== undefined) { try { code = s.getFrameInstanceAt(at).getTrafficSource().getStatus(); } catch(e){} }
+            if (code === 3) { ok++; } else if (code === 2) { bad++; }
+        }
+        return {successful: ok, failed: bad, total: pairs.length};
+    }
+    // End devices with a Command Prompt; servers by model, the rest are PCs.
+    G.mcpDemoDevices = function(){
+        var net = ipc.network(), n = net.getDeviceCount(), pcs = [], servers = [];
+        for (var i = 0; i < n; i++) {
+            var d = net.getDeviceAt(i);
+            if (!d || typeof d.getCommandPrompt !== "function") { continue; }
+            var name = String(d.getName()), model = String(d.getModel());
+            (/server/i.test(model) ? servers : pcs).push(name);
+        }
+        var key = function(s){ var m = /^(.*?)(\d+)$/.exec(s); return m ? [m[1], parseInt(m[2],10)] : [s, -1]; };
+        pcs.sort(function(a,b){ var x = key(a), y = key(b); return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : x[1] - y[1]; });
+        return J({pcs: pcs, servers: servers, window_sim: winSim()});
+    };
+    // Warm-up inside Simulation, stepped in this one call so nothing animates:
+    // every pair pings once (passes repeat while some fail on a cold ARP cache),
+    // so switches learn every port and routers every host; then the PDUs and
+    // their frames are deleted. A Realtime warm-up showed as a flood of
+    // envelopes on the Mac, where the window stays in Simulation.
+    var WARM_MAX_MS = 8000;
+    function warmUp(pairs){
+        var s = S(), passes = 0, r = null, t0 = Date.now();
+        for (var pass = 0; pass < 3; pass++) {
+            var n0 = s.getFrameInstanceCount(), added = [], first = {}, steps = 0;
+            for (var i = 0; i < pairs.length; i++) {
+                if (U().addSimplePdu(pairs[i][0], pairs[i][1]) === 0) { added.push(pairs[i]); }
+            }
+            while (steps < 4000 && Date.now() - t0 < WARM_MAX_MS) {
+                for (var k = 0; k < 25; k++) { s.forward(); steps++; }
+                r = statuses(added, n0, first);
+                if (r.successful + r.failed === added.length) { break; }
+            }
+            clearPdus();
+            passes++;
+            if ((r && r.successful === added.length) || Date.now() - t0 >= WARM_MAX_MS) { break; }
+        }
+        return {passes: passes, last: r};
+    }
+    // Simulation, Reset Simulation, ICMP only, the warm-up, then the demo's
+    // traffic and Play.
+    G.mcpDemoStart = function(arg){
+        var a = JSON.parse(arg), s = S(), p = P(), i;
+        pause();
+        if (!s.isSimulationMode()) { s.setSimulationMode(true); }
+        if (winSim() === false) { return J({ok: false, window_realtime: true}); }
+        s.resetSimulation();
+        clearPdus();
+        var filters = ["ACL Filter", "ARP", "BGP", "Bluetooth", "CAPWAP", "CDP", "DHCP", "DHCPv6", "DNS", "DTP", "EAPOL", "EIGRP", "EIGRPv6", "FTP", "H.323", "HSRP", "HSRPv6", "HTTP", "HTTPS", "ICMP", "ICMPv6", "IEC", "IPSec", "ISAKMP", "IoT", "IoT TCP", "LACP", "LLDP", "MODBUS", "Meraki", "NDP", "NETFLOW", "NTP", "OSPF", "OSPFv6", "PAgP", "POP3", "PPP", "PPPoED", "PTP", "Profinet", "RADIUS", "REP", "RIP", "RIPng", "RTP", "SCCP", "SMTP", "SNMP", "SSH", "STP", "SYSLOG", "TACACS", "TCP", "TFTP", "Telnet", "UDP", "USB", "VTP"];
+        for (i = 0; i < filters.length; i++) { try { p.setFilter(filters[i], filters[i] === "ICMP"); } catch(e){} }
+        var warm = a.warm && a.warm.length ? warmUp(a.warm) : null;
+        var st = {kind: a.kind, pairs: [], n0: s.getFrameInstanceCount(), first: {}, src: null, out0: 0};
+        if (a.kind === "broadcast") {
+            var d = ipc.network().getDevice(a.src), addr = d ? hostIp(d) : null;
+            if (!addr) { return J({ok: false, error: "No IP address on " + a.src}); }
+            var cp = d.getCommandPrompt();
+            st.src = a.src; st.out0 = String(cp.getOutput()).length;
+            st.target = bcastOf(addr.ip, addr.mask);
+            cp.enterCommand("ping -n 1 " + st.target);
+        } else {
+            for (i = 0; i < a.pairs.length; i++) {
+                if (U().addSimplePdu(a.pairs[i][0], a.pairs[i][1]) === 0) { st.pairs.push(a.pairs[i]); }
+            }
+            if (!st.pairs.length) { return J({ok: false, error: "PT refused every PDU"}); }
+        }
+        G.__mcpDemo = st;
+        p.populateEventList();
+        if (!p.isPlaying()) { p.play(); }
+        return J({ok: true, pdus: st.pairs.length, target: st.target || null, warm: warm});
+    };
+    // Poll while Play runs: pause once every PDU ended, or when told to finish.
+    G.mcpDemoTick = function(finish){
+        var st = G.__mcpDemo, done, out = {};
+        if (!st) { pause(); return J({done: true}); }
+        if (st.kind === "broadcast") {
+            var text = String(ipc.network().getDevice(st.src).getCommandPrompt().getOutput()).slice(st.out0);
+            out.replies = (text.match(/Reply from/g) || []).length;
+            done = /Ping statistics/.test(text);
+        } else {
+            out = statuses(st.pairs, st.n0, st.first);
+            done = out.successful + out.failed === st.pairs.length;
+        }
+        if (done || finish) { pause(); try { P().populateEventList(); } catch(e){} G.__mcpDemo = null; }
+        out.done = !!(done || finish); out.finished = !!done;
+        return J(out);
+    };
+}
+
+// The webview -> Script Engine IPC drops newlines, and the first // comment
+// would then swallow the rest. As a JSON string literal the source is one line.
+var SIM_ENGINE_JS = "(new Function(" + JSON.stringify("(" + simEngineHelpers.toString() + ")();") + "))();";
+
+function simCall(fn, arg) {
+    return $se("runCode", SIM_ENGINE_JS).then(function() {
+        return arg === undefined ? $se(fn) : $se(fn, arg);
+    }).then(function(raw) {
+        try { return JSON.parse(raw); } catch (e) { return null; }
+    });
+}
+
+function simSetStatus(text, cls) {
+    var el = document.getElementById("sim-status");
+    if (el) { el.textContent = text; el.className = "sim-status " + (cls || ""); }
+}
+
+function simFillSelect(id, names, preferred) {
+    var sel = document.getElementById(id);
+    if (!sel) { return; }
+    var keep = sel.value;
+    sel.innerHTML = "";
+    names.forEach(function(n) {
+        var o = document.createElement("option");
+        o.value = n; o.textContent = n; sel.appendChild(o);
+    });
+    if (names.indexOf(keep) >= 0) { sel.value = keep; }
+    else if (preferred && names.indexOf(preferred) >= 0) { sel.value = preferred; }
+}
+
+function simRefreshDevices() {
+    try {
+        simCall("mcpDemoDevices").then(function(d) {
+            if (!d) { simSetStatus("Could not read the topology from PT.", "err"); return; }
+            simFillSelect("sim-src", d.pcs, d.pcs[0]);
+            simFillSelect("sim-dst", d.pcs, d.pcs[d.pcs.length - 1]);
+            simFillSelect("sim-server", d.servers, d.servers[0]);
+            SIM.pcs = d.pcs;
+            var hint = d.window_sim === false
+                ? " PT's window is in Realtime: click Simulation (bottom right of PT) once first."
+                : "";
+            simSetStatus(d.pcs.length + " PCs, " + d.servers.length + " server(s) found." + hint,
+                         d.window_sim === false ? "warn" : "ok");
+        }).catch(function(e) { simSetStatus("Script Engine error: " + e, "err"); });
+    } catch (e) {
+        simSetStatus("Script Engine unavailable.", "err");
+    }
+}
+
+function simPairs(kind) {
+    var src = val("sim-src"), dst = val("sim-dst"), srv = val("sim-server");
+    var pcs = SIM.pcs || [];
+    if (kind === "pc2pc") { return [[src, dst]]; }
+    if (kind === "srv2pc") { return [[srv, dst]]; }
+    if (kind === "srv2all") { return pcs.map(function(p) { return [srv, p]; }); }
+    return [];  // broadcast: one ping from the source's Command Prompt
+}
+
+/* Every PC sends something first, so the switch learns every port: a ping to
+   a PC whose MAC it does not know is flooded to all ports, and every other PC
+   drops it with a red X (seen live, 190 drops for 20 pings). */
+function simWarmPairs(kind) {
+    var src = val("sim-src"), srv = val("sim-server"), pcs = SIM.pcs || [];
+    var talk = srv ? pcs.map(function(p) { return [p, srv]; })
+                   : pcs.filter(function(p) { return p !== src; }).map(function(p) { return [p, src]; });
+    if (kind === "broadcast") {
+        talk = talk.concat(pcs.filter(function(p) { return p !== src; }).map(function(p) { return [src, p]; }));
+    }
+    return talk.concat(simPairs(kind));
+}
+
+var SIM_LABELS = {
+    broadcast: "Broadcast to all", pc2pc: "PC to PC",
+    srv2pc: "Server to PC", srv2all: "Server to all PCs",
+};
+
+function simRun(kind) {
+    if (SIM.running) { log("A simulation demo is already running", "warn"); return; }
+    if (!SIM.pcs || !SIM.pcs.length) { simRefreshDevices(); log("Load the devices first (Refresh)", "warn"); return; }
+    if ((kind === "srv2pc" || kind === "srv2all") && !val("sim-server")) {
+        simSetStatus("This topology has no server.", "err"); return;
+    }
+    // At most SIM_BATCH PCs per Play run, each run after its own Reset
+    // Simulation: PT's event buffer fills with time (background STP and the
+    // like count too), and 20 pings at Play speed overflowed it (live).
+    var pairs = simPairs(kind), batches = [];
+    for (var i = 0; i < Math.max(pairs.length, 1); i += SIM_BATCH) { batches.push(pairs.slice(i, i + SIM_BATCH)); }
+    SIM.kind = kind;
+    SIM.batches = batches;
+    SIM.batch = 0;
+    SIM.totals = { successful: 0, failed: 0, total: 0 };
+    SIM.warm = checked("sim-warm");
+    SIM.maxMs = SIM_MAX_MS[kind];
+    SIM.running = true;
+    SIM.label = SIM_LABELS[kind];
+    simSetButtons(true);
+    log("Simulation demo: " + SIM.label + (batches.length > 1 ? " in " + batches.length + " batches of up to " + SIM_BATCH + " PCs" : ""), "cmd");
+    simRunBatch();
+}
+
+function simBatchLabel() {
+    return SIM.label + (SIM.batches.length > 1 ? " (batch " + (SIM.batch + 1) + " of " + SIM.batches.length + ")" : "");
+}
+
+function simRunBatch() {
+    var kind = SIM.kind, pairs = SIM.batches[SIM.batch];
+    // The warm-up runs inside the start call, stepped without animation: every
+    // PC talks once so the switch knows every port (no flooding, no red X's).
+    var warm = !SIM.warm ? [] : simWarmPairs(kind).filter(function(p) {
+        return simPairs(kind).every(function(q) { return q[0] !== p[0] || q[1] !== p[1]; });
+    }).concat(pairs);
+    var arg = { kind: kind, pairs: kind === "broadcast" ? [] : pairs, src: val("sim-src"), warm: warm };
+    simSetStatus(simBatchLabel() + ": resetting the simulation and warming up…", "");
+    simCall("mcpDemoStart", JSON.stringify(arg)).then(function(r) {
+        if (!r) { simFail("no answer from PT"); return; }
+        if (r.window_realtime) {
+            simDone();
+            simSetStatus("PT's window is in Realtime. Click Simulation (bottom right of PT), then press the demo again.", "warn");
+            showNotif("Click Simulation in Packet Tracer (bottom right), then press the demo again.");
+            return;
+        }
+        if (!r.ok) { simFail(r.error || "PT refused the demo"); return; }
+        simSetStatus(simBatchLabel() + ": playing…" + (r.target ? " (ping " + r.target + ")" : ""), "ok");
+        SIM.t0 = Date.now();
+        SIM.timer = setTimeout(tick, SIM_TICK_MS);
+    }).catch(simFail);
+}
+
+function tick() {
+    var finish = Date.now() - SIM.t0 > SIM.maxMs;
+    simCall("mcpDemoTick", finish ? "finish" : "").then(function(r) {
+        if (!r) { simFail("no answer from PT (is a PT dialog open?)"); return; }
+        var progress = r.total !== undefined
+            ? r.successful + " successful, " + r.failed + " failed of " + r.total
+            : (r.replies || 0) + " replies";
+        if (!r.done) {
+            simSetStatus(simBatchLabel() + ": playing… " + progress, "ok");
+            SIM.timer = setTimeout(tick, SIM_TICK_MS);
+            return;
+        }
+        if (r.total !== undefined) {
+            SIM.totals.successful += r.successful; SIM.totals.failed += r.failed; SIM.totals.total += r.total;
+        }
+        if (r.finished && SIM.batch + 1 < SIM.batches.length) {
+            log(simBatchLabel() + " finished: " + progress, "ok");
+            SIM.batch++;
+            simRunBatch();
+            return;
+        }
+        simDone();
+        if (SIM.batches.length > 1) {
+            var t = SIM.totals;
+            progress = t.successful + " successful, " + t.failed + " failed of " + t.total;
+        }
+        var text = SIM.label + (r.finished ? " finished: " : " stopped: ") + progress + ". Play paused.";
+        simSetStatus(text, r.failed || !r.finished ? "warn" : "ok");
+        log(text, r.failed || !r.finished ? "warn" : "ok");
+    }).catch(simFail);
+}
+
+function simStop() {
+    if (!SIM.running) { return; }
+    if (SIM.timer) { clearTimeout(SIM.timer); SIM.timer = null; }
+    SIM.t0 = 0;  // the next tick finishes and pauses
+    tick();
+}
+
+function simDone() {
+    if (SIM.timer) { clearTimeout(SIM.timer); SIM.timer = null; }
+    SIM.running = false;
+    simSetButtons(false);
+}
+
+function simFail(e) {
+    simDone();
+    simSetStatus("Demo failed: " + e, "err");
+    log("Simulation demo failed: " + e, "err");
+    try { $se("runCode", "try{var p=ipc.appWindow().getSimulationPanel();if(p.isPlaying()){p.play();}}catch(e){}"); } catch (x) {}
+}
+
+function simSetButtons(busy) {
+    document.querySelectorAll(".sim-demo-btn").forEach(function(b) { b.disabled = busy; });
+    var stop = document.getElementById("sim-stop");
+    if (stop) { stop.disabled = !busy; }
+}
+
+
 // ------------------------------------------------------- Notifications -----
 
 function showNotif(msg) {
