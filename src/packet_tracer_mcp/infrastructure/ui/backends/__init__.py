@@ -1,8 +1,8 @@
-"""One UI backend per OS, chosen at runtime (PLAN/INTERFACES.md §2).
+"""One UI backend per OS, chosen at runtime.
 
-Only this package and `infrastructure/platform/` look at the OS (CONSTRAINTS
-C1). A backend's own OS packages (comtypes, pyobjc) are imported inside it,
-never here, so every module imports on every OS (C2).
+Only this package and `infrastructure/platform/` look at the OS.
+A backend's own OS packages (comtypes, pyobjc) are imported inside it,
+never here, so every module imports on every OS.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from .null import NullBackend
 ENV = "PT_MCP_UI_BACKEND"
 CHOICES = ("null", "windows", "macos", "linux")
 
-LINUX_REASON = "UI mode is not available on Linux yet; every tool works headless. See PHASE-08."
+LINUX_REASON = "UI mode is not available on Linux yet; every tool works headless."
 # What reinstalls a backend whose import failed.
 _FIX = {"windows": "pip install packet-tracer-mcp[ui]", "macos": "pip install --upgrade packet-tracer-mcp"}
 

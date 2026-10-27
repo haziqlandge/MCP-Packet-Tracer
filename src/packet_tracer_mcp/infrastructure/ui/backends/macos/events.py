@@ -1,6 +1,6 @@
 """Clicks and key presses into PT on macOS, by the only routes that worked.
 
-PHASE-00 (PREVIOUS_WORK 2.4 #6, #7), measured on PT 9.0.1 / macOS 26.5.1:
+Measured on PT 9.0.1 / macOS 26.5.1:
 
 - Mouse events posted to PT's pid never open a device dialog (5 variants). What
   works is a click at HID level with PT frontmost: activate PT, `AXRaise` its
@@ -12,10 +12,10 @@ PHASE-00 (PREVIOUS_WORK 2.4 #6, #7), measured on PT 9.0.1 / macOS 26.5.1:
 
 A HID click lands on whatever is on top, so `click` refuses unless PT is
 frontmost and the point hits PT's logical canvas. Every pyobjc name here was
-exercised by `devtools/macos_probe.py` first (C6); they are imported inside
-`QuartzIO`, so this module imports on every OS (C2).
+exercised by `devtools/macos_probe.py` first; they are imported inside
+`QuartzIO`, so this module imports on every OS.
 
-Activation (ISSUES X18, measured 2026-10-24 on macOS 26.6): from a background
+Activation (measured 2026-10-24 on macOS 26.6): from a background
 process such as the MCP server under the Claude Code helper,
 `activateWithOptions_` can leave the other app in front (2 of 2 tries), while
 LaunchServices (`open -a` on PT's own bundle) brought PT forward 3 of 3. So
@@ -33,7 +33,7 @@ from ...backend import BackendError
 
 KEY_SPACE = 49            # kVK_Space
 CANVAS_IDENT = "m_pViewArea_Window.m_workspaceWS"
-ACTIVATE_GRACE_S = 0.5    # activateWithOptions_ took ~0.4 s in PHASE-00
+ACTIVATE_GRACE_S = 0.5    # activateWithOptions_ took ~0.4 s when measured
 FRONT_TIMEOUT_S = 3.0     # in all, including the LaunchServices fallback
 # PT reports frontmost before its windows are raised over the others (measured
 # live): the point is hit-tested again until PT's canvas is on top.
@@ -75,7 +75,7 @@ def click(pid: int, main_ax_window, x: float, y: float, *, io: EventIO | None = 
     """Left click at a screen point (points) on PT's canvas. Returns "cursor-restored".
 
     `ready` runs with PT in front, right before the click is posted; a string
-    from it is the reason not to click (the canvas tool, ISSUES X20)."""
+    from it is the reason not to click (the canvas tool)."""
     io = io or QuartzIO()
     io.activate(pid)
     io.raise_window(main_ax_window)

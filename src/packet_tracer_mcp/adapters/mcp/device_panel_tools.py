@@ -111,7 +111,7 @@ def register_device_panel_tools(
         except ValueError as exc:
             return str(exc)
         if new == UI:
-            # The one place that may bring up OS permission prompts (C3).
+            # The one place that may bring up OS permission prompts.
             ok, why = presenter.available(request=True)
             extra = f"\nNote: {why}" if why else ""
             if not ok:

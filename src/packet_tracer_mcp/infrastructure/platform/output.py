@@ -1,4 +1,4 @@
-"""Where tool outputs land (CONSTRAINTS C11).
+"""Where tool outputs land.
 
 A GUI client may start the server with cwd `/`, which is read-only on macOS, and
 every exporting tool then failed. A writable cwd is kept, so users whose cwd was

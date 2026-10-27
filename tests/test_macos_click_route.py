@@ -1,6 +1,6 @@
 """The macOS click and key routes, and MacBackend's navigation, with events stubbed.
 
-PHASE-00 (PREVIOUS_WORK 2.4 #6, #7): mouse events posted to PT's pid never reach
+Measured on PT 9.0.1: mouse events posted to PT's pid never reach
 its canvas, so the click goes through the HID tap with PT frontmost and the
 cursor put back; checkable sections switch only on focus + Space with PT
 frontmost. A HID click lands on whatever is on top, so these tests pin every
@@ -102,7 +102,7 @@ class TestClick:
         assert kinds(io).count("open_app") == 1  # the fallback was tried, once
 
     def test_activation_ignored_falls_back_to_launch_services(self):
-        # Live, 2026-10-24 (ISSUES X18): from the Claude Code helper on macOS 26.6,
+        # Live, 2026-10-24: from the Claude Code helper on macOS 26.6,
         # activateWithOptions_ left Claude in front 2 of 2 times; `open -a` worked.
         io = FakeIO(front=999, open_brings_front=True)
         assert events.click(PID, "MAIN", 299, 330, io=io) == "cursor-restored"
@@ -249,7 +249,7 @@ def stub(monkeypatch):
         raise ModuleNotFoundError("No module named 'ApplicationServices'")
 
     # The main window holds a Select tool that is on, so the click route's
-    # check right before the click (ISSUES X20) reads it and lets the click go.
+    # check right before the click reads it and lets the click go.
     main_tree = {"role": "AXWindow", "frame": [0, 0, 100, 100], "_el": "MAINWIN", "children": [
         {"role": "AXCheckBox", "title": "Select (Esc)", "description": "", "identifier": "a.b",
          "value": "1", "frame": [0, 0, 10, 10], "actions": [], "_el": "SEL", "children": []}]}
@@ -383,7 +383,7 @@ class TestNavigation:
 
 
 # ---------------------------------------------------------------------------
-# Window lookup with PT off the current Space (ISSUES X13)
+# Window lookup with PT off the current Space
 # ---------------------------------------------------------------------------
 
 MAIN_FRAME = [0.0, 49.0, 1470.0, 851.0]

@@ -1,4 +1,4 @@
-"""Every locator the presenter uses, on the recorded macOS trees (PHASE-05).
+"""Every locator the presenter uses, on the recorded macOS trees.
 
 This is the test the macOS UI mode rests on: each key must find exactly the
 element the presenter needs in PT 9.0.1's real AX tree. Keys whose element does
@@ -37,7 +37,7 @@ class TestMainWindow:
         assert hits[0].rect == (0, 180, 1512, 706)
 
     def test_no_canvas_scroll_bars_in_the_recording(self):
-        # PREVIOUS_WORK 2.4 #2: none exposed while the scene fits the view.
+        # Measured on PT 9.0.1: none exposed while the scene fits the view.
         main = els("main-window.json")
         assert locate(main, locators.CANVAS_HBAR) is None
         assert locate(main, locators.CANVAS_VBAR) is None

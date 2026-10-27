@@ -1,6 +1,6 @@
-"""Where the token and the file mailbox live (PLAN/INTERFACES.md §5).
+"""Where the token and the file mailbox live.
 
-Both sides of the pairing must agree (CONSTRAINTS C5): the extension inside PT
+Both sides of the pairing must agree: the extension inside PT
 derives the same directories from its user folder, and it cannot read
 environment variables. That is why `XDG_STATE_HOME` is not honoured here.
 
@@ -37,7 +37,7 @@ def mailbox_candidates(os_name: OsName, env: Mapping[str, str], home: Path) -> l
     """Mailbox directories in preference order.
 
     On macOS and Linux the released V5.2/V6 extension polls a Windows-shaped
-    directory under home (measured on a Mac, PREVIOUS_WORK 2.4 #4), so it is the
+    directory under home, so it is the
     second candidate until a fixed `.pts` is the one in Releases.
     """
     candidates = [state_dir(os_name, env, home) / _MAILBOX]

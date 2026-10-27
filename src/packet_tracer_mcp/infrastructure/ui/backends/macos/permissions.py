@@ -2,14 +2,14 @@
 
 Navigation needs Accessibility (the AX tree, AXPress) and posting events, which
 macOS grants under the same Accessibility switch; capture also needs Screen
-Recording. Checking uses the preflight APIs only and never shows a prompt
-(CONSTRAINTS C3). Asking is `request()`, which only the UI-mode switch reaches.
+Recording. Checking uses the preflight APIs only and never shows a prompt.
+Asking is `request()`, which only the UI-mode switch reaches.
 
 The grant belongs to the app macOS holds responsible for the server, not to
 Python: under Claude desktop's Code tab, the bundled Claude Code CLI at a
-versioned path (PREVIOUS_WORK 2.4 #9), so the remedy names the full path. A
+versioned path, so the remedy names the full path. A
 grant took effect in the running client without a restart (measured there).
-pyobjc is imported inside the functions, so this module imports on every OS (C2).
+pyobjc is imported inside the functions, so this module imports on every OS.
 """
 
 from __future__ import annotations

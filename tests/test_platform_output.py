@@ -1,4 +1,4 @@
-"""Where tool outputs land (CONSTRAINTS C11, ISSUES X7).
+"""Where tool outputs land.
 
 A GUI client may start the server with cwd `/` (read-only on macOS), and every
 exporting tool then failed with `[Errno 30] Read-only file system: 'projects'`.

@@ -51,7 +51,7 @@ dependencies = [
     # UI mode (open/capture the device windows) installs by itself on the OS
     # that uses it: UI Automation through comtypes on Windows, Accessibility /
     # Core Graphics / ScreenCaptureKit through pyobjc on macOS (floors: the
-    # versions verified on the Mac in PHASE-00). Nothing extra on Linux.
+    # versions verified on a Mac with PT 9.0.1). Nothing extra on Linux.
     "comtypes>=1.4; sys_platform == 'win32'",
     "pyobjc-core>=12.2; sys_platform == 'darwin'",
     "pyobjc-framework-Cocoa>=12.2; sys_platform == 'darwin'",

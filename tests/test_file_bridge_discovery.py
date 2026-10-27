@@ -1,9 +1,9 @@
-"""The file channel follows the extension's heartbeat (PLAN/INTERFACES.md §5, C5).
+"""The file channel follows the extension's heartbeat.
 
 The released V5.2/V6 extension polls `~/AppData/Local/packet-tracer-mcp/bridge` on a
-Mac (measured, PREVIOUS_WORK 2.4 #4) while the server wrote to
+Mac while the server wrote to
 `~/.local/state/packet-tracer-mcp/bridge`, so the file channel never worked off
-Windows (ISSUES X1). The server now writes where the heartbeat is.
+Windows. The server now writes where the heartbeat is.
 """
 
 from __future__ import annotations

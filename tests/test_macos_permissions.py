@@ -1,8 +1,8 @@
 """macOS permissions: the remedy text, ask-once requests and `MacBackend.available`.
 
 Runs on every OS: the pyobjc calls are patched out, so only the decisions are
-tested. What the grants do on a real Mac is in PREVIOUS_WORK 2.4 #9 (they take
-effect in the running client, no restart).
+tested. On a real Mac the grants take effect in the running client, with no
+restart.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ class TestRemedy:
         assert "the app that runs this MCP server" in r
 
     def test_says_no_restart_is_needed(self):
-        # Measured on the executor Mac (PREVIOUS_WORK 2.4 #9).
+        # Measured on the executor Mac.
         assert "no restart" in permissions.remedy(["screen_recording"], "claude", CLI)
 
     def test_nothing_missing_needs_no_remedy(self):

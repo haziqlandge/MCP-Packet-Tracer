@@ -1,4 +1,4 @@
-"""CONSTRAINTS C3: headless paths never bring up a macOS permission prompt.
+"""Headless paths never bring up a macOS permission prompt.
 
 A TCC dialog nobody asked for, from `pt_bridge_status`, teaches users to click
 Deny. Only the explicit UI-mode switch may ask. The tools run through the real

@@ -2,7 +2,7 @@
 
 `responsible_app` names the app the user must grant Accessibility and Screen
 Recording to. It is pure over an injected `ps`, so the recorded chains run on
-every OS. The first chain is the one measured on the executor Mac in PHASE-00.
+every OS. The first chain is the one measured on a Mac with PT 9.0.1.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ CLAUDE_CLI = ("/Users/u/Library/Application Support/Claude/claude-code/2.1.293/8
               "claude.app/Contents/MacOS/claude")
 
 CHAINS = {
-    # PREVIOUS_WORK 2.4 #9: Claude desktop's Code tab, measured 2026-10-10.
+    # Claude desktop's Code tab, measured 2026-10-10.
     "claude_code_tab": {
         11767: (11766, BREW_PY), 11766: (10832, "/bin/zsh"), 10832: (10831, CLAUDE_CLI),
         10831: (6977, "/Applications/Claude.app/Contents/Helpers/disclaimer"),

@@ -1,7 +1,7 @@
 """Shared types of the platform layer: which OS, the host facts, the clipboard contract.
 
-PLAN/INTERFACES.md §1. Only this package and `infrastructure/ui/backends/` look at
-`sys.platform` (CONSTRAINTS C1); everything else asks `platform.current()`.
+Only this package and `infrastructure/ui/backends/` look at
+`sys.platform`; everything else asks `platform.current()`.
 """
 
 from __future__ import annotations

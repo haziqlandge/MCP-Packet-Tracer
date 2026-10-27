@@ -11,8 +11,7 @@ Order of preference, from most native to least (verified against PT 9.0.1):
    chosen through the OS's accessibility tree, found by `locators`.
 4. Capture is the backend's: it works even when the window is covered.
 
-The OS mechanics live in `backends/` behind `WindowBackend` (PLAN/INTERFACES.md
-§2); this module never looks at the OS.
+The OS mechanics live in `backends/` behind `WindowBackend`; this module never looks at the OS.
 """
 
 from __future__ import annotations
@@ -114,7 +113,7 @@ class Presenter:
         return self._backend
 
     def available(self, *, request: bool = False) -> tuple[bool, str]:
-        """(available, reason). `request=True` may show OS permission prompts (C3)."""
+        """(available, reason). `request=True` may show OS permission prompts."""
         return self.backend.available(request=request)
 
     # -- plumbing ---------------------------------------------------------
@@ -237,7 +236,7 @@ class Presenter:
         if zoom != 0:
             # The click point is calibrated at 100% only; elsewhere the device is
             # centred and the view's centre clicked, which misses a device near
-            # the scene's edge (ISSUES X19). Zoom Reset brings back 100%, and the
+            # the scene's edge. Zoom Reset brings back 100%, and the
             # user's zoom is given back after the click.
             reset = locate(els, locators.ZOOM_RESET)
             if reset is not None:

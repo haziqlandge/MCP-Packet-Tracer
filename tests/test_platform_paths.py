@@ -1,6 +1,6 @@
-"""The state directory and mailbox candidates (PLAN/INTERFACES.md §5).
+"""The state directory and mailbox candidates.
 
-Both sides of the pairing must compute the same paths (CONSTRAINTS C5): the
+Both sides of the pairing must compute the same paths: the
 token and the mailbox live where the extension looks for them. On Windows the
 location must stay exactly what `token_dir()` returned before the platform
 layer existed, or every installed extension loses its token.
@@ -68,7 +68,7 @@ class TestMailboxCandidates:
     def test_posix_adds_the_v52_legacy_mailbox_second(self, os_name):
         assert mailbox_candidates(os_name, {}, HOME) == [
             HOME / ".local" / "state" / "packet-tracer-mcp" / "bridge",
-            # Released V5.2 polls this one on a Mac (PREVIOUS_WORK 2.4 #4).
+            # Released V5.2 polls this one on a Mac.
             HOME / "AppData" / "Local" / "packet-tracer-mcp" / "bridge",
         ]
 

@@ -1,4 +1,4 @@
-"""Every locator key of PLAN/INTERFACES.md §3 on synthetic elements.
+"""Every locator key on synthetic elements.
 
 Each `by_ident` is the presenter's predicate from `bcb2ef3`, moved verbatim, so
 these cases pin what the Windows presenter matched before the seam existed.

@@ -1,9 +1,9 @@
-"""The extension's own path choice (EXTENSION/script-engine/main.js, INTERFACES §5).
+"""The extension's own path choice (EXTENSION/script-engine/main.js).
 
 Released V5.2's `mcpBridgeDir()` returned the directory of the FIRST token
 candidate, `<home>/AppData/Local/...`, without checking that a token was there;
-on a Mac it polled a different mailbox from the one Python wrote to (ISSUES X1,
-measured in PREVIOUS_WORK 2.4 #4). These run the real main.js under node with a
+on a Mac it polled a different mailbox from the one Python wrote to (measured
+on a Mac). These run the real main.js under node with a
 stub `ipc`; they skip when node is not installed.
 """
 

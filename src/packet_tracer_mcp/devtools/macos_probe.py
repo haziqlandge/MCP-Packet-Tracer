@@ -1,8 +1,8 @@
 """macOS probe: measure what PT exposes before any backend code depends on it.
 
 Every pyobjc selector and constant the macOS UI backend will use is exercised
-here first, on the real Mac, against the real Packet Tracer (CONSTRAINTS C6).
-Output is JSON so it can be pasted into PREVIOUS_WORK or committed as a fixture.
+here first, on the real Mac, against the real Packet Tracer.
+Output is JSON so it can be pasted into notes or committed as a fixture.
 
 Run from the repo root (macOS only; pyobjc installed in the venv):
 
@@ -12,8 +12,8 @@ Run from the repo root (macOS only; pyobjc installed in the venv):
     python -m src.packet_tracer_mcp.devtools.macos_probe click --pid N --x X --y Y [--route pid|pid-fields|post]
     python -m src.packet_tracer_mcp.devtools.macos_probe capture --wid W --route sck|cgimage|screencapture --out file.png
 
-Units (CONSTRAINTS C10): frames and click coordinates are points; captures are pixels.
-`perms` without --request only calls preflight APIs and never shows a prompt (C3).
+Units: frames and click coordinates are points; captures are pixels.
+`perms` without --request only calls preflight APIs and never shows a prompt.
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ MAX_NODES = 5000
 _HOME = str(Path.home())
 
 
-# -- pyobjc access, imported lazily so the module imports on every OS (C2) --------
+# -- pyobjc access, imported lazily so the module imports on every OS --------
 
 def _q():
     import Quartz

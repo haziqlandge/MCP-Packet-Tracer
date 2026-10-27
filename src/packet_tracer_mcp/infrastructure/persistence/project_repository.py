@@ -15,7 +15,7 @@ class ProjectRepository:
     """Manages project persistence."""
 
     def __init__(self, base_dir: str | Path = "projects"):
-        # Relative = under output_root() (C11); an absolute path is kept as given.
+        # Relative = under output_root(); an absolute path is kept as given.
         self.base_dir = output_root() / Path(base_dir)
         self.base_dir.mkdir(parents=True, exist_ok=True)
 

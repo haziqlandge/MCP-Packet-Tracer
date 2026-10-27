@@ -1,4 +1,4 @@
-"""WindowsBackend adapts win32 + Uia without changing what they do (CONSTRAINTS C4).
+"""WindowsBackend adapts win32 + Uia without changing what they do.
 
 UIA cannot run here, so `Uia` is replaced by a fake that records the exact calls
 the old presenter made (`descendants(h, "TabItem")`, `invoke`, ...). The real

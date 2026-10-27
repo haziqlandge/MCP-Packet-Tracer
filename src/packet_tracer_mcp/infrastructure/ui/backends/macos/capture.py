@@ -1,8 +1,8 @@
 """Capture one of PT's windows as BGRA pixels, even when it is covered.
 
-Routes, in order (RESEARCH/topics/macos-ui-automation.md §3): ScreenCaptureKit,
+Routes, in order: ScreenCaptureKit,
 CGWindowListCreateImage, then `/usr/sbin/screencapture -l`. On macOS 26.5.1 all
-three captured a covered dialog with identical pixels (PREVIOUS_WORK 2.4 #8).
+three captured a covered dialog with identical pixels.
 All need Screen Recording for the responsible app.
 
 SCK traps, each measured: without a window-server connection SCK aborts the whole
@@ -12,7 +12,7 @@ CGImage as a raw pointer, wrapped inside the handler; and nothing may raise in a
 completion handler, which would terminate the process.
 
 `to_bgra` is pure and tested byte-exact: rows can be padded, and the byte order
-follows the bitmap info. Captures are in pixels (CONSTRAINTS C10).
+follows the bitmap info. Captures are in pixels.
 """
 
 from __future__ import annotations

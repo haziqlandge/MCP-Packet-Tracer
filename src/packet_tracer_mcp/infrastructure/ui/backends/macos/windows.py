@@ -4,10 +4,10 @@ Accessibility gives titles and frames; Core Graphics gives the CGWindowID, the
 JSON-safe handle the presenter passes around, and capture needs. A window is the
 same in both when the frames match (points, ±1 for rounding). Frames alone are
 ambiguous: PT opens every device dialog at the same frame and keeps hidden twins
-of some windows (PREVIOUS_WORK 2.4 #7), so a CG name equal to the AX title wins
+of some windows, so a CG name equal to the AX title wins
 (names are readable only with Screen Recording), then an on-screen window, then
 the frontmost. The join is pure; the pyobjc readers below it are not. Every
-name used here was exercised by `devtools/macos_probe.py` first (C6).
+name used here was exercised by `devtools/macos_probe.py` first.
 """
 
 from __future__ import annotations

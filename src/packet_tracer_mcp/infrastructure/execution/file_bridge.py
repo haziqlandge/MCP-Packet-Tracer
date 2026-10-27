@@ -80,7 +80,7 @@ class FileBridge:
     No state of its own beyond a sequence counter; the real state is the
     files on disk, so it survives process restarts.
 
-    The mailbox is wherever the extension's heartbeat is (PLAN/INTERFACES.md §5):
+    The mailbox is wherever the extension's heartbeat is:
     the released V5.2/V6 polls a Windows-shaped directory on macOS and Linux, so the
     server follows the freshest `alive.txt` among the candidates instead of
     assuming its own path. An explicit `directory` (tests, config) wins.

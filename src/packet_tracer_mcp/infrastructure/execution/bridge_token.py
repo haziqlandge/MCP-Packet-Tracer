@@ -43,7 +43,7 @@ class BridgeTokenError(RuntimeError):
 def token_dir() -> Path:
     """Token directory, per user and local to the machine.
 
-    The platform layer owns the location (PLAN/INTERFACES.md §5): %LOCALAPPDATA%
+    The platform layer owns the location: %LOCALAPPDATA%
     on Windows (not the roaming %APPDATA%), `~/.local/state/packet-tracer-mcp`
     elsewhere. XDG_STATE_HOME is not honoured: the extension cannot read it.
     """

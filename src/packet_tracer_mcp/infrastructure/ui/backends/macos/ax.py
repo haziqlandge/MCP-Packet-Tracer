@@ -1,13 +1,13 @@
 """PT's Accessibility tree: one walk shared by the backend and `devtools/macos_probe.py`,
 and the conversion of its nodes to `UiElement`s.
 
-`walk` produces nodes in the fixture format (PLAN/INTERFACES.md §7), so recorded
+`walk` produces nodes in the fixture format, so recorded
 fixtures and live trees take the same path through `to_element`. Every AX name
-used here was exercised by the probe on PT 9.0.1 / macOS 26.5.1 first (C6,
-PREVIOUS_WORK 2.4). pyobjc is imported inside the functions (C2); the
+used here was exercised by the probe on PT 9.0.1 / macOS 26.5.1 first.
+pyobjc is imported inside the functions; the
 conversion is pure and runs on every OS.
 
-Role mapping, from the PHASE-00 fixtures: AXRadioButton inside an AXTabGroup →
+Role mapping, from the recorded macOS fixtures: AXRadioButton inside an AXTabGroup →
 TAB (other radio buttons are not tabs); AXButton → BUTTON; AXCheckBox →
 CHECKBOX (the Select tool, Config/Services sections, check boxes); AXRow and
 AXCell → LIST_ITEM; AXTextField and AXTextArea → EDIT; AXScrollBar → SCROLLBAR;

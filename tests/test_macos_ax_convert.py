@@ -1,7 +1,7 @@
 """Recorded AX trees → UiElements, through the same `to_element` the live backend uses.
 
 The fixtures are PT 9.0.1 on macOS 26.5.1 (`devtools/macos_probe.py ax`), so the
-conversion is tested on real data (PLAN/INTERFACES.md §7). Pure Python: runs on
+conversion is tested on real data. Pure Python: runs on
 every OS.
 """
 

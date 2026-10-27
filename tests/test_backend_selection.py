@@ -12,7 +12,7 @@ from src.packet_tracer_mcp.infrastructure.ui.backend import BackendUnavailable, 
 from src.packet_tracer_mcp.infrastructure.ui.backends import load_backend
 from src.packet_tracer_mcp.infrastructure.ui.backends.null import NullBackend
 
-LINUX = "UI mode is not available on Linux yet; every tool works headless. See PHASE-08."
+LINUX = "UI mode is not available on Linux yet; every tool works headless."
 
 
 def test_windows_gets_the_windows_backend():
@@ -26,8 +26,7 @@ def test_linux_gets_the_null_backend_with_its_reason():
 
 
 def test_macos_gets_the_macos_backend():
-    # PHASE-04: the null placeholder is replaced by MacBackend. Building it
-    # imports no pyobjc, so this holds on every OS (C2).
+    # Building MacBackend imports no pyobjc, so this holds on every OS.
     assert load_backend("macos", env={}).name == "macos"
 
 

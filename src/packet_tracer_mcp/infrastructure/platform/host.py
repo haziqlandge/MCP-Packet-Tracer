@@ -1,7 +1,7 @@
 """Host facts: OS and versions, the running PT processes, and on macOS the app the
 user must grant Accessibility and Screen Recording to.
 
-Every function returns None or [] instead of raising (PLAN/INTERFACES.md §1).
+Every function returns None or [] instead of raising.
 """
 
 from __future__ import annotations
@@ -50,7 +50,7 @@ def _outer_bundle(exe: str) -> str | None:
     Outermost, because helpers nest (`Visual Studio Code.app/.../Code Helper.app`)
     and TCC asks about the app the user knows. An interpreter's own
     `Python.framework/.../Python.app` is never the answer: measured on the Mac
-    (PREVIOUS_WORK 2.4 #9), it would have named "Python" instead of the client.
+   , it would have named "Python" instead of the client.
     """
     if "/Python.framework/" in exe:
         return None

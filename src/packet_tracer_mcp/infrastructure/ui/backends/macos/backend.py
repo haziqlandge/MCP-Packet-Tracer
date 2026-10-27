@@ -1,12 +1,11 @@
-"""MacBackend: PT's windows, their capture and their navigation on macOS
-(PLAN/phases/PHASE-04.md, PHASE-05.md).
+"""MacBackend: PT's windows, their capture and their navigation on macOS.
 
 Handles are CGWindowIDs (ints), found by joining PT's AX windows to its CG
 windows. Elements come from the AX walk in `ax.py`; each keeps its AXUIElement
 and window handle as `raw` (a `Ref`). Units: frames and clicks in points,
-captures in pixels (C10).
+captures in pixels.
 
-Unlike Windows, macOS UI mode is not invisible (ISSUES X9): the canvas click
+Unlike Windows, macOS UI mode is not invisible: the canvas click
 and a section switch bring PT to the front, and the click moves the cursor for
 a moment before putting it back (`events.py`).
 """
@@ -101,7 +100,7 @@ class MacBackend:
     def _leave_full_screen(self, listed: list) -> bool:
         """With PT's main window in full screen, macOS gives each dialog a
         full-screen Space of its own: captured at screen size, and the main
-        window is then on another Space (ISSUES X13, live 2026-10-25). Out of
+        window is then on another Space (live 2026-10-25). Out of
         full screen every dialog opened and was captured at its own size, so the
         main window leaves it (the user can go back with ⌃⌘F)."""
         main = next((el for el, t, _ in listed
@@ -119,7 +118,7 @@ class MacBackend:
     def _bring_forward(self, pid: int) -> list:
         """AX lists none of PT's windows while all of them are off the current
         Space: PT in full screen or on another desktop, the client in front
-        (ISSUES X13). Activating PT through LaunchServices lists them again at
+       . Activating PT through LaunchServices lists them again at
         once (live 2026-10-24/25). Only an empty list does this: a dialog that is
         merely not open yet never pulls PT forward."""
         self._io.open_app(pid)
@@ -167,7 +166,7 @@ class MacBackend:
         """Runs with PT in front, just before the click. The presenter checked the
         Select tool before PT came forward; a key reaching PT since then switches
         the tool (N places a note, C a complex PDU, Del deletes). Seen live twice
-        (ISSUES X20), so Select is checked again here and turned back on."""
+       , so Select is checked again here and turned back on."""
         els = self.elements(handle, Role.CHECKBOX)
         select = locate(els, SELECT_TOOL)
         if select is None or self.toggle_state(select) == 1:

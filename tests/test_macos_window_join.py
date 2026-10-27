@@ -1,7 +1,7 @@
-"""The AX window ↔ CGWindowID join (PLAN/phases/PHASE-04.md, with its amendment).
+"""The AX window ↔ CGWindowID join (with its amendment).
 
-The CG list below is the one recorded on the executor Mac in PHASE-00
-(PREVIOUS_WORK 2.4 #7): PT opens every device dialog at the same frame, and keeps
+The CG list below is the one recorded on a Mac with PT 9.0.1:
+PT opens every device dialog at the same frame, and keeps
 an off-screen twin of the Control Center window. Frames are points.
 """
 

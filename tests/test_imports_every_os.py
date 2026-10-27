@@ -1,4 +1,4 @@
-"""CONSTRAINTS C2: every module imports on every OS.
+"""Every module imports on every OS.
 
 Each run is a fresh interpreter. It first imports every module with the real OS
 (so third-party and stdlib modules are loaded the normal way), then drops this

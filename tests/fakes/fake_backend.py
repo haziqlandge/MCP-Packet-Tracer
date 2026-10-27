@@ -1,4 +1,4 @@
-"""A scripted WindowBackend for presenter tests (PLAN/phases/PHASE-03.md).
+"""A scripted WindowBackend for presenter tests.
 
 Windows are a title → handle map; each handle's elements are a list or a
 function of the backend (for trees that change, like closing an applet). Every

@@ -1,10 +1,10 @@
-"""The seam between the presenter and an OS's window automation (PLAN/INTERFACES.md §2).
+"""The seam between the presenter and an OS's window automation.
 
 The presenter speaks only `WindowBackend`; each OS has its backend under
 `backends/`. Elements carry Qt's objectName path as `ident` (UIA's
 AutomationId on Windows, AXIdentifier on macOS), which `locators.py` matches.
 
-Units (CONSTRAINTS C10): `rect` and `click` use the backend's screen units
+Units: `rect` and `click` use the backend's screen units
 (Windows: physical pixels; macOS: points). `Capture` is always in pixels. The
 presenter never mixes the two.
 """
@@ -57,7 +57,7 @@ class Capture:
 
 
 class BackendUnavailable(RuntimeError):
-    """The backend cannot run here. str() is the actionable remedy (C7)."""
+    """The backend cannot run here. str() is the actionable remedy."""
 
 
 class BackendError(RuntimeError):
@@ -69,7 +69,7 @@ class WindowBackend(Protocol):
 
     def available(self, *, request: bool = False) -> tuple[bool, str]:
         """(available, reason). `request=True` may show OS permission prompts;
-        only UI-mode entry points pass it (C3)."""
+        only UI-mode entry points pass it."""
         ...
 
     def find_window(self, pid: int, title: str) -> WindowHandle | None: ...

@@ -1,4 +1,4 @@
-"""Read-only diagnostics and client configuration (PLAN/INTERFACES.md §6).
+"""Read-only diagnostics and client configuration.
 
 Probes are injectable: no Packet Tracer, bridge startup, token generation or
 permission request is needed to exercise any check. Only the explicit

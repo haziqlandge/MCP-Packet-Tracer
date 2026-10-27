@@ -1,6 +1,6 @@
-"""Clipboard selection and the bytes each tool receives (PLAN/INTERFACES.md §1).
+"""Clipboard selection and the bytes each tool receives.
 
-`pt_deploy` used to copy only on Windows (ISSUES X2). Each clipboard takes an
+`pt_deploy` used to copy only on Windows. Each clipboard takes an
 injected `run`, so these tests check the exact command, encoding and
 environment without touching the real clipboard.
 """
@@ -126,7 +126,7 @@ def _with_clipboard(monkeypatch, tmp_path, clipboard):
 
 
 class TestDeployUsesThePlatformClipboard:
-    """ISSUES X2: `pt_deploy` copied only through clip.exe, so never on a Mac."""
+    """`pt_deploy` copied only through clip.exe, so never on a Mac."""
 
     def test_the_topology_script_is_copied(self, tmp_path, monkeypatch):
         from src.packet_tracer_mcp.domain.models.requests import TopologyRequest

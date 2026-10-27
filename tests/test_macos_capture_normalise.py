@@ -1,6 +1,6 @@
-"""CGImage bytes → tightly packed top-down B,G,R,A (PLAN/phases/PHASE-04.md).
+"""CGImage bytes → tightly packed top-down B,G,R,A.
 
-Measured on the Mac (PREVIOUS_WORK 2.4 #8): CGWindowListCreateImage and SCK give
+Measured on the Mac: CGWindowListCreateImage and SCK give
 bitmap info 8194 (32-bit little-endian, premultiplied alpha first = B,G,R,A in
 memory) with padded rows (5632 bytes for 1400 px); `screencapture`'s PNG read back
 through ImageIO gives info 3 (R,G,B,A). Wrong padding shears the image; a wrong

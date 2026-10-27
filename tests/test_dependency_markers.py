@@ -1,4 +1,4 @@
-"""Platform dependencies install by themselves (PLAN/phases/PHASE-04.md).
+"""Platform dependencies install by themselves.
 
 Users asked for "connect the MCP and it works": a `[ui]` extra they must
 remember is a step too many. pyobjc comes with the package on macOS, comtypes
@@ -28,7 +28,7 @@ def test_pyobjc_packages_install_on_macos_only():
         req = DEPS[name]
         assert installs_on(req, "darwin")
         assert not installs_on(req, "win32") and not installs_on(req, "linux")
-        assert req.specifier.contains("12.2.2")   # the version PHASE-00 verified
+        assert req.specifier.contains("12.2.2")   # the version verified on the Mac
 
 
 def test_comtypes_installs_on_windows_only():

@@ -41,7 +41,7 @@ function startBridge() {
  * The user does nothing: they install the extension and it works.
  */
 /*
- * Home directory from PT's user folder (PLAN/INTERFACES.md §5).
+ * Home directory from PT's user folder.
  * getUserFolder() -> "C:/Users/<user>/Cisco Packet Tracer 9.0.0" on Windows,
  * "/Users/<user>/Cisco Packet Tracer 9.0.1" on macOS, "/home/<user>/pt" on Linux.
  * The home is matched, not cut at the last "/": a user folder moved under
@@ -59,7 +59,7 @@ function mcpHomeFromUserFolder(uf) {
 /*
  * Where the server may have put the token, in the order this OS makes likely:
  * a Windows-shaped home puts %LOCALAPPDATA% first, any other home puts
- * ~/.local/state first. Both sides of the pairing compute the same paths (C5).
+ * ~/.local/state first. Both sides of the pairing compute the same paths.
  */
 function mcpTokenCandidates() {
     var paths = [];
@@ -146,7 +146,7 @@ function mcpBridgeDir() {
     // The mailbox lives next to the token: <token dir>/bridge. It is the
     // directory of the first candidate whose token EXISTS; released V5.2 took
     // the first candidate unchecked, which on a Mac was ~/AppData/Local while
-    // the server wrote to ~/.local/state (ISSUES X1). With no token anywhere,
+    // the server wrote to ~/.local/state. With no token anywhere,
     // the OS default (the first candidate).
     var paths = mcpTokenCandidates();
     var fm = null;

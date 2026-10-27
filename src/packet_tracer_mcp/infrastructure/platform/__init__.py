@@ -1,4 +1,4 @@
-"""The one home of OS facts (CONSTRAINTS C1, PLAN/INTERFACES.md §1).
+"""The one home of OS facts.
 
 Ask `current()` for the host, the state directory and the clipboard instead of
 checking `sys.platform` elsewhere.

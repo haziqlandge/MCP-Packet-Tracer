@@ -177,7 +177,7 @@ class TestFingerprint:
 
 @pytest.mark.skipif(os.name == "nt", reason="POSIX state directory")
 class TestXdgStateHomeIgnored:
-    """PLAN/INTERFACES.md §5: the extension cannot read XDG_STATE_HOME, so honouring
+    """The extension cannot read XDG_STATE_HOME, so honouring
     it put the token where PT never looks and broke pairing on Linux and macOS."""
 
     def test_token_stays_under_home_local_state(self, isolated, monkeypatch):

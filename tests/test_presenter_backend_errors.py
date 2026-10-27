@@ -1,4 +1,4 @@
-"""A backend's operation error reaches the tools as a PresenterError (C7).
+"""A backend's operation error reaches the tools as a PresenterError.
 
 `BackendError` means an operation failed (every macOS capture route refused, a
 window handle went stale). The tools catch `PresenterError` and print it; any

@@ -1,4 +1,4 @@
-"""The presenter's flows on a scripted backend (PLAN/phases/PHASE-03.md, Tests).
+"""The presenter's flows on a scripted backend (Tests).
 
 These pin the Windows behaviour the seam must keep: the order of the steps, the
 step texts, and above all the refusal to click the canvas unless the Select
@@ -182,7 +182,7 @@ class TestOpenDialog:
         assert clicks(b) == [("click", MAIN, 300, 500)]
 
     def test_device_still_outside_after_centring_clicks_the_centre(self):
-        # macOS exposes no canvas scroll bars (ISSUES X12): after centring, the
+        # macOS exposes no canvas scroll bars: after centring, the
         # device is in the middle of the view, never at the stale point.
         send, _ = pt(cx=2200, cy=900)
         tree = [e for e in main_tree() if e.role is not Role.SCROLLBAR]
@@ -214,7 +214,7 @@ class TestOpenDialog:
         return send
 
     def test_zoomed_canvas_resets_the_zoom_then_clicks_the_device(self):
-        # ISSUES X19: at zoom −2 a device near the scene's edge cannot be centred,
+        # At zoom −2 a device near the scene's edge cannot be centred,
         # so the centre click hit empty canvas. Zoom Reset makes the calibrated
         # 100% point usable (live 2026-10-25: 4 of 4 opened).
         zoom = [-2]

@@ -1,4 +1,4 @@
-"""CONSTRAINTS C1: only the platform layer and the UI backends look at the OS.
+"""Only the platform layer and the UI backends look at the OS.
 
 Scattered `sys.platform` checks are how the code became Windows-only. Any other
 module asks `infrastructure.platform` instead.
@@ -11,7 +11,7 @@ from pathlib import Path
 
 SRC = Path(__file__).resolve().parents[1] / "src" / "packet_tracer_mcp"
 ALLOWED_DIRS = ("infrastructure/platform/", "infrastructure/ui/backends/")
-# Emptied in PHASE-03, when the Windows UI code moved under ui/backends/.
+# Emptied when the Windows UI code moved under ui/backends/.
 # Never add to it.
 ALLOW_LIST: set[str] = set()
 OS_CHECK = re.compile(r"\bsys\.platform\b|\bos\.name\b")

@@ -1,4 +1,4 @@
-"""Every recorded macOS AX fixture is well-formed (PLAN/INTERFACES.md §7).
+"""Every recorded macOS AX fixture is well-formed.
 
 The fixtures are recorded from the real Packet Tracer by
 `devtools/macos_probe.py ax`; the macOS backend's offline tests rest on them, so a

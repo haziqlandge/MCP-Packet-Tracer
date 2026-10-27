@@ -33,7 +33,7 @@ class DeployExecutor(ExecutorBase):
     """
 
     def __init__(self, output_dir: str | Path = "projects"):
-        # Relative = under output_root() (C11); an absolute path is kept as given.
+        # Relative = under output_root(); an absolute path is kept as given.
         self.output_dir = output_root() / Path(output_dir)
 
     def execute(self, plan: TopologyPlan, project_name: str | None = None) -> dict:

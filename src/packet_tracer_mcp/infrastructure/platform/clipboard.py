@@ -1,4 +1,4 @@
-"""The system clipboard, one small class per tool (PLAN/INTERFACES.md §1).
+"""The system clipboard, one small class per tool.
 
 Every class takes the `run` callable (default `subprocess.run`) so tests check
 the exact command and bytes without touching the real clipboard. `copy()` never

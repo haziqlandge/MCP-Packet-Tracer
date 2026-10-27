@@ -1,4 +1,4 @@
-"""How the presenter finds PT's widgets, as data (PLAN/INTERFACES.md §3).
+"""How the presenter finds PT's widgets, as data.
 
 Each `by_ident` is the presenter's predicate at `bcb2ef3`, moved verbatim. It
 runs on elements that carry an ident (Qt's objectName path); `by_shape` runs on
@@ -100,7 +100,7 @@ SIMULATION_SWITCH = Locator(
     lambda e: e.ident.endswith(".m_simulationSwitch"),
     lambda e, els: e.name == "Simulation Mode",
 )
-# macOS (PHASE-00 fixture `main-window.json`): no CLogicalWorkspace.QWidget in
+# macOS (fixture `main-window.json`): no CLogicalWorkspace.QWidget in
 # the AX tree; the canvas is the AXGroup `...m_pViewArea_Window.m_workspaceWS`,
 # whose frame is the view (0,180 1512×526 pt there).
 LOGICAL_CANVAS = Locator(
