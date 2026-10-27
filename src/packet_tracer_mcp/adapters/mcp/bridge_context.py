@@ -8,6 +8,7 @@ Moved out of register_tools so it can be imported and tested.
 from __future__ import annotations
 
 import json
+import time
 import urllib.parse
 import urllib.request
 
@@ -52,6 +53,30 @@ LIVE_DEVICES_JS = (
 )
 
 
+# After starting the bridge, how long to wait for the extension to find it. It polls
+# /status every 2 s, so a first call answered "not connected" while PT was a moment away.
+BRIDGE_GRACE_S = 5.0
+BRIDGE_GRACE_POLL_S = 0.25
+
+
+# New switch ports spend ~30 s in STP listening/learning (15 s + 15 s) before they
+# forward, so a ping right after cabling is lost. pt_verify_connectivity waits out
+# what is left of this window after the last link was created.
+STP_SETTLE_S = 32.0
+_LINK_CALLS = ("addLink(", "lwAddLink(", "createLink(")
+
+
+def creates_links(js: str) -> bool:
+    return any(call in js for call in _LINK_CALLS)
+
+
+def stp_wait_seconds(last_link_change: float | None, now: float, settle: float = STP_SETTLE_S) -> float:
+    """Seconds still to wait before a ping can cross links created at `last_link_change`."""
+    if last_link_change is None:
+        return 0.0
+    return max(0.0, settle - (now - last_link_change))
+
+
 class BridgeContext:
     """One per MCP server: owns the in-process HTTP bridge and the file channel."""
 
@@ -60,6 +85,12 @@ class BridgeContext:
         self.url = f"http://127.0.0.1:{port}"
         self.file_bridge = file_bridge if file_bridge is not None else FileBridge()
         self.instance: PTCommandBridge | None = None
+        # time.monotonic() of the last JS that created a link (see STP_SETTLE_S).
+        self.last_link_change: float | None = None
+
+    def _note(self, js: str) -> None:
+        if creates_links(js):
+            self.last_link_change = time.monotonic()
 
     def _signed(self, url: str) -> str:
         """Add the bridge token to the URL.
@@ -132,11 +163,12 @@ class BridgeContext:
                 pass
         return False
 
-    def ensure_bridge(self) -> bool:
+    def ensure_bridge(self, grace: bool = True) -> bool:
         """
         Ensures a bridge is listening on :54321.
         If there already is one (internal or external), does nothing.
-        If there is none, starts one in-process as a daemon thread.
+        If there is none, starts one in-process as a daemon thread and, with
+        `grace`, gives the extension a moment to find it.
         Returns True if the bridge is operational.
         """
         if self.bridge_is_up():
@@ -148,6 +180,10 @@ class BridgeContext:
                 self.instance = b
             except OSError:
                 return False  # port blocked by an external non-bridge process
+            if grace and self.bridge_is_up():
+                deadline = time.monotonic() + BRIDGE_GRACE_S
+                while not self.bridge_pt_connected() and time.monotonic() < deadline:
+                    time.sleep(BRIDGE_GRACE_POLL_S)
         return self.bridge_is_up()
 
     def pick_channel(self) -> str:
@@ -160,6 +196,7 @@ class BridgeContext:
 
     def channel_send(self, payload: str) -> bool:
         """Send fire-and-forget over the available channel."""
+        self._note(payload)
         ch = self.pick_channel()
         if ch == "http":
             status, _ = self.http_post(f"{self.url}/queue", payload)
@@ -200,6 +237,7 @@ class BridgeContext:
         - file: the Script Engine injects a local reportResult that captures the
           value and writes it to the res file; here the "raw" js is sent with its try/catch.
         """
+        self._note(js_call)
         ch = self.pick_channel()
         guarded = (
             "try{" + js_call + "}catch(__pterr){reportResult('PT_ERROR: '+__pterr);}"
@@ -237,8 +275,11 @@ class BridgeContext:
         ch = self.pick_channel()
         if ch in ("http", "file"):
             return None
-        # No live channel: start HTTP in case the window is about to open.
+        # No live channel: start HTTP in case the window is about to open, and look
+        # again — the extension may have found it during ensure_bridge's grace period.
         self.ensure_bridge()
+        if self.pick_channel() in ("http", "file"):
+            return None
         if self.instance is not None and self.instance.saw_recent_unauthorized:
             return self.stale_client_message()
         return (

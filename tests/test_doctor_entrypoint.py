@@ -10,7 +10,11 @@ import pytest
 def server(tmp_path, monkeypatch):
     monkeypatch.setenv("PT_MCP_BRIDGE_TOKEN", "doctor-entrypoint-test-token-long-enough-012345")
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("PT_MCP_WORKDIR", str(tmp_path / "work"))
+    # main() enters the workdir before serving; give the suite its cwd back.
+    monkeypatch.chdir(tmp_path)
     module = importlib.import_module("src.packet_tracer_mcp.server")
+    monkeypatch.setattr(module.BRIDGE, "ensure_bridge", lambda **kwargs: None)
     return module
 
 
@@ -58,3 +62,15 @@ def test_invalid_transport_arguments_fail_before_starting(server, monkeypatch, a
     with pytest.raises(SystemExit) as exc:
         server.main(args)
     assert exc.value.code == 2
+
+
+def test_install_skill_dispatches_before_any_transport(server, monkeypatch):
+    seen = []
+    skill = importlib.import_module("src.packet_tracer_mcp.skill_install")
+    monkeypatch.setattr(skill, "main", lambda args: seen.append(args) or 0)
+    monkeypatch.setattr(server.mcp, "run", lambda **kwargs: (_ for _ in ()).throw(
+        AssertionError("install-skill must not start MCP")))
+    with pytest.raises(SystemExit) as exc:
+        server.main(["install-skill", "--dest", "x"])
+    assert exc.value.code == 0
+    assert seen == [["--dest", "x"]]

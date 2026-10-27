@@ -1,5 +1,5 @@
 // Loads EXTENSION/webview/interface.js in a sandbox with a stub navigator and
-// document, presses keys at the editor and the page, and prints as JSON which
+// document, presses keys in the console, and prints as JSON which
 // actions ran and what the shortcut hints read.
 //
 //   node interface_shortcuts_harness.js <interface.js> '<scenario json>'
@@ -25,19 +25,18 @@ function element(attrs) {
 
 // The hints as index.html marks them.
 const hints = {
-    runKbd: element({ "data-shortcut": "run", text: "Ctrl+Enter" }),
-    clearKbd: element({ "data-shortcut": "clear", text: "Ctrl+K" }),
+    runHint: element({ "data-shortcut": "run", text: "Ctrl+Enter" }),
     runBtn: element({ "data-shortcut-title": "run", "data-title": "Run", title: "Run (Ctrl+Enter)" }),
-    clearLogBtn: element({ "data-shortcut-title": "clearLog", "data-title": "Clear log", title: "Clear log (Ctrl+L)" }),
+    clearBtn: element({ "data-shortcut-title": "clear", "data-title": "Clear", title: "Clear (Ctrl+K)" }),
 };
 const editor = { value: "x", selectionStart: 1, selectionEnd: 1 };
 const listeners = [];
 const document = {
     addEventListener: (type, fn) => { if (type === "keydown") listeners.push(fn); },
-    getElementById: (id) => (id === "codeeditor" ? editor : null),
+    getElementById: (id) => (id === "code" ? editor : null),
     querySelectorAll: (sel) => {
-        if (sel === "[data-shortcut]") return [hints.runKbd, hints.clearKbd];
-        if (sel === "[data-shortcut-title]") return [hints.runBtn, hints.clearLogBtn];
+        if (sel === "[data-shortcut]") return [hints.runHint];
+        if (sel === "[data-shortcut-title]") return [hints.runBtn, hints.clearBtn];
         return [];
     },
 };
@@ -49,16 +48,15 @@ vm.runInContext(fs.readFileSync(scriptPath, "utf8"), context, { filename: script
 // Record the actions instead of running them (function declarations are
 // globals of the context, so the handlers pick these up).
 let ran = [];
-context.executeCode = () => ran.push("run");
-context.clearEditor = () => ran.push("clear");
-context.clearLog = () => ran.push("clearLog");
+context.runConsole = () => ran.push("run");
+context.clearCode = () => ran.push("clear");
 
 const pressed = [];
 for (const k of scenario.keys || []) {
     const e = Object.assign({ ctrlKey: false, metaKey: false, altKey: false, shiftKey: false,
                               preventDefault: () => {} }, k);
     ran = [];
-    context.editorKeyDown(e);
+    context.consoleKeyDown(e);
     for (const fn of listeners) fn(e);
     pressed.push(ran);
 }
@@ -68,9 +66,8 @@ process.stdout.write(JSON.stringify({
     isMac: context.IS_MAC,
     pressed,
     hints: {
-        runKbd: hints.runKbd.textContent,
-        clearKbd: hints.clearKbd.textContent,
+        runHint: hints.runHint.textContent,
         runTitle: hints.runBtn.title,
-        clearLogTitle: hints.clearLogBtn.title,
+        clearTitle: hints.clearBtn.title,
     },
 }));

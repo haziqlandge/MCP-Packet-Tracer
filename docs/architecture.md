@@ -56,7 +56,7 @@ Two channels reach the extension; `_pick_channel()` chooses one per command.
 **File-bridge** — `FileBridge` (`file_bridge.py`), used when the window is closed.
 The Script Engine polls a per-user mailbox (`req_*.js` → execute → `res_*.txt`,
 plus an `alive.txt` heartbeat). The server discovers the freshest active mailbox,
-including the released V5.2 compatibility candidate. It needs no token: a browser
+including the released V5.2/V6 compatibility candidate. It needs no token: a browser
 page can't write a user-owned local file. Locations are in the
 [per-OS path table](live-deploy.md#per-os-paths).
 

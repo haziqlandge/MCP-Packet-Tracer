@@ -9,8 +9,7 @@ from __future__ import annotations
 import json
 from ...domain.models.plans import TopologyPlan
 from ...shared.constants import (
-    PT_DEVICE_TYPE,
-    PT_DEVICE_TYPE_DEFAULT,
+    pt_device_type,
     PT_CONNECT_TYPE,
     PT_CONNECT_TYPE_DEFAULT,
 )
@@ -29,7 +28,7 @@ def generate_ptbuilder_script(plan: TopologyPlan) -> str:
     # JS literal and the rest was executed as code in the Script Engine.
     # It is the same pattern that generate_executable_script() below already uses.
     for dev in plan.devices:
-        device_type = PT_DEVICE_TYPE.get(dev.category, PT_DEVICE_TYPE_DEFAULT)
+        device_type = pt_device_type(dev.model, dev.category)
         lines.append(
             f'lwAddDevice({json.dumps(dev.name)}, {device_type}, '
             f'{json.dumps(dev.model)}, {int(dev.x)}, {int(dev.y)});'
@@ -98,6 +97,7 @@ def generate_executable_script(plan: TopologyPlan) -> str:
             last_host_per_subnet[net] = names_sorted[-1]
 
     last_names = set(last_host_per_subnet.values())
+    pool_nets = [(ipaddress.ip_network(f"{p.network}/{p.mask}", strict=False), p) for p in plan.dhcp_pools]
 
     for pc in pcs:
         if pc.interfaces:
@@ -106,13 +106,19 @@ def generate_executable_script(plan: TopologyPlan) -> str:
                 ip, prefix = iface_ip.split("/")
                 mask = prefix_to_mask(int(prefix))
                 gw = pc.gateway or ""
-                use_dhcp = bool(plan.dhcp_pools) and pc.name not in last_names
+                pool = next((p for net, p in pool_nets if ipaddress.ip_address(ip) in net), None)
+                # DHCP only where a pool serves the host's subnet; servers keep the
+                # planned address (DNS/web need a fixed one).
+                use_dhcp = pc.category != "server" and pc.name not in last_names and pool is not None
                 if use_dhcp:
                     lines.append(f'configurePcIp({json.dumps(pc.name)}, true);')
                 else:
+                    # A static host on a pool's subnet takes that pool's DNS, as a
+                    # lease would have given it.
+                    dns = f", {json.dumps(pool.dns)}" if pool is not None and pool.dns else ""
                     lines.append(
                         f'configurePcIp({json.dumps(pc.name)}, false, '
-                        f'{json.dumps(ip)}, {json.dumps(mask)}, {json.dumps(gw)});'
+                        f'{json.dumps(ip)}, {json.dumps(mask)}, {json.dumps(gw)}{dns});'
                     )
         elif getattr(pc, "wireless", False) and plan.dhcp_pools:
             # WiFi laptop with no wired link: gets DHCP via Wireless0 (associated with the AP).

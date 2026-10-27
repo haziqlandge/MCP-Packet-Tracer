@@ -140,3 +140,20 @@ def test_no_partial_reads_under_concurrency(bridge_dir):
             assert r == str(len(payload)), "lectura parcial detectada"
     finally:
         se.stop()
+
+
+def test_posix_mailbox_meets_where_the_v5_extension_writes(tmp_path):
+    """The V5.2 extension builds the mailbox from its FIRST token candidate,
+    <home>/AppData/Local/packet-tracer-mcp/bridge, on every OS (found 2026-10-25:
+    alive.txt fresh under ~/AppData on a Mac). The server must follow its heartbeat
+    there instead of waiting in ~/.local/state."""
+    import time
+    from src.packet_tracer_mcp.infrastructure.execution.file_bridge import FileBridge
+    from src.packet_tracer_mcp.infrastructure.platform.paths import mailbox_candidates
+    legacy = tmp_path / "AppData" / "Local" / "packet-tracer-mcp" / "bridge"
+    for os_name in ("macos", "linux"):
+        candidates = mailbox_candidates(os_name, {}, tmp_path)
+        assert legacy in candidates
+        legacy.mkdir(parents=True, exist_ok=True)
+        (legacy / "alive.txt").write_text(str(time.time()))
+        assert FileBridge(candidates=candidates).active_dir() == legacy

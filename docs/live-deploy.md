@@ -5,15 +5,15 @@ so devices, cables and configs appear in real time as your AI builds them.
 
 Most desktop clients use **stdio**: the client starts the MCP server, which
 starts its internal bridge. The diagram shows the optional streamable-HTTP MCP
-transport; if port 39000 is already in use, choose a different MCP port with
-`python -m packet_tracer_mcp --port 39001` and point the client to that port.
+transport; if port 39400 is already in use, choose a different MCP port with
+`python -m packet_tracer_mcp --port 39401` and point the client to that port.
 This does not change the extension's bridge port 54321.
 
 There are **two channels**, and the server picks one per command automatically:
 
 ```text
                                    ┌─ HTTP bridge (:54321) ──▶ extension webview ─┐
-LLM ──▶ MCP Server (:39000) ──────►┤   (window OPEN)                             ├─▶ PT Script Engine
+LLM ──▶ MCP Server (:39400) ──────►┤   (window OPEN)                             ├─▶ PT Script Engine
                                    └─ per-user file mailbox ──▶ Script ──┘
                                        (window CLOSED)               Engine loop
 ```
@@ -30,7 +30,7 @@ LLM ──▶ MCP Server (:39000) ──────►┤   (window OPEN)      
 
 | Port | Service | Purpose |
 |------|---------|---------|
-| **39000** | MCP server (streamable-http) | Receives tool calls from the LLM/editor |
+| **39400** | MCP server (streamable-http) | Receives tool calls from the LLM/editor |
 | **54321** | HTTP bridge | Queues JS commands while the extension window is open |
 
 ## Per-OS paths
@@ -40,8 +40,8 @@ This is the reference for platform paths. `~` means the current user's home.
 | OS | Canonical state directory | Mailbox candidates, in preference order | Default output fallback |
 |---|---|---|---|
 | Windows | `%LOCALAPPDATA%\packet-tracer-mcp`; if unset, `%APPDATA%\packet-tracer-mcp`, then `~\.packet-tracer-mcp` | `<state>\bridge` | `~\Documents\Packet Tracer MCP` |
-| macOS | `~/.local/state/packet-tracer-mcp` | `<state>/bridge`, then `~/AppData/Local/packet-tracer-mcp/bridge` (released V5.2 compatibility) | `~/Documents/Packet Tracer MCP` |
-| Linux | `~/.local/state/packet-tracer-mcp` | `<state>/bridge`, then `~/AppData/Local/packet-tracer-mcp/bridge` (released V5.2 compatibility) | `~/packet-tracer-mcp` |
+| macOS | `~/.local/state/packet-tracer-mcp` | `<state>/bridge`, then `~/AppData/Local/packet-tracer-mcp/bridge` (released V5.2/V6 compatibility) | `~/Documents/Packet Tracer MCP` |
+| Linux | `~/.local/state/packet-tracer-mcp` | `<state>/bridge`, then `~/AppData/Local/packet-tracer-mcp/bridge` (released V5.2/V6 compatibility) | `~/packet-tracer-mcp` |
 
 The HTTP token is `<state>/bridge_token`; UI mode is saved in that state directory.
 Windows prefers machine-local state; its roaming fallback is retained for
@@ -51,7 +51,7 @@ cannot read environment variables and must find the same state as the server.
 The file bridge selects the freshest `alive.txt` within its freshness window
 across these candidates. Without a fresh heartbeat it uses the canonical mailbox.
 The released extension creates its compatibility mailbox and heartbeat; the
-server discovers that activity without requiring you to edit or relocate V5.2. `pt_bridge_status` reports the selected mailbox and
+server discovers that activity without requiring you to edit or relocate the extension. `pt_bridge_status` reports the selected mailbox and
 whether it is a legacy path.
 
 Relative exports and screenshots use the writable working directory unless it
@@ -69,9 +69,12 @@ You do **not** need any third-party extension.
 
 1. Download the latest extension from
    **[Releases](https://github.com/Mats2208/MCP-Packet-Tracer/releases/latest)**
-   (the `.pts` file — currently **`V5.2.pts`**).
-2. In Packet Tracer: **Extensions → Scripting → Configure PT Script Modules**
-3. Click **Add…**, select the downloaded `.pts`, and confirm.
+   (the `.pts` file — currently **`MCP-Control-Center.pts`**).
+2. Drop it in Packet Tracer's own `extensions` folder, in a subfolder
+   (`…/extensions/MCPControlCenter/`): `Cisco Packet Tracer <version>.app/Contents/extensions/`
+   on macOS, `C:\Program Files\Cisco Packet Tracer <version>\extensions\` on Windows (needs
+   admin). At its next start PT asks *"detected a new script module… enable?"* — click **Yes**.
+3. Or add it by hand: **Extensions → Scripting → Configure PT Script Modules → Add…**.
 
 That's it — the module is now registered.
 
@@ -86,8 +89,9 @@ That's it — the module is now registered.
 
 !!! success "No bootstrap needed"
     The MCP Control Center has the polling loop built in (it polls `:54321` every
-    500 ms and runs commands via the Script Engine), so it connects on its own. The
-    Editor / Terminal / Status / Quick Build tabs let you watch and drive it live.
+    500 ms and runs commands via the Script Engine), so it connects on its own. It
+    shows the connection state and what the agent did; **Advanced** opens a JS console
+    (⌘↩ on macOS, Ctrl+Enter elsewhere, runs it).
 
 !!! info "Authentication (nothing to do)"
     Since **v0.6.0** the bridge requires a token unique to your machine — without
@@ -95,7 +99,7 @@ That's it — the module is now registered.
     Packet Tracer. The MCP server creates the token on first run and the extension
     reads it through PT's Script Engine. Nothing to configure, nothing to paste.
 
-    If the Terminal tab reports that no token was found, start the MCP server once
+    If the panel reports that no token was found, start the MCP server once
     and reopen the window. Extensions built before V5.0 cannot authenticate.
 
 !!! tip "Keep it responsive"
@@ -124,10 +128,10 @@ pt_export_topology        # full snapshot (positions, per-interface IPs, links)
     `.pts` from [Releases](https://github.com/Mats2208/MCP-Packet-Tracer/releases/latest).
 
 ??? question "A red error popup appeared (`An error occurred on line N`)"
-    A command threw inside the Script Engine. The Control Center's polling loop lives
-    in the webview, so it keeps running, but the popup blocks PT's UI until dismissed.
-    Click **OK** and re-run. Prefer the validated tools (`pt_add_device`,
-    `pt_add_link`, …) which pre-check inputs before sending.
+    With the V5 extension this should not happen: every command (HTTP and file-bridge)
+    runs inside a `try/catch`, so an error comes back as a tool result instead of a
+    modal. If you still see one, you are probably on an extension older than V5 —
+    install the latest `.pts`. Click **OK** to dismiss it; the polling loop keeps running.
 
 ??? question "Packet Tracer becomes very slow when the window is in the background"
     A QtWebEngine compositing limitation: when the webview is behind PT but not

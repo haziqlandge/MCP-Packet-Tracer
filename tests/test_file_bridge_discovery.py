@@ -1,6 +1,6 @@
 """The file channel follows the extension's heartbeat (PLAN/INTERFACES.md §5, C5).
 
-The released V5.2 extension polls `~/AppData/Local/packet-tracer-mcp/bridge` on a
+The released V5.2/V6 extension polls `~/AppData/Local/packet-tracer-mcp/bridge` on a
 Mac (measured, PREVIOUS_WORK 2.4 #4) while the server wrote to
 `~/.local/state/packet-tracer-mcp/bridge`, so the file channel never worked off
 Windows (ISSUES X1). The server now writes where the heartbeat is.
@@ -150,7 +150,7 @@ class TestStatusLine:
     """`pt_bridge_status` says which mailbox PT polls, with the home shown as `~`."""
 
     def test_legacy_mailbox_is_named_as_such(self):
-        from src.packet_tracer_mcp.adapters.mcp.tools.live import mailbox_line
+        from src.packet_tracer_mcp.infrastructure.execution.file_bridge import mailbox_line
         home = str(Path.home())
         line = mailbox_line({"dir": f"{home}/AppData/Local/packet-tracer-mcp/bridge",
                              "alive": True, "age_s": 0.4, "legacy": True})
@@ -158,7 +158,7 @@ class TestStatusLine:
         assert "legacy" in line and "V5.2" in line
 
     def test_canonical_mailbox_has_no_legacy_note(self):
-        from src.packet_tracer_mcp.adapters.mcp.tools.live import mailbox_line
+        from src.packet_tracer_mcp.infrastructure.execution.file_bridge import mailbox_line
         line = mailbox_line({"dir": f"{Path.home()}/.local/state/packet-tracer-mcp/bridge",
                              "alive": True, "age_s": 0.4, "legacy": False})
         assert "~/.local/state/packet-tracer-mcp/bridge" in line and "legacy" not in line

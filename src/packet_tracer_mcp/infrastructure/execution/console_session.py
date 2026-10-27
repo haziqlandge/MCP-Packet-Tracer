@@ -129,6 +129,12 @@ _SNAPSHOT_JS = (
     f"var qre=new RegExp({json.dumps(PROMPT_QUESTION_RE.pattern)},'i');"
     "var done=pt.length>0&&nl>=0&&st.length-nl>=pt.length&&st.slice(-pt.length)===pt"
     "&&!qre.test(pt);"
+    # A host inside an SSH/telnet session: PT keeps getPrompt() at `C:\>` while the
+    # screen shows the router's prompt, so take an IOS prompt line ending the output
+    # as the prompt (otherwise every command there waited until its timeout).
+    "if(!done&&nl>=0&&typeof d.getCommandPrompt==='function'){"
+    "var ll=st.slice(st.lastIndexOf('\\n')+1);"
+    f"if(new RegExp({json.dumps(_PROMPT_LINE_RE.pattern)}).test(ll)&&!qre.test(ll)){{p=ll;done=true;}}}}"
     "var snap={from:from,len:out.length,out:sl.length>cap?sl.slice(-cap):sl,"
     "cut:sl.length>cap,prompt:p,mode:String(cl.getMode()||''),done:done};"
 )
@@ -562,7 +568,9 @@ def format_run(run: ConsoleRun, label: str) -> str:
     for r in run.results:
         mark = _STATUS_MARK.get(r.status, r.status)
         lines.append("")
-        lines.append(f"{prev_prompt}{r.command}    [{mark}]" if prev_prompt else f"> {r.command}    [{mark}]")
+        # What answers a Password: prompt is a secret: never echo it back.
+        shown = "********" if prev_prompt.rstrip().lower().endswith("password:") else r.command
+        lines.append(f"{prev_prompt}{shown}    [{mark}]" if prev_prompt else f"> {shown}    [{mark}]")
         if r.output:
             lines.append(r.output)
         if r.note:

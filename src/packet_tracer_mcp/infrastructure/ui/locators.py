@@ -77,6 +77,20 @@ def _zoom_reset_name(e: UiElement) -> bool:
 # Matched by name for the same reason as SELECT_TOOL.
 ZOOM_RESET = Locator("zoom_reset", _zoom_reset_name, lambda e, els: _zoom_reset_name(e))
 
+
+def _zoom_in_name(e: UiElement) -> bool:
+    return e.name.startswith("Zoom In")
+
+
+def _zoom_out_name(e: UiElement) -> bool:
+    return e.name.startswith("Zoom Out")
+
+
+# Its neighbours on the same toolbar, used to give the user's zoom back after a
+# click made at 100%. Windows names them "Zoom In" / "Zoom Out" (upstream, UIA).
+ZOOM_IN = Locator("zoom_in", _zoom_in_name, lambda e, els: _zoom_in_name(e))
+ZOOM_OUT = Locator("zoom_out", _zoom_out_name, lambda e, els: _zoom_out_name(e))
+
 # The Simulation half of the Realtime/Simulation switch, bottom right of the
 # main window (macOS: AXCheckBox "Simulation Mode",
 # `PtApp.CAppWindowBase.centralwidget.m_RSFrame.m_simulationSwitch`; AXPress

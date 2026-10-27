@@ -36,7 +36,7 @@ def state_dir(os_name: OsName, env: Mapping[str, str], home: Path) -> Path:
 def mailbox_candidates(os_name: OsName, env: Mapping[str, str], home: Path) -> list[Path]:
     """Mailbox directories in preference order.
 
-    On macOS and Linux the released V5.2 extension polls a Windows-shaped
+    On macOS and Linux the released V5.2/V6 extension polls a Windows-shaped
     directory under home (measured on a Mac, PREVIOUS_WORK 2.4 #4), so it is the
     second candidate until a fixed `.pts` is the one in Releases.
     """

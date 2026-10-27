@@ -137,7 +137,7 @@ reads the token from disk.
 
 Alternative channel to HTTP for when the extension window is closed. Instead of an HTTP
 server, it uses a file mailbox, `bridge/` under the per-user state directory (`%LOCALAPPDATA%\packet-tracer-mcp` on Windows, `~/.local/state/packet-tracer-mcp` on macOS and Linux; see `docs/live-deploy.md`). On macOS and Linux it follows the
-extension's heartbeat, because the released V5.2 polls `~/AppData/Local/packet-tracer-mcp/bridge`
+extension's heartbeat, because the released V5.2/V6 polls `~/AppData/Local/packet-tracer-mcp/bridge`
 there (`FileBridge.active_dir()`). The server
 writes a `req_*.js`, PT's Script Engine reads it, runs it and leaves the response in a
 `res_*.txt`.

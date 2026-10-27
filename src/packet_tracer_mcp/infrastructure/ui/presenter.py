@@ -31,6 +31,15 @@ from .png import bgra_to_png, looks_blank
 SendAndWait = Callable[[str, float], Optional[str]]
 
 
+def zoom_restore_plan(zoom: int) -> tuple[str, int]:
+    """Toolbar button and number of presses that bring the canvas from 100% back to `zoom`."""
+    if zoom < 0:
+        return "Zoom Out", -zoom
+    if zoom > 0:
+        return "Zoom In", zoom
+    return "", 0
+
+
 class PresenterError(RuntimeError):
     pass
 
@@ -86,6 +95,7 @@ _CLICK_NOTES = {
     "posted": "click posted, cursor not moved",
     "cursor-restored": "click sent; the cursor moved there for a moment and was put back",
 }
+
 
 
 class Presenter:
@@ -223,10 +233,12 @@ class Presenter:
                     "A click with Delete active would delete the device, so I won't click."
                 )
             steps.append("Select tool activated")
-        if int(st.get("zoom", 0)) != 0:
+        zoom = int(st.get("zoom", 0))
+        if zoom != 0:
             # The click point is calibrated at 100% only; elsewhere the device is
             # centred and the view's centre clicked, which misses a device near
-            # the scene's edge (ISSUES X19). Zoom Reset brings back 100%.
+            # the scene's edge (ISSUES X19). Zoom Reset brings back 100%, and the
+            # user's zoom is given back after the click.
             reset = locate(els, locators.ZOOM_RESET)
             if reset is not None:
                 b.press(reset)
@@ -234,6 +246,24 @@ class Presenter:
                 st = self._state(device)
                 if int(st.get("zoom", 0)) == 0:
                     steps.append("zoom reset to 100% (the click is placed at 100%)")
+                    try:
+                        return self._click_device(main, pid, device, st, steps, els)
+                    finally:
+                        self._restore_zoom(els, zoom, steps)
+        return self._click_device(main, pid, device, st, steps, els)
+
+    def _restore_zoom(self, els, zoom: int, steps: list[str]) -> None:
+        name, times = zoom_restore_plan(zoom)
+        button = locate(els, locators.ZOOM_IN if name == "Zoom In" else locators.ZOOM_OUT) if times else None
+        if button is None:
+            return
+        for _ in range(times):
+            self.backend.press(button)
+            self._sleep(0.1)
+        steps.append(f"zoom restored ({zoom})")
+
+    def _click_device(self, main: int, pid: int, device: str, st: dict, steps: list[str], els) -> int:
+        b = self.backend
         vp = locate(els, locators.LOGICAL_CANVAS)
         if vp is None:
             raise PresenterError("Can't find PT's logical canvas.")

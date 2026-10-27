@@ -5,7 +5,7 @@
 Live deploy uses the **MCP Control Center** — this project's **own** Packet Tracer
 extension, distributed as a `.pts` script module in
 [Releases](https://github.com/Mats2208/MCP-Packet-Tracer/releases/latest). It's an
-original build: a webview dashboard (Editor, Terminal, Status, Quick Build) with the
+original build: a webview panel (connection state, the agent's activity, a JS console) with the
 bridge polling loop built in. **You install this extension, not any third-party one.**
 
 ## Inspired by PTBuilder

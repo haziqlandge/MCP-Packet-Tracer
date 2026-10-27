@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import time
-from pathlib import Path
 from mcp.server.fastmcp import FastMCP
 from ....domain.models.plans import TopologyPlan
 from ....domain.models.requests import TopologyRequest
@@ -22,26 +21,15 @@ from ....infrastructure.generator.cli_config_generator import (
 from ....infrastructure.execution.manual_executor import ManualExecutor
 from ....infrastructure.execution.deploy_executor import DeployExecutor
 from ....infrastructure.execution.bridge_token import token_was_rotated, token_is_ephemeral
-from ..bridge_context import BridgeContext, DEPLOY_BATCH
+from ..bridge_context import BridgeContext, DEPLOY_BATCH, stp_wait_seconds
+from ....infrastructure.execution.live_checks import (  # noqa: F401 (re-exported for tests)
+    PING_TIMEOUT_S, device_check_status, ping_no_result_message, reconcile_commands,
+)
 from ....shared.enums import RoutingProtocol, TopologyTemplate
-from ....shared.utils import js_escape, safe_name_component, classify_ping as _classify_ping, reply_json
+from ....shared.utils import js_escape, safe_name_component, classify_ping as _classify_ping, name_collisions, read_plan_source, reply_json
 from ....infrastructure import platform as pt_platform
+from ....infrastructure.execution.file_bridge import mailbox_line
 from ....infrastructure.platform.doctor import platform_status
-
-
-def mailbox_line(status: dict) -> str:
-    """One status line naming the file mailbox PT polls, home shown as `~`.
-
-    `legacy` is the Windows-shaped directory the released V5.2 extension polls on
-    macOS and Linux (PLAN/INTERFACES.md §5): worth saying, because a rebuilt
-    extension moves it to the canonical directory.
-    """
-    home = str(Path.home())
-    shown = status["dir"]
-    if home != "/" and shown.startswith(home):
-        shown = "~" + shown[len(home):]
-    note = " (legacy location polled by the released V5.2 extension)" if status.get("legacy") else ""
-    return f"  • file mailbox: {shown}{note}"
 
 
 # --- Device console (real ping) ----------------------------------------------
@@ -65,7 +53,6 @@ _CONSOLE_PRIME_JS = (
 
 # Statistics block markers, in PT's two formats.
 _PING_STAT_MARKERS = "/Packets: Sent|Success rate/g"
-
 
 def console_ping_arm_js(device: str, target: str) -> str:
     """JS that makes the console usable, counts the existing blocks and fires the ping.
@@ -105,6 +92,14 @@ def console_ping_poll_js(device: str, base: int) -> str:
         "reportResult('DONE:'+(stat?stat[stat.length-1]:'no stats'));"
         "}else{reportResult('WAIT');}}"
     )
+
+
+# Names of the devices on the canvas, as a JSON array.
+_LIVE_NAMES_JS = (
+    "try{var net=ipc.network();var n=net.getDeviceCount();var a=[];"
+    "for(var i=0;i<n;i++){a.push(net.getDeviceAt(i).getName());}"
+    "reportResult(JSON.stringify(a));}catch(e){reportResult('[]');}"
+)
 
 
 def register(mcp: FastMCP, ctx: BridgeContext) -> None:
@@ -287,6 +282,9 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
             # go to the clipboard, so the "full" pipeline ended with an empty
             # canvas even with the bridge connected: the user saw
             # "✅ Validation: PASS" and there was nothing in PT.
+            # Start the bridge first: on a fresh server it does not exist yet, and
+            # the build fell back to the clipboard while PT was a second away.
+            _ensure_bridge()
             if _pick_channel() != "":
                 parts.append(pt_live_deploy(plan.model_dump_json()))
                 parts.append("")
@@ -352,8 +350,9 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
 
     @mcp.tool()
     def pt_live_deploy(
-        plan_json: str,
+        plan_json: str = "",
         command_delay: float = 0.0,
+        plan_path: str = "",
     ) -> str:
         """
         Sends commands directly to Packet Tracer in real time.
@@ -364,6 +363,9 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
 
         Parameters:
         - plan_json: plan JSON (output of pt_plan_topology or pt_full_build)
+        - plan_path: instead of plan_json, a .json file with the plan. Use it for
+          large hand-written designs (dozens of sites); `extra_cli` in the plan
+          carries per-device IOS lines (summaries, hardening, NAT...).
         - command_delay: delay between BATCHES in seconds (default 0.0).
           Commands are no longer sent one by one: they go in batches that PT runs in
           a single runCode, where each one carries its own try/catch. Measured
@@ -381,7 +383,30 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         if err:
             return err
 
-        plan = TopologyPlan.model_validate_json(plan_json)
+        try:
+            plan = TopologyPlan.model_validate_json(read_plan_source(plan_json, plan_path))
+        except ValueError as exc:
+            return f"Invalid plan: {exc}"
+
+        # A name already on the canvas would be created a second time (PT allows
+        # duplicate names) while links and config land on the old device, and the
+        # getDevice(name) verification below would still say "verified".
+        live = _bridge_send_and_wait(_LIVE_NAMES_JS, timeout=5.0)
+        try:
+            live_names = json.loads(live) if live else []
+        except ValueError:
+            live_names = []
+        taken = name_collisions([d.name for d in plan.devices], live_names)
+        if taken:
+            return (
+                "Not deployed: the canvas already has device(s) named "
+                + ", ".join(taken)
+                + ". Deploying would create duplicates with the same names. Start from an "
+                "empty canvas (File > New in Packet Tracer), remove them with "
+                "pt_delete_device, or edit the existing topology with pt_add_device / "
+                "pt_add_link instead."
+            )
+
         script = generate_executable_script(plan)
         commands = [
             line.strip() for line in script.splitlines()
@@ -410,8 +435,14 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                 "  reportResult(d ? 'OK' : 'MISSING');"
                 "} catch(e) { reportResult('MISSING'); }"
             )
-            r = _bridge_send_and_wait(js, timeout=5.0)
-            if r == "OK":
+            status = device_check_status(_bridge_send_and_wait(js, timeout=5.0))
+            # PT may still be running the queued deploy: a timeout is asked again with
+            # more patience instead of being counted as a missing device.
+            for wait in (20.0, 40.0):
+                if status != "unknown":
+                    break
+                status = device_check_status(_bridge_send_and_wait(js, timeout=wait))
+            if status == "ok":
                 dev_ok += 1
             else:
                 dev_fail.append(dev.name)
@@ -452,7 +483,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
             for lnk in link_fail_objs:
                 names.add(lnk.device_a)
                 names.add(lnk.device_b)
-            retry_cmds = [c for c in commands if any(f'"{n}"' in c for n in names)]
+            retry_cmds = reconcile_commands(commands, names)
             for cmd in retry_cmds:
                 _channel_send(_js_guard(cmd))
                 time.sleep(command_delay)
@@ -541,13 +572,13 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         if ctx.instance is not None and ctx.instance._client_headers:
             hdr = f"\nPT client headers: {ctx.instance._client_headers}"
 
-        mailbox = ("\n" + mailbox_line(_file_bridge.mailbox_status())) if file_alive else ""
+        mbox = "\n" + mailbox_line(_file_bridge.mailbox_status()) if file_alive else ""
         if http_connected and file_alive:
             return (
                 "CONNECTED over both channels:\n"
                 f"  • HTTP (window open) — http://127.0.0.1:{_BRIDGE_PORT}\n"
                 "  • file-bridge (Script Engine, keeps working if you close the window)"
-                + mailbox + hdr
+                + mbox + hdr
             )
         if http_connected:
             return (
@@ -561,7 +592,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                 "CONNECTED over file-bridge (the window is closed, but PT is still "
                 "open with the extension). Deployment works the same, a bit "
                 "slower than over HTTP. Open MCP Control Center if you want the HTTP "
-                "channel and the log panel." + mailbox
+                "channel and the log panel." + mbox
             )
 
         # No channel.
@@ -592,7 +623,7 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         from_device: str,
         to_ip: str,
         count: int = 4,
-        timeout_s: float = 20.0,
+        timeout_s: float = PING_TIMEOUT_S,
     ) -> str:
         """
         Runs a REAL ping from a device in PT and returns the result.
@@ -610,13 +641,21 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
         - to_ip: destination IP
         - count: reserved; PT uses its default per type (PC 4, IOS 5). A "-n"
           flag would break on IOS, so it is not forced for now.
-        - timeout_s: maximum wait (default 20s). A FAILED ping takes longer
+        - timeout_s: maximum wait (default 45s: on a topology deployed moments
+          ago, switch ports spend ~30s in STP before forwarding). A FAILED ping takes longer
           than a successful one: each packet waits for its own timeout before
           being declared lost (~13s measured for 4 lost packets).
         """
         err = _check_bridge()
         if err:
             return err
+
+        # Links created moments ago are still in STP listening/learning: a ping now
+        # is lost and reads as a fault. Wait out the rest of that window first.
+        stp_wait = stp_wait_seconds(ctx.last_link_change, time.monotonic())
+        if stp_wait > 0:
+            time.sleep(stp_wait)
+        waited = f"\n(waited {stp_wait:.0f}s for STP on links created moments ago)" if stp_wait > 0 else ""
 
         # The JS lives in `console_ping_arm_js` / `console_ping_poll_js` (module
         # level) so it can be tested without a bridge that `getCommandPrompt`, which
@@ -647,12 +686,9 @@ def register(mcp: FastMCP, ctx: BridgeContext) -> None:
                     "partial": "PARTIAL CONNECTIVITY (packet loss)",
                     "none": "NO CONNECTIVITY",
                 }[_classify_ping(stat)]
-                return f"{from_device} → {to_ip}: {verdict}\n{stat}"
+                return f"{from_device} → {to_ip}: {verdict}\n{stat}{waited}"
 
-        return (
-            f"{from_device} → {to_ip}: no result after {timeout_s:.0f}s. "
-            "The ping may still be running; retry or raise timeout_s."
-        )
+        return ping_no_result_message(from_device, to_ip, timeout_s) + waited
 
     @mcp.tool()
     def pt_save_project(filename: str, directory: str = "") -> str:

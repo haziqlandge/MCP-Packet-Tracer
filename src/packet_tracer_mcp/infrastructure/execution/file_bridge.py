@@ -45,6 +45,21 @@ def bridge_dir() -> Path:
     return token_dir() / _BRIDGE_SUBDIR
 
 
+def mailbox_line(status: dict) -> str:
+    """One status line naming the file mailbox PT polls, home shown as `~`.
+
+    `legacy` is the Windows-shaped directory the released V5.2/V6 extension polls on
+    macOS and Linux: worth saying, because a rebuilt
+    extension moves it to the canonical directory.
+    """
+    home = str(Path.home())
+    shown = status["dir"]
+    if home != "/" and shown.startswith(home):
+        shown = "~" + shown[len(home):]
+    note = " (legacy location polled by the released V5.2/V6 extension)" if status.get("legacy") else ""
+    return f"  • file mailbox: {shown}{note}"
+
+
 def ensure_bridge_dir() -> Path:
     d = bridge_dir()
     d.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -66,7 +81,7 @@ class FileBridge:
     files on disk, so it survives process restarts.
 
     The mailbox is wherever the extension's heartbeat is (PLAN/INTERFACES.md §5):
-    the released V5.2 polls a Windows-shaped directory on macOS and Linux, so the
+    the released V5.2/V6 polls a Windows-shaped directory on macOS and Linux, so the
     server follows the freshest `alive.txt` among the candidates instead of
     assuming its own path. An explicit `directory` (tests, config) wins.
     """
@@ -112,7 +127,7 @@ class FileBridge:
 
     def mailbox_status(self) -> dict:
         """Which mailbox is in use, for diagnostics. `legacy` means PT is polling a
-        directory other than the canonical one (the released V5.2 on macOS/Linux)."""
+        directory other than the canonical one (the released V5.2/V6 on macOS/Linux)."""
         d = self.active_dir()
         age = _heartbeat_age(d)
         alive = age is not None and age < HEARTBEAT_FRESH_S

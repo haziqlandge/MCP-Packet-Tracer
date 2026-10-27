@@ -1,8 +1,8 @@
-"""The Control Center editor's shortcuts follow the OS (EXTENSION/webview).
+"""The Control Center console's shortcuts follow the OS (EXTENSION/webview).
 
-Before, the editor showed Windows hints everywhere (Ctrl+Enter, Ctrl+K) and took
-Control *or* Command on every OS, so on a Mac Control+K, the text system's
-"delete to end of line", cleared the whole editor. These run the real
+Before, the console showed Windows hints everywhere (Ctrl+Enter) and took
+Control *or* Command on every OS, so on a Mac Control+Enter, a text-system key,
+ran the script. These run the real
 interface.js under node with a stub navigator and document; they skip when node
 is not installed. Whether PT's own webview reports a Mac platform and passes
 Command through as metaKey can only be checked live, in PT.
@@ -50,10 +50,9 @@ def test_mac_hints_show_command():
     r = run(MAC)
     assert r["isMac"] is True
     assert r["hints"] == {
-        "runKbd": "⌘↩",
-        "clearKbd": "⌘K",
+        "runHint": "⌘↩",
         "runTitle": "Run (⌘↩)",
-        "clearLogTitle": "Clear log (⌘L)",
+        "clearTitle": "Clear (⌘K)",
     }
 
 
@@ -69,7 +68,7 @@ def test_hints_survive_a_non_utf8_locale(monkeypatch):
         return real_run(*args, **kw)
 
     monkeypatch.setattr(subprocess, "run", run_like_windows)
-    assert run(MAC)["hints"]["clearKbd"] == "⌘K"
+    assert run(MAC)["hints"]["clearTitle"] == "Clear (⌘K)"
 
 
 @needs_node
@@ -78,10 +77,9 @@ def test_other_os_hints_show_ctrl(env):
     r = run(env)
     assert r["isMac"] is False
     assert r["hints"] == {
-        "runKbd": "Ctrl+Enter",
-        "clearKbd": "Ctrl+K",
+        "runHint": "Ctrl+Enter",
         "runTitle": "Run (Ctrl+Enter)",
-        "clearLogTitle": "Clear log (Ctrl+L)",
+        "clearTitle": "Clear (Ctrl+K)",
     }
 
 
@@ -89,27 +87,24 @@ def test_other_os_hints_show_ctrl(env):
 def test_mac_command_shortcuts_run():
     r = run(MAC, [{"key": "Enter", "metaKey": True},
                   {"key": "k", "metaKey": True},
-                  {"key": "l", "metaKey": True},
                   {"key": "K", "metaKey": True}])  # Caps Lock on
-    assert r["pressed"] == [["run"], ["clear"], ["clearLog"], ["clear"]]
+    assert r["pressed"] == [["run"], ["clear"], ["clear"]]
 
 
 @needs_node
 def test_mac_control_keys_are_left_to_the_text_system():
-    # Control+K deletes to the end of the line on a Mac; it must not clear the editor.
+    # Control+K deletes to the end of the line on a Mac; it must not clear the console.
     r = run(MAC, [{"key": "Enter", "ctrlKey": True},
-                  {"key": "k", "ctrlKey": True},
-                  {"key": "l", "ctrlKey": True}])
-    assert r["pressed"] == [[], [], []]
+                  {"key": "k", "ctrlKey": True}])
+    assert r["pressed"] == [[], []]
 
 
 @needs_node
 def test_windows_ctrl_shortcuts_run_and_the_windows_key_does_not():
     r = run(WINDOWS, [{"key": "Enter", "ctrlKey": True},
                       {"key": "k", "ctrlKey": True},
-                      {"key": "l", "ctrlKey": True},
                       {"key": "k", "metaKey": True}])
-    assert r["pressed"] == [["run"], ["clear"], ["clearLog"], []]
+    assert r["pressed"] == [["run"], ["clear"], []]
 
 
 @needs_node
@@ -123,8 +118,7 @@ def test_extra_modifiers_do_not_trigger():
 def test_every_modifier_hint_in_index_html_is_rewritten_per_os():
     # A hint written only in the HTML would stay "Ctrl+..." on a Mac.
     html = INDEX_HTML.read_text(encoding="utf-8")
-    for m in re.finditer(r"<span[^>]*class=\"kbd\"[^>]*>([^<]*)</span>", html):
-        if "Ctrl" in m.group(1):
-            assert "data-shortcut=" in m.group(0), m.group(0)
+    for m in re.finditer(r"<([a-z]+)([^>]*)>([^<]*Ctrl\+[^<]*)<", html):
+        assert "data-shortcut=" in m.group(2), m.group(0)
     for m in re.finditer(r"<[a-z]+[^>]*title=\"[^\"]*Ctrl\+[^\"]*\"[^>]*>", html):
         assert "data-shortcut-title=" in m.group(0) and "data-title=" in m.group(0), m.group(0)

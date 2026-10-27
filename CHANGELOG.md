@@ -4,15 +4,21 @@
 
 ### Added
 
+- **macOS and Linux support for UI mode's plumbing.** OS-specific code now lives only in
+  `infrastructure/platform/` and `infrastructure/ui/backends/`; the Windows UI Automation backend
+  moved there unchanged. macOS gets an Accessibility/capture backend (opens and captures device
+  windows; needs the Accessibility and Screen Recording grants). Linux runs every headless tool;
+  UI mode is not available there yet. Headless paths never trigger a macOS permission prompt.
 - **`pt-mcp doctor` setup diagnostics.** Checks installation, state/output paths,
   Packet Tracer, extension activity, bridge ownership, clipboard and UI availability;
   failed checks include fixes. `--ui` requires UI readiness, `--json` prints
   structured checks, and `--request-permissions` explicitly requests macOS grants.
   `--print-config claude-code|claude-desktop` generates client configuration using
   the absolute interpreter path.
-- **Mailbox discovery compatible with released V5.2.** The file bridge chooses the
-  freshest heartbeat across canonical and legacy candidates and reports the active
-  directory, age and compatibility status.
+- **Mailbox discovery.** The file bridge follows the freshest heartbeat across the canonical
+  per-user state directory and the legacy `~/AppData/Local` one the V5 extension uses on macOS and
+  Linux, and `pt_bridge_status` reports which one is active. Released and rebuilt `.pts` files both
+  connect.
 - **`pt_simulate_pdu` — the GUI's *Add Simple PDU*, run to the end in one call.**
   `UserCreatedPDU.addSimplePdu()` turned out to be scriptable (the docs said it
   was not). The tool follows only that PDU's frames through
@@ -23,7 +29,143 @@
   panel's event list, which engine-only stepping left empty. By default it warms
   ARP in Realtime, empties the PDU list and hides everything but ICMP, so the run
   shows no red X's (STP BPDUs dropped by PCs, cold-ARP drops).
+- **The panel's console shortcuts follow the OS.** On a Mac, ⌘↩ runs and ⌘K clears, and the hints
+  say so; Control keys are left to the text system. Ctrl+Enter / Ctrl+K elsewhere.
 
+### Fixed
+
+- `pt_cli` reaches an ASA through its console line, enforces its deadline while paging
+  `--More--`, keeps each batch reply under the bridge's 1 MiB limit, and wakes a console whose
+  banner is followed by async log lines.
+- `pt_server_dhcp` no longer creates a zeroed pool on remove/exclude, applies every field to an
+  existing pool and reports what PT refused. `pt_host_ip_config` no longer reports an old static
+  IP as the lease. The panel tools reject wildcard, /0 and non-ASCII masks instead of crashing,
+  and bound the waits they are given.
+- `pt_server_http` refuses the call that crashes PT (HTTP and HTTPS both off) and no longer
+  promises to create pages; `pt_web_browser` no longer returns the previous page as a new URL's
+  content; `pt_terminal` validates its input before touching PT.
+- A renamed FastMCP internal no longer breaks server startup.
+
+## 0.10.1
+
+Found by building a 24-branch, 116-device enterprise WAN (multi-area OSPF, NAT, DHCP, SSH) on PT 9.0.1
+using only the MCP's tools.
+
+### Added
+
+- **Large custom designs through the MCP.** `pt_validate_plan` and `pt_live_deploy` take `plan_path` (a
+  `.json` plan; a 24-branch plan is ~150 KB, too big for a tool argument). `TopologyPlan.extra_cli`
+  carries per-device IOS lines after the generated config (summaries, hardening, NAT, VLANs), validated
+  for unknown devices and line breaks. A 3560 with addresses in the plan is layer 3: `ip routing`,
+  routed ports, SVIs, OSPF, DHCP.
+- `pt_apply_interface_tuning(ospf_network="point-to-point")`.
+
+### Fixed
+
+- **The default route vanished after an OSPF interface change on the ASBR.** PT flushes the router's
+  own type-5 LSA and never re-originates it. OSPF /30s are now point-to-point from deploy time, and
+  `pt_apply_interface_tuning` re-enters `default-information originate` on an ASBR after any OSPF change.
+- **`pt_live_deploy` could duplicate a device**: a verification that timed out while PT was still
+  running a large deploy counted as missing, and the reconcile re-created it. Timeouts are retried and
+  re-sent device creations are guarded by `getDevice(name)`.
+- Hosts get DHCP only where a pool serves their subnet; servers keep their planned address. The static
+  fallback host of each LAN now gets the pool's DNS (it could not resolve names).
+- `pt_audit_security` reported "no local users" on every 2960 (it has no `getUserPass()`).
+- `pt_host_command` inside an SSH session timed out on every command (PT keeps the host prompt).
+- `pt_verify_connectivity` waits out the ~30 s STP window after links are created instead of reporting
+  a false failure; its default timeout is 45 s and the no-result message names STP.
+- UI mode could not open device windows on a zoomed-out canvas; `llms-install.md` registers the `[ui]`
+  extra on Windows, and the missing-comtypes message explains the uvx way.
+
+## 0.10.0
+
+### Changed
+
+- **The extension no longer needs PTBuilder.** `EXTENSION/script-engine/core.js` implements the
+  globals the server calls (`addDevice`, `addLink`, `configureIosDevice`, `getDevices`, `runCode`,
+  `htmlWindow` and the type tables) with the same names and signatures, as this project's own
+  code. Verified by loading it into a running PT 9.0.1 in place of PTBuilder and deploying a
+  2-router OSPF network with multilayer switches, laptops and a server through the MCP. Its
+  `runCode` never opens the error dialog that used to freeze PT. Needs a new `.pts` (V6).
+
+- **Redesigned MCP Control Center (V6 panel).** One screen instead of four tabs: connection
+  state in plain words, the agent's activity as sentences ("Added R1 (2911)", "Cabled R1 Gi0/1 ↔
+  SW1 Gi0/1") with repeated reads folded into one row, and the JS console behind "Advanced".
+  Quick Build (a second topology generator inside the panel) and Bootstrap are gone; the
+  bridge logic is unchanged.
+
+### Fixed (found by a live run of all 79 tools on macOS, 2026-10-25)
+
+- **Deploying over existing names duplicated devices and reported "verified".** Running
+  `pt_full_build` twice created a second R1/SW1/PC1 with no cables while links and config went
+  to the old ones; the check only asked `getDevice(name)`. `pt_live_deploy` now refuses when a
+  planned name is already on the canvas and says how to proceed.
+- **`pt_add_module(dry_run=True)` skipped the compatibility check** (NIM-2T on a 2911 came back
+  valid). It now runs the same checks as the real call when PT is reachable.
+- **Dual stack on router-on-a-stick lost IPv6**: subinterfaces never got their `ipv6 address`.
+- **`pt_server_service(service="email")` returned account passwords** (`"alice:alice123,..."`).
+  Only usernames come back now.
+- **`pt_cli` echoed the answer to a `Password:` prompt**; it is masked. `pt_apply_hardening`
+  now warns that `login local` on the console makes `pt_cli` stop at `Username:` and how to answer.
+- **Exports landed in whatever folder the client started the server from** (for `uvx` under a
+  desktop client, possibly `/`). The server now works in `~/PacketTracerMCP`
+  (`PT_MCP_WORKDIR` overrides it).
+- **`pt_read_packet_trace` called a 100% ping a failure**: frames flooded to the wrong host and
+  STP BPDUs reaching a router are normal drops. They are reported as `expected_drops`.
+- **The first tool call of a session said "not connected"** even with PT open: the bridge
+  starts on that call and the extension finds it on its next 2 s poll. It now waits up to 5 s,
+  and `pt_full_build` no longer falls back to the clipboard on a fresh server. The bridge now
+  also starts with the server, so the extension's panel is online before the first tool call.
+- **File-bridge never connected on macOS/Linux.** The V5 extension writes its mailbox under
+  `<home>/AppData/Local/packet-tracer-mcp/bridge` on every OS; the server looked in
+  `~/.local/state`. The server now meets it there, so the released `.pts` works unchanged.
+- **HTTP transport moved from :39000 to :39400.** Packet Tracer itself listens on `*:39000` (its
+  IPC for external apps), so the two collided. Only affects running the server without `--stdio`.
+- **`pt_diff` listed PT's own off-canvas "Power Distribution Device0" as an extra device.**
+- Spanish leftovers in English output (explainer, cable/ACL/NAT suggestions), and the explainer
+  no longer claims router-to-router /30 links in a build that has none.
+- **27 catalog models had the wrong PT device-type id** (multilayer switches, Laptop-PT, Printer,
+  ASAs, LAP-PT, Thing...): `lw.addDevice` creates nothing with a wrong id, so they only appeared
+  through PTBuilder's fallback. Ids are now per model, measured live on PT 9.0.1. The PT-IOT-NM
+  modules were type 22; PT installs them only as 23.
+- Module count in the docs: 150 (PT's catalog lists `PT-CLOUD-NM-1CX` twice); resources: 6.
+
+### Fixed (found by the Windows install run, 2026-10-25)
+
+- **`install-skill` failed on Windows when the skill folder was a directory junction**
+  (`mklink /J`, the way to link a folder there without admin rights): `shutil.rmtree` refuses
+  junctions ("Cannot call rmtree on a symbolic link"). The junction is now removed like a symlink,
+  leaving its target untouched.
+- **V6 panel unreadable on Windows in dark mode**: the active tab and filter were near-white on
+  white. PT injects a stylesheet that forces `html, body` to its own theme
+  (`--pt-bg-color`, `!important`), while the panel picked its palette from
+  `prefers-color-scheme`, which follows the OS. The panel now follows PT's theme and uses the OS
+  only as a fallback. Verified by injecting the change into the running panel on PT 9.0.1;
+  **needs a new `.pts` build**.
+- **The first ping after a deploy came back "no result after 20s".** New switch ports spend
+  ~30 s in STP before forwarding. `pt_verify_connectivity` now waits 45 s by default, and the
+  no-result message says to wait for STP on a topology deployed in the last minute.
+- A file-bridge test patched `os.name` globally, which made `pathlib` build `PosixPath` on
+  Windows with Python 3.11 and crashed the whole CI run there.
+- The symlink test is skipped where Windows refuses symlinks (no Developer Mode, WinError 1314)
+  instead of failing the suite; the new junction test covers that case there.
+- `llms-install.md`: PT's dialog names the module **MCP-Control-Center** (the menu entry is still
+  **MCP BUILDER**), and PT only finds new modules when it starts, so it must be fully closed first.
+
+### Added
+
+- **Install it by asking your agent.** `llms-install.md` tells any coding agent (Claude Code, OpenCode,
+  Codex, Cursor…) how to install the MCP on Windows, macOS or Linux: detect the OS and client, register the
+  server, install the skill and download the extension. The user only adds the `.pts` in Packet Tracer.
+- **One-click extension install.** Packet Tracer scans its own `extensions` folder at start and
+  asks to enable new script modules; the agent install drops the `.pts` there, so the user only
+  clicks **Yes** (verified on macOS with PT 9.0.1). The release asset gets a stable name,
+  `MCP-Control-Center.pts`.
+- **`pt-mcp install-skill [--dest DIR]`.** The skill now ships inside the wheel; before, installing it
+  needed a clone (`cp -r skill/.`), so whoever installed with pip never got it.
+- **`uvx packet-tracer-mcp`.** A script named like the package, so `uv` users run the server with no
+  `--from` and no Python install. The docs now lead with `uv`: on macOS/Homebrew and recent Linux a plain
+  `pip install` fails with `externally-managed-environment` (PEP 668).
 - **Device-panel control: every tab of a device window, without touching the screen.**
   17 new tools (62 → 79 with upstream's `pt_configure_dhcp_server`) drive what a student does inside a device through Packet
   Tracer's own API: `pt_cli` (IOS CLI tab — one command at a time, waits for the

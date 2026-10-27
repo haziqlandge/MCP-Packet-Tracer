@@ -2,13 +2,15 @@
 MCP server for Packet Tracer.
 
 Entry point: creates the server, registers tools/resources, and starts
-on streamable-http (:39000) or stdio depending on the --stdio flag.
+on streamable-http (:39400) or stdio depending on the --stdio flag.
 """
 
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+from pathlib import Path
 
 # Doctor must work without initializing the MCP transport or bridge.
 if sys.argv[1:2] == ["doctor"]:
@@ -20,10 +22,11 @@ from mcp.server.fastmcp import FastMCP
 from . import __version__
 from .adapters.mcp.prompt_registry import register_prompts
 from .adapters.mcp.resource_registry import register_resources
+from .adapters.mcp.bridge_context import BridgeContext
 from .adapters.mcp.tool_registry import register_tools
 from .settings import SERVER_NAME, SERVER_INSTRUCTIONS
 
-TRANSPORT_PORT = 39000
+TRANSPORT_PORT = 39400
 
 mcp = FastMCP(
     SERVER_NAME,
@@ -50,25 +53,52 @@ _lowlevel = getattr(mcp, "_mcp_server", None)
 if _lowlevel is not None:
     _lowlevel.version = __version__
 
-register_tools(mcp)
+# One bridge for the whole server; main() starts it before serving.
+BRIDGE = BridgeContext()
+register_tools(mcp, BRIDGE)
 register_resources(mcp)
 register_prompts(mcp)
 
 
+def workdir() -> Path:
+    """Where exports, screenshots and saved plans go (`PT_MCP_WORKDIR` overrides it).
+
+    Tools write to relative folders ("projects", "screenshots"). Relative to what the
+    client launched the server from, that could be the user's home, a repo, or `/`.
+    """
+    env = os.environ.get("PT_MCP_WORKDIR")
+    return Path(env).expanduser() if env else Path.home() / "PacketTracerMCP"
+
+
 def main(argv: list[str] | None = None):
-    """Run diagnostics or start the MCP transport."""
+    """Run diagnostics, install the skill, or start the MCP transport.
+
+    By default uses streamable-http on :39400 (39000 belongs to Packet Tracer's own IPC).
+    With --stdio uses the stdio transport (for debugging or legacy clients).
+    `pt-mcp doctor` runs the setup diagnostics; `pt-mcp install-skill` installs the
+    companion Agent Skill instead of serving.
+    """
     argv = sys.argv[1:] if argv is None else argv
     if argv[:1] == ["doctor"]:
         from .infrastructure.platform.doctor import main as doctor_main
         raise SystemExit(doctor_main(argv[1:]))
+    if argv[:1] == ["install-skill"]:
+        from .skill_install import main as install_skill
+        raise SystemExit(install_skill(argv[1:]))
     parser = argparse.ArgumentParser(description="Packet Tracer MCP server")
     parser.add_argument("--stdio", action="store_true", help="Use MCP standard input/output")
     parser.add_argument("--port", type=int, default=TRANSPORT_PORT,
-                        help="MCP HTTP port (default: 39000; bridge stays on 54321)")
+                        help="MCP HTTP port (default: 39400; bridge stays on 54321)")
     args = parser.parse_args(argv)
     if not 1 <= args.port <= 65535:
         parser.error("--port must be between 1 and 65535")
     mcp.settings.port = args.port
+    wd = workdir()
+    wd.mkdir(parents=True, exist_ok=True)
+    os.chdir(wd)
+    # Listen right away, so the extension's panel is online as soon as the agent starts.
+    # A busy port is not fatal: the tools report it on their first call.
+    BRIDGE.ensure_bridge(grace=False)
     mcp.run(transport="stdio" if args.stdio else "streamable-http")
 
 

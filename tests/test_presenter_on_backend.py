@@ -228,6 +228,22 @@ class TestOpenDialog:
         assert b.log.index(("press", "Zoom Reset")) < b.log.index(("click", MAIN, 199, 500))
         assert clicks(b) == [("click", MAIN, 199, 500)]
 
+    def test_users_zoom_is_given_back_after_the_click(self):
+        # Upstream (Windows): the canvas is reset to 100% to click, then put back
+        # where the user had it, one Zoom Out press per step below 100%.
+        zoom = [-2]
+        reset = el("Zoom Reset", f"{APP}.m_pToolBar.QToolButton", Role.BUTTON,
+                   on_press=lambda b, e: zoom.__setitem__(0, 0))
+        out = el("Zoom Out", f"{APP}.m_pToolBar.QToolButton", Role.BUTTON)
+        b = FakeBackend(main=MAIN, trees={MAIN: main_tree() + [reset, out]},
+                        click_opens={(199, 500): ("R1", 5)})
+        r = presenter(self._zoomed(zoom), b).open("R1")
+        assert r["steps"][:3] == ["zoom reset to 100% (the click is placed at 100%)",
+                                  "dialog opened (click posted, cursor not moved)",
+                                  "zoom restored (-2)"]
+        assert b.log.count(("press", "Zoom Out")) == 2
+        assert b.log.index(("click", MAIN, 199, 500)) < b.log.index(("press", "Zoom Out"))
+
     def test_zoom_that_does_not_reset_falls_back_to_the_centre(self):
         zoom = [3]
         reset = el("Zoom Reset", f"{APP}.m_pToolBar.QToolButton", Role.BUTTON)
